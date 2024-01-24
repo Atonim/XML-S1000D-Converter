@@ -46,8 +46,37 @@ export default {
     };
   },
   methods: {
+    async sendRequest(file) {
+      const requestURL = 'https://jsonplaceholder.typicode.com/todos';
+
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const response = await fetch(requestURL, {
+          method: 'POST',
+          //mode: "cors", // защита согласовывается с бэк: no-cors, cors, same-origin ?
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          body: formData,
+        });
+
+       if (response.ok) {
+          console.log(response);
+          //const result = await response.json();
+          //console.log(result);
+        }
+        else {
+          console.log('Error HTTP: ' + response.status);
+        }
+      } catch(error) {
+        console.log('Request execution error: ' + error.message);
+      }
+    },
+
     startConverter(file) {
       //startZip();
+      this.sendRequest(file);
       startUnzip(file);
       this.$router.push("/getResult");
     },
