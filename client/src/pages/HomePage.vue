@@ -18,7 +18,7 @@
 
 <script>
 import Uploader from "@/components/Uploader";
-import { startZip, startUnzip } from "@/converter/jszip";
+import { startZip, startUnzip } from "../../../server/src/converter/jszip";
 import { ref } from "vue";
 
 export default {
