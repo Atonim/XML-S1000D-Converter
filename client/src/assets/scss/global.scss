@@ -1,4 +1,5 @@
-@import './_variables.scss';
+@import './variables.scss';
+@import './mixins.scss';
 
 * {
   margin: 0;
@@ -11,30 +12,21 @@
 }
 
 body {
-  font-family: 'Montserrat-Medium';
-  font-size: large;
-  color: $black;
+  @include font($black);
   background-color: $background-color;
 }
 
 button {
-   padding: $padding;
-    font-family: 'Montserrat-Medium';
-    font-size: large;
-    letter-spacing: 2px;
+    padding: $padding;
+    @include font(white);
     transition: $transition;
     border: none;
     border-radius: 5px;
-    color: white;
 }
 
 .home-page, .result-page {
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: $row-gap * 2;
+  @include flex(32px);
 
   h1 {
     font-family: 'Montserrat-Bold';
@@ -64,11 +56,7 @@ button {
   padding: 15px;
   width: 70%;
   min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: $row-gap;
+  @include flex;
   border: 5px $grey dotted;
   border-radius: 10px;
  
@@ -92,7 +80,6 @@ button {
     }
   }
 }
-
   .active-uploader {
     color: white;
     border: none;
@@ -103,6 +90,68 @@ button {
       background-color: white;
     }
   }
+
+.preloader {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	&__loader,
+	&__percents {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	&__percents {
+		@include font($black, bold);
+	}
+}
+// move to global.scss
+@keyframes ldio-h00fv1la8vf {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+.ldio-h00fv1la8vf div {
+	left: 94px;
+	top: 48px;
+	position: absolute;
+	animation: ldio-h00fv1la8vf linear 1s infinite;
+	background: nth($animation-color, random(2));
+	width: 12px;
+	height: 24px;
+	border-radius: 6px / 12px;
+	transform-origin: 6px 52px;
+  @for $i from 1 to 13 {
+    &:nth-child(#{$i}n) {
+      transform: rotate(30deg * ($i - 1));
+      animation-delay: nth($animation-delay, $i);
+    }
+  }
+}
+.loadingio-spinner-spinner-lubm59c3vdb {
+	width: 200px;
+	height: 200px;
+	display: inline-block;
+	overflow: hidden;
+	background: none;
+}
+.ldio-h00fv1la8vf {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	transform: translateZ(0) scale(1);
+	backface-visibility: hidden;
+	transform-origin: 0 0; /* see note above */
+}
+.ldio-h00fv1la8vf div {
+	box-sizing: content-box;
+}
 
 @font-face {
 	font-family: 'Montserrat-ExtraBold';

@@ -1,13 +1,19 @@
 <template>
-  <div class="result-page">
-    <Preloader/>
-    <!--<h1>Конвертированный документ</h1>
-    <button class="result-page__download-btn download-btn" @click="download">
-      Скачать
-    </button>
-    <button class="result-page__back-btn back-bth" @click="$router.push('/')">
-      Назад
-    </button>-->
+  <div>
+    <Preloader v-if="show" />
+    <div class="result-page" v-else>
+      <h1>Конвертированный документ</h1>
+      <button 
+      class="result-page__download-btn download-btn" 
+      @click="download">
+        Скачать
+      </button>
+      <button 
+      class="result-page__back-btn back-bth" 
+      @click="$router.push('/')">
+        Назад
+      </button>
+    </div>
   </div>
 </template>
 
@@ -19,14 +25,26 @@ export default {
   components: {
     Preloader
   },
+  data: () => {
+    return {
+      show: true
+    }
+  },
+  mounted() { // temp
+    this.showToggle();
+  },
   methods: {
     download() {
       startUnzip();
       //startZip();
     },
+    showToggle() { // temp
+      setTimeout(() => {
+        this.show = false
+      }, 5000)
+    }
   },
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
