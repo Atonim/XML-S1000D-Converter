@@ -25,7 +25,7 @@ export const startUnzip = (file) => {
     const xml = unzip.folder("XML");
 
     unzip.generateAsync({ type: "blob" }).then(function (content) {
-      FileSaver.saveAs(content, "example.zip");
+      FileSaver.saveAs(content, "example.zip"); //по идее это можно сделать на клиенте
     });
   })
 
