@@ -1,6 +1,7 @@
 
 import * as tegs from "./xmlTegs.js"
-import document from "./temp.js"
+import { document } from "./temp.js"
+import { docxParser } from "./docxParser.js"
 
 export class convertor {
     // document = null
@@ -17,16 +18,26 @@ export class convertor {
     docxParser = null
     xmlCreator = null
 
-    // start (document) {
-    //     this.document = document
-    //     startLogic()
-    // }
+    start (document = '') {
+        // this.document = document
+        this.docxParser = new docxParser(this.document)
+        this.startLogic()
+    }
 
     startPrototype () {
         let result = new tegs.dmodule("018", "Разработка программы-конвертера")
         console.log(result.stringify())
     }
+
+    startLogic () {
+        this.docxParser.getTechName()
+    }
+
+    // runParser () {
+
+    // }
 }
 
-// let a = new convertor()
+let a = new convertor()
 // a.startPrototype()
+a.start()

@@ -1,7 +1,7 @@
 // Possible problems:
 //  - In *dmodule* class: media can be not only jpeg
 //  - In *internalRef* class: how to show 1 teg in *stringify*                          (soluted)
-//  - 57
+//  - 58
 // All classes override this methods:
 //  :constructor (params?)          -> create object
 //  :addContent (newElement)        -> add content *newElement* inside current teg
@@ -49,13 +49,14 @@ class Teg {
 }
 
 export class dmodule extends Teg {
-    constructor (infoCode, techName) {
+    constructor (infoCode = "018", techName = "default name") {
         super()
         let currentTime     = new Date()
-        let creationDay     = currentTime.getDay()
-        let creationMonth   = currentTime.getMonth()
+        let creationDay     = currentTime.getDate()
+        let creationMonth   = currentTime.getMonth() + 1
         let creationYear    = currentTime.getFullYear()
-        let infoName        = 
+        let infoName        = infoTable.infoCode
+        console.log(infoName)
         this.media      = []
         this.name       = "dmodule"
         this.openTeg    = 
@@ -139,6 +140,7 @@ export class para extends Teg {
 
 export class text extends Teg {
     constructor (someText) {
+        super()
         this.name       = "text"
         this.openTeg    = someText
         this.closeTeg   = ""
@@ -147,6 +149,7 @@ export class text extends Teg {
 
 export class caution extends Teg {
     constructor () {
+        super()
         this.name       = "caution"
         this.openTeg    = `caution`
         this.closeTeg   = `/caution`
@@ -155,6 +158,7 @@ export class caution extends Teg {
 
 export class warningAndCautionPara extends Teg {
     constructor () {
+        super()
         this.name       = "warningAndCautionPara"
         this.openTeg    = `warningAndCautionPara`
         this.closeTeg   = `/warningAndCautionPara`
@@ -163,6 +167,7 @@ export class warningAndCautionPara extends Teg {
 
 export class sequentialList extends Teg {
     constructor () {
+        super()
         this.name       = "sequentialList"
         this.openTeg    = `sequentialList`
         this.closeTeg   = `/sequentialList`
@@ -171,6 +176,7 @@ export class sequentialList extends Teg {
 
 export class listItem extends Teg {
     constructor () {
+        super()
         this.name       = "listItem"
         this.openTeg    = `listItem`
         this.closeTeg   = `/listItem`
@@ -179,6 +185,7 @@ export class listItem extends Teg {
 
 export class randomList extends Teg {
     constructor () {
+        super()
         this.name       = "randomList"
         this.openTeg    = `randomList`
         this.closeTeg   = `/randomList`
@@ -187,6 +194,7 @@ export class randomList extends Teg {
 
 export class levelledPara extends Teg {
     constructor () {
+        super()
         this.name       = "levelledPara"
         this.openTeg    = `levelledPara`
         this.closeTeg   = `/levelledPara`
@@ -195,6 +203,7 @@ export class levelledPara extends Teg {
 
 export class title extends Teg {
     constructor () {
+        super()
         this.name       = "title"
         this.openTeg    = `title`
         this.closeTeg   = `/title`
@@ -203,6 +212,7 @@ export class title extends Teg {
 
 export class internalRef extends Teg {
     constructor () {
+        super()
         this.name       = "internalRef"
         this.openTeg    = `internalRef`
         this.tegs       = 1
@@ -211,6 +221,7 @@ export class internalRef extends Teg {
 
 export class figure extends Teg {
     constructor () {
+        super()
         this.name       = "figure"
         this.openTeg    = `figure`
         this.closeTeg   = `/figure`
@@ -219,6 +230,7 @@ export class figure extends Teg {
 
 export class graphic extends Teg {
     constructor () {
+        super()
         this.name       = "graphic"
         this.openTeg    = `graphic`
         this.closeTeg   = `/graphic`
@@ -227,6 +239,7 @@ export class graphic extends Teg {
 
 export class table extends Teg {
     constructor () {
+        super()
         this.name       = "table"
         this.openTeg    = `table`
         this.closeTeg   = `/table`
@@ -235,6 +248,7 @@ export class table extends Teg {
 
 export class tgroup extends Teg {
     constructor () {
+        super()
         this.name       = "tgroup"
         this.openTeg    = `tgroup`
         this.closeTeg   = `/tgroup`
@@ -243,6 +257,7 @@ export class tgroup extends Teg {
 
 export class colspec extends Teg {
     constructor () {
+        super()
         this.name       = "colspec"
         this.openTeg    = `colspec`
         this.closeTeg   = `/colspec`
@@ -251,6 +266,7 @@ export class colspec extends Teg {
 
 export class thead extends Teg {
     constructor () {
+        super()
         this.name       = "thead"
         this.openTeg    = `thead`
         this.closeTeg   = `/thead`
@@ -259,6 +275,7 @@ export class thead extends Teg {
 
 export class entry extends Teg {
     constructor () {
+        super()
         this.name       = "entry"
         this.openTeg    = `entry`
         this.closeTeg   = `/entry`
@@ -267,20 +284,21 @@ export class entry extends Teg {
 
 export class row extends Teg {
     constructor () {
+        super()
         this.name       = "row"
         this.openTeg    = `row`
         this.closeTeg   = `/row`
     }
 }
 
-const infoTable = [
-    {"infoCode": "018", "infoName": ""},
-    {"infoCode": "020", "infoName": ""},
-    {"infoCode": "030", "infoName": ""},
-    {"infoCode": "034", "infoName": ""},
-    {"infoCode": "041", "infoName": ""},
-    {"infoCode": "044", "infoName": ""},
-    {"infoCode": "122", "infoName": ""},
-    {"infoCode": "123", "infoName": ""},
-    {"infoCode": "410", "infoName": ""},
-]
+const infoTable = {
+    '018': "Введение",
+    "020": "",
+    "030": "",
+    "034": "",
+    "041": "",
+    "044": "",
+    "122": "",
+    "123": "",
+    "410": "",
+}
