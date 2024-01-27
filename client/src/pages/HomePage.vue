@@ -18,8 +18,9 @@
 
 <script>
 import Uploader from "@/components/Uploader";
-import { startZip, startUnzip } from "../../../server/src/converter/jszip";
 import { ref } from "vue";
+import FileSaver from "file-saver";
+import b64ToBlob from "b64-to-blob";
 
 export default {
   components: {
@@ -47,37 +48,35 @@ export default {
   },
   methods: {
     async sendRequest(file) {
-      const requestURL = 'https://jsonplaceholder.typicode.com/todos';
+      const requestURL = "http://localhost:8085/converter";
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
+      console.log(file);
+      console.log(formData);
       try {
         const response = await fetch(requestURL, {
-          method: 'POST',
-          //mode: "cors", // защита согласовывается с бэк: no-cors, cors, same-origin ?
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          method: "POST",
+          mode: "cors",
           body: formData,
         });
-
-       if (response.ok) {
+        if (response.ok) {
           console.log(response);
-          //const result = await response.json();
-          //console.log(result);
+          const zipAsBase64 = await response.text();
+          const blob = await b64ToBlob(zipAsBase64, "application/zip");
+          FileSaver.saveAs(blob, "example.zip");
+        } else {
+          console.log("Error HTTP: " + response.status);
         }
-        else {
-          console.log('Error HTTP: ' + response.status);
-        }
-      } catch(error) {
-        console.log('Request execution error: ' + error.message);
+      } catch (error) {
+        console.log("Request execution error: " + error.message);
       }
     },
 
     startConverter(file) {
       //startZip();
       this.sendRequest(file);
-      startUnzip(file);
+      //startUnzip(file);
       this.$router.push("/getResult");
     },
   },

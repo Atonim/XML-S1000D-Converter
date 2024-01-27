@@ -18,8 +18,10 @@
 </template>
 
 <script>
+
 import { startZip, startUnzip } from "../../../server/src/converter/jszip";
 import Preloader from "@/components/UI/Preloader";
+
 
 export default {
   components: {
@@ -35,7 +37,7 @@ export default {
   },
   methods: {
     download() {
-      startUnzip();
+      //startUnzip();
       //startZip();
     },
     showToggle() { // temp
