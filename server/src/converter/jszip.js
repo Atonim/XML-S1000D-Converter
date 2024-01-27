@@ -1,33 +1,40 @@
 import JSZip from "jszip";
-import FileSaver from "file-saver";
+import fs from 'fs';
 
+export async function startUnzip(file) {
+  return new Promise((resolve) => {
 
-export const startUnzip = (file) => {
+    console.log('zip')
 
-  const unzip = new JSZip();
+    fs.readFile(file.path, function (err, data) {
+      if (!err) {
+        const unzip = new JSZip();
+        unzip.loadAsync(data).then(function (zip) {
+          Object.keys(zip.files).forEach(function (filename) {
+            unzip.folder(filename)
+          })
 
-  unzip.loadAsync(file).then(function (zip) {
+          const img = unzip.folder("Images");
+          const xml = unzip.folder("XML");
 
-    console.log(zip.files)
+          unzip.generateAsync({ type: "base64" }).then(content => {
+            console.log('here')
+            console.log(content)
+            resolve(content)
+          });
+        })
 
-    Object.keys(zip.files).forEach(function (filename) {
-      unzip.folder(filename)
-      //console.log(filename)
-      //zip.files[filename].async('string').then(function (fileData) {
-      //  //console.log(fileData) // These are your file contents   
-      //  xml.file(filename, fileData);
-      //})
-
+      }
+      else {
+        console.log('net')
+      }
     })
 
-    //img.file("smile.gif", imgData, { base64: true });
-    const img = unzip.folder("Images");
-    const xml = unzip.folder("XML");
 
-    unzip.generateAsync({ type: "blob" }).then(function (content) {
-      FileSaver.saveAs(content, "example.zip"); //по идее это можно сделать на клиенте
-    });
   })
+
+
+
 
 
 }

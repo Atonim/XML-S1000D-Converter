@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import { startZip, startUnzip } from "@/converter/jszip";
+//import { startZip, startUnzip } from "@/converter/jszip";
 
 export default {
   methods: {
     download() {
-      startUnzip();
+      //startUnzip();
       //startZip();
     },
   },
