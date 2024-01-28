@@ -14,7 +14,10 @@ $disabled-grey: #b0afaf;
 $grey: #CCCCCC;
 $grey-shadow: rgba(121, 120, 120, 0.1);
 
-$padding: 16px 32px;
+$minFontSize: 12px;
+$addFontSize: 4;
+$widthScreen: 1024;
+
 $transition: 0.3s ease all;
 
 $animation-delay: -0.9166666666666666s, -0.8333333333333334s, -0.75s, -0.6666666666666666s, -0.5833333333333334s, -0.5s, -0.4166666666666667s, -0.3333333333333333s, -0.25s, -0.16666666666666666s, -0.08333333333333333s, 0s;
