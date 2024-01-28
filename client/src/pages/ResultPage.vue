@@ -3,14 +3,10 @@
     <Preloader v-if="show" />
     <div class="result-page" v-else>
       <h1>Конвертированный документ</h1>
-      <button 
-      class="result-page__download-btn download-btn" 
-      @click="download">
+      <button class="result-page__download-btn download-btn" @click="download">
         Скачать
       </button>
-      <button 
-      class="result-page__back-btn back-bth" 
-      @click="$router.push('/')">
+      <button class="result-page__back-btn back-bth" @click="$router.push('/')">
         Назад
       </button>
     </div>
@@ -18,21 +14,20 @@
 </template>
 
 <script>
-
 import { startZip, startUnzip } from "../../../server/src/converter/jszip";
 import Preloader from "@/components/UI/Preloader";
 
-
 export default {
   components: {
-    Preloader
+    Preloader,
   },
   data: () => {
     return {
-      show: true
-    }
+      show: true,
+    };
   },
-  mounted() { // temp
+  mounted() {
+    // temp
     this.showToggle();
   },
   methods: {
@@ -40,11 +35,12 @@ export default {
       //startUnzip();
       //startZip();
     },
-    showToggle() { // temp
+    showToggle() {
+      // temp
       setTimeout(() => {
-        this.show = false
-      }, 5000)
-    }
+        this.show = false;
+      }, 5000);
+    },
   },
 };
 </script>
