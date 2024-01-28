@@ -3,12 +3,20 @@
     <Preloader v-if="show" />
     <div class="result-page" v-else>
       <h1>Конвертированный документ</h1>
-      <button class="result-page__download-btn download-btn" @click="download">
-        Скачать
-      </button>
-      <button class="result-page__back-btn back-bth" @click="$router.push('/')">
-        Назад
-      </button>
+      <div class="result-page__btns">
+        <button
+          class="result-page__download-btn download-btn"
+          @click="download"
+        >
+          Скачать
+        </button>
+        <button
+          class="result-page__back-btn back-bth"
+          @click="$router.push('/')"
+        >
+          Назад
+        </button>
+      </div>
     </div>
   </div>
 </template>
