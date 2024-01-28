@@ -14,13 +14,19 @@
 body {
   @include font($black);
   @include breakpoint(md) {
-    font-size: calc(14px + (4 + 4 * 0.7) * ((100vw - 320px) / 1024));
+    $font-size: calc($minFontSize + ($addFontSize + $addFontSize * 0.7) * ((100vw - 320px) / $widthScreen));
+    font-size: $font-size;
+    button {
+      padding: calc($font-size * 1.125) calc($font-size * 2);
+    }
+    label {
+      padding: calc($font-size * 1.125) calc($font-size * 2 + 5px);
+    }
   };
   background-color: $background-color;
 }
 
 button {
-    padding: $padding;
     @include font(white);
     transition: $transition;
     border: none;
@@ -35,11 +41,28 @@ button {
     font-family: 'Montserrat-Bold';
   }
 
-  .next-bth, .back-bth {
+  &__btns {
+    @include flex($align: stretch);
+  }
+
+  .next-bth, .download-btn {
     background-color: $light-green;
     &:hover {
       background-color: $green;
     }
+
+  }
+
+  .back-bth {
+    @include font(white);
+    background-color: $light-pink;
+    transition: $transition;
+    border-radius: 5px;
+    box-shadow: -10px 10px 10px $grey-shadow;
+
+    &:hover {
+		  background-color: $pink;
+	  }
   }
 }
 
@@ -76,12 +99,10 @@ button {
   transition: $transition;
 
   label {
-    padding: $padding;
-    color: white;
+    @include font(white);
     background-color: $light-pink;
     transition: $transition;
     border-radius: 5px;
-	  letter-spacing: 2px;
     box-shadow: -10px 10px 10px $grey-shadow;
 
     &:hover {
@@ -121,7 +142,7 @@ button {
 		@include font($black, bold);
 	}
 }
-// move to global.scss
+
 @keyframes ldio-h00fv1la8vf {
 	0% {
 		opacity: 1;
@@ -166,12 +187,12 @@ button {
 	box-sizing: content-box;
 }
 
-@font-face {
+/*@font-face {
 	font-family: 'Montserrat-ExtraBold';
 	src: url('../fonts/Montserrat/static/Montserrat-ExtraBold.ttf') format('truetype');
 	font-style: normal;
 	font-weight: bolder;
-}
+}*/
 
 @font-face {
 	font-family: 'Montserrat-Bold';
@@ -180,12 +201,12 @@ button {
 	font-weight: bolder;
 }
 
-@font-face {
+/*@font-face {
 	font-family: 'Montserrat-Light';
 	src: url('../fonts/Montserrat/static/Montserrat-Light.ttf') format('truetype');
 	font-style: normal;
 	font-weight: bolder;
-}
+}*/
 
 @font-face {
 	font-family: 'Montserrat-Medium';
