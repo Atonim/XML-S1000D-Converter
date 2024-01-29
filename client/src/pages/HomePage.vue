@@ -74,9 +74,8 @@ export default {
     },
 
     startConverter(file) {
-      //startZip();
-      this.sendRequest(file);
-      //startUnzip(file);
+      this.emitter.emit('fileTransfer', this.message); // file!
+      this.sendRequest(file); // go to result page & complete with button Download
       this.$router.push("/getResult");
     },
   },
