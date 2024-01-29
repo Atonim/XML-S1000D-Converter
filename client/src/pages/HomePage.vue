@@ -8,7 +8,7 @@
     <button
       class="home-page__next-btn next-bth"
       :class="{ disabled: !uploaderFile }"
-      @click="uploaderFile ? startConverter(uploaderFile) : (message = true)"
+      @click="uploaderFile ? startConverter() : (message = true)"
     >
       Конвертировать
     </button>
@@ -19,8 +19,6 @@
 <script>
 import Uploader from "@/components/Uploader";
 import { ref } from "vue";
-import FileSaver from "file-saver";
-import b64ToBlob from "b64-to-blob";
 
 export default {
   components: {
@@ -47,35 +45,9 @@ export default {
     };
   },
   methods: {
-    async sendRequest(file) {
-      const requestURL = "http://localhost:8085/converter";
-
-      const formData = new FormData();
-      formData.append("file", file);
-      console.log(file);
-      console.log(formData);
-      try {
-        const response = await fetch(requestURL, {
-          method: "POST",
-          mode: "cors",
-          body: formData,
-        });
-        if (response.ok) {
-          console.log(response);
-          const zipAsBase64 = await response.text();
-          const blob = await b64ToBlob(zipAsBase64, "application/zip");
-          FileSaver.saveAs(blob, "example.zip");
-        } else {
-          console.log("Error HTTP: " + response.status);
-        }
-      } catch (error) {
-        console.log("Request execution error: " + error.message);
-      }
-    },
-
-    startConverter(file) {
-      this.emitter.emit('fileTransfer', this.message); // file!
-      this.sendRequest(file); // go to result page & complete with button Download
+    startConverter() {
+      this.emitter.emit('fileTransfer', this.uploaderFile); // file!
+      //this.sendRequest(this.uploaderFile); // go to result page & complete with button Download
       this.$router.push("/getResult");
     },
   },
