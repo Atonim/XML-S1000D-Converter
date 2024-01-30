@@ -2,8 +2,7 @@
 	<div>
 		<div class="result-page">
 			<h1>Конвертированный документ</h1>
-			<Preloader v-if="show" />
-			<div v-else class="result-page__btns">
+			<div v-if="!isLoading" class="result-page__btns">
 				<button
 					class="result-page__download-btn download-btn"
 					@click="download"
@@ -17,6 +16,7 @@
 					Назад
 				</button>
 			</div>
+			<Preloader v-else-if="isLoading" />
 		</div>
 	</div>
 </template>
@@ -24,58 +24,55 @@
 <script>
 import { startZip, startUnzip } from '../../../server/src/converter/jszip'
 import Preloader from '@/components/UI/Preloader'
-import FileSaver from "file-saver"
-import b64ToBlob from "b64-to-blob"
+import FileSaver from 'file-saver'
+import b64ToBlob from 'b64-to-blob'
 
 export default {
 	components: {
 		Preloader,
 	},
+	inject: ['emitter'],
 	data: () => {
 		return {
-			show: true,
+			isLoading: false,
 		}
 	},
 	mounted() {
-    this.emitter.on('fileTransfer', file => { // temp
-      console.log(`Working with ${file.name}`);
-			this.sendRequest(file);
-    });
-		this.showToggle();
+		this.emitter.off('fileTransfer')
+		this.emitter.on('fileTransfer', file => {
+			// temp
+			console.log(`Working with ${file.name}`)
+			this.sendRequest(file)
+		})
 	},
 	methods: {
 		async sendRequest(file) {
-			//this.show = this.show;
-			const requestURL = "http://localhost:8085/converter";
+			const requestURL = 'http://localhost:8085/converter'
 
-			const formData = new FormData();
-			formData.append("file", file);
-			console.log(file);
-			console.log(formData);
+			const formData = new FormData()
+			formData.append('file', file)
+			console.log(file)
+			console.log(formData)
 			try {
+				this.isLoading = true
 				const response = await fetch(requestURL, {
-					method: "POST",
-					mode: "cors",
+					method: 'POST',
+					mode: 'cors',
 					body: formData,
-				});
+				})
 				if (response.ok) {
-					console.log(response);
-					const zipAsBase64 = await response.text();
-					const blob = await b64ToBlob(zipAsBase64, "application/zip");
-					FileSaver.saveAs(blob, "example.zip");
-					//this.show = !this.show;
+					console.log(response)
+					const zipAsBase64 = await response.text()
+					const blob = await b64ToBlob(zipAsBase64, 'application/zip')
+					FileSaver.saveAs(blob, 'example.zip')
 				} else {
-					console.log("Error HTTP: " + response.status);
+					console.log('Error HTTP: ' + response.status)
 				}
 			} catch (error) {
-				console.log("Request execution error: " + error.message);
+				console.log('Request execution error: ' + error.message)
+			} finally {
+				this.isLoading = false;
 			}
-		},
-		showToggle() {
-			// temp
-			setTimeout(() => {
-				this.show = false
-			}, 5000)
 		},
 		download() {
 			//startUnzip();

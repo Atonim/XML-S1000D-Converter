@@ -6,7 +6,5 @@ import '@/assets/scss/global.scss'
 
 const emitter = mitt();
 const app = createApp(App);
-app.config.globalProperties.emitter = emitter;
-app
-  .use(router)
-  .mount('#app')
+app.provide('emitter', emitter)
+app.use(router).mount('#app')

@@ -24,6 +24,7 @@ export default {
   components: {
     Uploader,
   },
+  inject: ["emitter"],
   data: () => ({
     message: false,
   }),
@@ -46,8 +47,7 @@ export default {
   },
   methods: {
     startConverter() {
-      this.emitter.emit('fileTransfer', this.uploaderFile); // file!
-      //this.sendRequest(this.uploaderFile); // go to result page & complete with button Download
+      this.emitter.emit('fileTransfer', this.uploaderFile);
       this.$router.push("/getResult");
     },
   },
