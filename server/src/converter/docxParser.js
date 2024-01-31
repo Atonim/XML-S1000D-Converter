@@ -152,7 +152,6 @@ export class docxParser {
 
     getNextParagraf () {
         // if (this.currentNode.nextSibling === undefined) {console.log("undefined")}
-        // console.log(this.currentNode.tagName)
         this.currentNode = this.currentNode.nextSibling
         let buffer = ""
 
@@ -160,6 +159,7 @@ export class docxParser {
             buffer = this.getPara()
             this.currentNode = this.currentNode.nextSibling
         }
+        // console.log(this.currentNode.tagName)
         
         if (buffer !== "") {
             return {"status": "success", "value": buffer} 
@@ -177,6 +177,12 @@ export class docxParser {
         // console.log("next", this.currentNode.tagName)
     }
 
+    prevSibling () {
+        if (this.currentNode.previousSibling) {
+            this.currentNode = this.currentNode.previousSibling
+        }
+    }
+
     hasBookmarkId (id, node = this.currentNode.firstChild) {
         let result = false
         if (node) {
@@ -185,12 +191,12 @@ export class docxParser {
             }
             if (node.tagName === "w:bookmarkStart") {
                 if (String(node.attributes[1].nodeValue) === String(id)) {
-                    console.log(node.attributes[1].nodeValue, id)
+                    // console.log(node.attributes[1].nodeValue, id)
                     return true
                 }
                 if (String(node.attributes[1].nodeValue) !== String(id)){
-                    console.log(node.attributes[1].nodeValue, id)
-                    console.log("rejected")
+                    // console.log(node.attributes[1].nodeValue, id)
+                    // console.log("rejected")
                 }
             }
             if (!result && node.nextSibling !== null) {
