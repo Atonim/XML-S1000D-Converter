@@ -1,6 +1,6 @@
 import JSZip from "jszip";
 
-export async function linker(unzipped) {
+export async function linker(unzipped, xmlArray) {
   const zipped = new JSZip();
   let imgFolder = zipped.folder("Images");
   let xmlFolder = zipped.folder("XML");
@@ -21,7 +21,7 @@ export async function linker(unzipped) {
     }
     //еще есть формат enf в media
   }
-  return { zipped, documentRels };
+  return zipped;
 }
 
 const fileName = (fullPath) => {

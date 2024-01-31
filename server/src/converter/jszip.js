@@ -1,6 +1,8 @@
 import JSZip from "jszip";
 import fs from 'fs';
 import { linker } from '../linker/index.js'
+import { fileSelector } from '../linker/fileSelector.js'
+import { convertor } from './converter.js'
 
 export async function startUnzip(file) {
   return new Promise((resolve) => {
@@ -9,11 +11,15 @@ export async function startUnzip(file) {
         const jszip = new JSZip();
         jszip.loadAsync(data)
           .then((unzipped) => {
-            //тут converter
-            linker(unzipped)
-              .then(data => {
-                console.log(data.documentRels)
-                data.zipped.generateAsync({ type: "base64" })
+
+            const filesToConvert = fileSelector(unzipped)
+            let a = new convertor(filesToConvert.documentRels)
+            const xmlArray = a.start()
+
+            //отправляю media и выход из конвертера
+            linker(unzipped, xmlArray)
+              .then(zipped => {
+                zipped.generateAsync({ type: "base64" })
                   .then(content => {
                     resolve(content)
                   });
