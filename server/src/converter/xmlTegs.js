@@ -28,18 +28,18 @@ class Teg {
 
     stringify () {
         let contentInside = ""
-        this.content.forEach((element) => contentInside + element.stringify())
+        for (let i = 0; i < this.content.length; i++) {
+            contentInside += String(this.content[i].stringify())
+        }
+        // console.log("stringify: ", this.name, this.content.length, contentInside)
 
         if (this.tegs === 2){
-            return `
-<${this.openTeg}${this.attribute}>
+    return `<${this.openTeg} ${this.attribute}>
     ${contentInside}
 <${this.closeTeg}>
 `
         } else {
-            return `
-    <${this.openTeg}${this.attribute} />
-`
+            return `<${this.openTeg}${this.attribute} />\n`
         }
     }
 
@@ -55,8 +55,7 @@ export class dmodule extends Teg {
         let creationDay     = currentTime.getDate()
         let creationMonth   = currentTime.getMonth() + 1
         let creationYear    = currentTime.getFullYear()
-        let infoName        = infoTable.infoCode
-        console.log(infoName)
+        let infoName        = infoTable.find(element => element.infoCode === infoCode).infoName
         this.media      = []
         this.name       = "dmodule"
         this.openTeg    = 
@@ -105,9 +104,10 @@ export class dmodule extends Teg {
     }
 
     stringify () {
-        // console.log("this.media", this.media)
         let contentInside = ""
-        this.content.forEach((element) => contentInside + element.stringify())
+        for (let i = 0; i < this.content.length; i++) {
+            contentInside += String(this.content[i].stringify())
+        }
 
         let stringifiedMedia = ""
         if (this.media.length) {
@@ -144,6 +144,10 @@ export class text extends Teg {
         this.name       = "text"
         this.openTeg    = someText
         this.closeTeg   = ""
+    }
+
+    stringify () {
+        return this.openTeg
     }
 }
 
@@ -291,14 +295,14 @@ export class row extends Teg {
     }
 }
 
-const infoTable = {
-    '018': "Введение",
-    "020": "",
-    "030": "",
-    "034": "",
-    "041": "",
-    "044": "",
-    "122": "",
-    "123": "",
-    "410": "",
-}
+const infoTable = [
+    {"infoCode": "018", "infoName": "Введение"},
+    {"infoCode": "020", "infoName": "Назначение"},
+    {"infoCode": "030", "infoName": "Технические характеристики"},
+    {"infoCode": "034", "infoName": "Состав изделия"},
+    {"infoCode": "041", "infoName": "Устройство и работа"},
+    {"infoCode": "044", "infoName": "Описание и работа составных частей изделия"},
+    {"infoCode": "122", "infoName": "Указания по включению и опробованию работы изделия"},
+    {"infoCode": "123", "infoName": "Установка и настройка программного обеспечения"},
+    {"infoCode": "410", "infoName": "Перечень возможных неисправностей в процессе использования изделия и рекомендации по действиям при их возникновении"},
+]
