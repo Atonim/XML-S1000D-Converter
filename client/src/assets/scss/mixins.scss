@@ -1,0 +1,38 @@
+@mixin font ($color, $fontW: normal) {
+  font-family: 'Montserrat-Medium';
+  $font-size: calc($minFontSize + $addFontSize * (100vw / $widthScreen));
+  font-size: $font-size;
+  button {
+    padding: calc($font-size * 1.125) calc($font-size * 2);
+  }
+  label {
+    padding: calc($font-size * 1.125)  calc($font-size * 2 + 5px);
+  }
+  font-weight: $fontW;
+  text-align: center;
+  letter-spacing: 2px;
+  color: $color;
+}
+
+@mixin flex ($gap: 16px, $align: center) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: $align;
+  row-gap: $gap;
+}
+
+@mixin breakpoint($point) {
+  @if $point == lg {
+    @media (max-width: 992px) {@content;}
+  }
+  @else if $point == md {
+    @media (max-width: 768px) {@content;}
+  }
+  @else if $point == sm {
+    @media (max-width: 576px) {@content;}
+  }
+  @else if $point == xs {
+    @media (max-width: 320px) {@content;}
+  }
+}

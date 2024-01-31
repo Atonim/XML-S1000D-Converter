@@ -1,4 +1,5 @@
-@import './_variables.scss';
+@import './variables.scss';
+@import './mixins.scss';
 
 * {
   margin: 0;
@@ -11,40 +12,57 @@
 }
 
 body {
-  font-family: 'Montserrat-Medium';
-  font-size: large;
-  color: $black;
+  @include font($black);
+  @include breakpoint(md) {
+    $font-size: calc($minFontSize + ($addFontSize + $addFontSize * 0.7) * ((100vw - 320px) / $widthScreen));
+    font-size: $font-size;
+    button {
+      padding: calc($font-size * 1.125) calc($font-size * 2);
+    }
+    label {
+      padding: calc($font-size * 1.125) calc($font-size * 2 + 5px);
+    }
+  };
   background-color: $background-color;
 }
 
 button {
-   padding: $padding;
-    font-family: 'Montserrat-Medium';
-    font-size: large;
-    letter-spacing: 2px;
+    @include font(white);
     transition: $transition;
     border: none;
     border-radius: 5px;
-    color: white;
 }
 
 .home-page, .result-page {
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: $row-gap * 2;
+  @include flex(32px);
 
   h1 {
     font-family: 'Montserrat-Bold';
   }
 
-  .next-bth, .back-bth {
+  &__btns {
+    @include flex($align: stretch);
+  }
+
+  .next-bth, .download-btn {
     background-color: $light-green;
     &:hover {
       background-color: $green;
     }
+
+  }
+
+  .back-bth {
+    @include font(white);
+    background-color: $light-pink;
+    transition: $transition;
+    border-radius: 5px;
+    box-shadow: -10px 10px 10px $grey-shadow;
+
+    &:hover {
+		  background-color: $pink;
+	  }
   }
 }
 
@@ -63,24 +81,28 @@ button {
   margin: 0 auto;
   padding: 15px;
   width: 70%;
+  @include breakpoint(md) {
+    width: 80%;
+  };
+  @include breakpoint(sm) {
+    width: 90%;
+  };
+  @include breakpoint(xs) {
+    width: 100%;
+  };
   min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  row-gap: $row-gap;
+  @include flex;
+  flex: 0.5 0 0%;
   border: 5px $grey dotted;
   border-radius: 10px;
  
   transition: $transition;
 
   label {
-    padding: $padding;
-    color: white;
+    @include font(white);
     background-color: $light-pink;
     transition: $transition;
     border-radius: 5px;
-	  letter-spacing: 2px;
     box-shadow: -10px 10px 10px $grey-shadow;
 
     &:hover {
@@ -92,7 +114,6 @@ button {
     }
   }
 }
-
   .active-uploader {
     color: white;
     border: none;
@@ -104,12 +125,74 @@ button {
     }
   }
 
-@font-face {
+.preloader {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	&__loader,
+	&__percents {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	&__percents {
+		@include font($black, bold);
+	}
+}
+
+@keyframes ldio-h00fv1la8vf {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+.ldio-h00fv1la8vf div {
+	left: 94px;
+	top: 48px;
+	position: absolute;
+	animation: ldio-h00fv1la8vf linear 1s infinite;
+	background: nth($animation-color, random(2));
+	width: 12px;
+	height: 24px;
+	border-radius: 6px / 12px;
+	transform-origin: 6px 52px;
+  @for $i from 1 to 13 {
+    &:nth-child(#{$i}n) {
+      transform: rotate(30deg * ($i - 1));
+      animation-delay: nth($animation-delay, $i);
+    }
+  }
+}
+.loadingio-spinner-spinner-lubm59c3vdb {
+	width: 200px;
+	height: 200px;
+	display: inline-block;
+	overflow: hidden;
+	background: none;
+}
+.ldio-h00fv1la8vf {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	transform: translateZ(0) scale(1);
+	backface-visibility: hidden;
+	transform-origin: 0 0; /* see note above */
+}
+.ldio-h00fv1la8vf div {
+	box-sizing: content-box;
+}
+
+/*@font-face {
 	font-family: 'Montserrat-ExtraBold';
 	src: url('../fonts/Montserrat/static/Montserrat-ExtraBold.ttf') format('truetype');
 	font-style: normal;
 	font-weight: bolder;
-}
+}*/
 
 @font-face {
 	font-family: 'Montserrat-Bold';
@@ -118,12 +201,12 @@ button {
 	font-weight: bolder;
 }
 
-@font-face {
+/*@font-face {
 	font-family: 'Montserrat-Light';
 	src: url('../fonts/Montserrat/static/Montserrat-Light.ttf') format('truetype');
 	font-style: normal;
 	font-weight: bolder;
-}
+}*/
 
 @font-face {
 	font-family: 'Montserrat-Medium';
