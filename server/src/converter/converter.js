@@ -3,45 +3,90 @@ import * as tegs from "./xmlTegs.js"
 import { document } from "./temp.js"
 import { docxParser } from "./docxParser.js"
 import { xmlCreator } from "./xmlCreator.js"
+import { codes } from "./codes.js"
 
 export class convertor {
     // document = null
     document = document
-    file_018 = null
-    file_020 = null
-    file_030 = null
-    file_034 = null
-    file_040 = null
-    file_044 = null
-    file_122 = null
-    file_123 = null
-    file_410 = null
+    stringCodes = []
+    imagesAmount = 16
+    files = {}
     docxParser = null
     // xmlCreator = null
     documentContents = null
     techName = "default name"
 
-    start (document = '') {
-        // this.document = document
+    constructor(document, documentRels, media) {
+        console.log(media)
+        this.document = document
         this.docxParser = new docxParser(this.document)
-        this.startLogic()
+        this.codesToString()
+
+        for (const code of this.stringCodes) {
+            this.files[code] = null
+        }
+
+        console.log(this.files)
+    }
+    codesToString() {
+        const lastCodeLength = codes[codes.length - 1].toString().length
+        for (let code of codes) {
+            code = code.toString()
+            while (code.length !== lastCodeLength) {
+                code = 0 + code
+            }
+            this.stringCodes.push(code)
+        }
+    }
+    start() {
+        return this.startLogic()
     }
 
-    startPrototype () {
+    startPrototype() {
         let result = new tegs.dmodule("018", "Разработка программы-конвертера")
-        console.log(result.stringify())
+        //console.log(result.stringify())
     }
 
-    startLogic () {
+    startLogic() {
         this.techName = this.docxParser.getTechName()
         this.documentContents = this.docxParser.getContents()
-        this.build_018()
-        this.build_041()
-        // console.log(this.file_020.stringify())
+
+        let result = {
+            "Images": {},
+            "XML": {}
+        }
+        this.builder()
+        this.setResult(result)
+        return result
+    }
+
+    builder() {
+        for (let code of this.stringCodes) {
+            if (code === '018')
+                this.build_018()
+            else if (code === '410') {
+                this.build_410()
+            }
+            else {
+                this.build(code)
+            }
+
+        }
 
     }
 
-    build_018 () {
+    setResult(result) {
+        for (let code of this.stringCodes) {
+            let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
+            result.XML[key] = this.files[code].stringify()
+        }
+        for (let index = 1; index < this.imagesAmount; index++) {
+            let key = "ICN-VBMA-A-462001-A-00000-" + index + "-A-001-1.jpg"
+            result.Images[index] = null
+        }
+    }
+
+    build_018() {
         let creator = new xmlCreator("018", this.techName)
 
         let element = this.docxParser.getNextParagraf()
@@ -50,118 +95,55 @@ export class convertor {
             element = this.docxParser.getNextParagraf()
         }
 
-        this.file_018 = creator.getDocument()
+        this.files['018'] = creator.getDocument()
         // console.log(this.file_018.stringify())
     }
 
-    build_020 () {
-
-        // console.log(this.documentContents.find(element => element.infoCode === "020"))
-        let creator = new xmlCreator("020", this.techName)
-
-        let id = this.documentContents.find(element => element.infoCode === "020").startId
-        let element = this.docxParser.nextParagraf()
-            // console.log(id)
-        while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
-        }
-            // console.log(id)
-
-        id = this.documentContents.find(element => element.infoCode === "020").stopId
-        element = this.docxParser.getNextParagraf()
-        // console.log(element, id, this.docxParser.hasBookmarkId(id)) //this.docxParser.currentNode, id))
-        while (!this.docxParser.hasBookmarkId(id) && element.status === "success") {
-            creator.addPara(element.value)
-            console.log(element.value, this.docxParser.hasBookmarkId(id))
-            element = this.docxParser.getNextParagraf()
-        }
-        this.file_020 = creator.getDocument()
-
-    }
-
-    build_030 () {
-
-        let creator = new xmlCreator("030", this.techName)
-
-        let id = this.documentContents.find(element => element.infoCode === "030").startId
-        let element = this.docxParser.nextParagraf()
-            // console.log(id)
-        while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
-        }
-            // console.log(id)
-
-        id = this.documentContents.find(element => element.infoCode === "030").stopId
-        element = this.docxParser.getNextParagraf()
-        // console.log(element, id, this.docxParser.hasBookmarkId(id)) //this.docxParser.currentNode, id))
-        while (!this.docxParser.hasBookmarkId(id) && element.status === "success") {
-            creator.addPara(element.value)
-            console.log(element.value)
-            element = this.docxParser.getNextParagraf()
-        }
-        this.file_030 = creator.resultDocument
-    }
-
-    build_034 () {
-
-        let creator = new xmlCreator("034", this.techName)
-        let id = this.documentContents.find(element => element.infoCode === "034").bookmarkId
-        let element = this.docxParser.nextParagraf()
-        while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
-        }
-        this.file_034 = creator.resultDocument
-    }
-
-    build_041 () {
-
-        let creator = new xmlCreator("041", this.techName)
-
-        let id = this.documentContents.find(element => element.infoCode === "041").startId
-        let element = this.docxParser.nextParagraf()
-            console.log(this.documentContents.find(element => element.infoCode === "041"))
-        while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
-        }
-            // console.log(id)
-
-        id = this.documentContents.find(element => element.infoCode === "041").stopId
-        element = this.docxParser.getNextParagraf()
-        // console.log(element, id, this.docxParser.hasBookmarkId(id)) //this.docxParser.currentNode, id))
-        while (!this.docxParser.hasBookmarkId(id) && element.status === "success") {
-            creator.addPara(element.value)
-            console.log(element.value, this.docxParser.hasBookmarkId(id))
-            element = this.docxParser.getNextParagraf()
-        }
-        this.file_041 = creator.resultDocument
-    }
-
-    build_044 () {
-
-        let creator = new xmlCreator("044", this.techName)
-        this.file_044 = creator.resultDocument
-    }
-
-    build_122 () {
-
-        let creator = new xmlCreator("122", this.techName)
-        this.file_122 = creator.resultDocument
-    }
-
-    build_123 () {
-
-        let creator = new xmlCreator("123", this.techName)
-        this.file_123 = creator.resultDocument
-    }
-
-    build_410 () {
+    build_410() {
 
         let creator = new xmlCreator("410", this.techName)
-        this.file_410 = creator.resultDocument
+
+        let id = this.documentContents.find(element => element.infoCode === "410").startId
+        let element = this.docxParser.nextParagraf()
+        // console.log(id)
+        while (!this.docxParser.hasBookmarkId(id)) {
+            element = this.docxParser.nextParagraf()
+        }
+        // console.log(id)
+
+        id = this.documentContents.find(element => element.infoCode === "410").stopId
+        while (!this.docxParser.hasBookmarkId(id)) {
+            // console.log(this.docxParser.getPara(), this.docxParser.hasBookmarkId(id))
+            creator.addPara(this.docxParser.getPara())
+            this.docxParser.nextParagraf()
+        }
+        this.docxParser.prevSibling()
+        this.files['410'] = creator.getDocument()
     }
 
+    build(code) {
+        let creator = new xmlCreator(code, this.techName)
+
+        let id = this.documentContents.find(element => element.infoCode === code).startId
+        let element = this.docxParser.nextParagraf()
+        // console.log(id)
+        while (!this.docxParser.hasBookmarkId(id)) {
+            element = this.docxParser.nextParagraf()
+        }
+        // console.log(id)
+
+        id = this.documentContents.find(element => element.infoCode === code).stopId
+        while (!this.docxParser.hasBookmarkId(id)) {
+            // console.log(this.docxParser.getPara(), this.docxParser.hasBookmarkId(id))
+            creator.addPara(this.docxParser.getPara())
+            this.docxParser.nextParagraf()
+        }
+        this.docxParser.prevSibling()
+
+        this.files[code] = creator.getDocument()
+    }
 }
 
-let a = new convertor()
+//let a = new convertor(document)
 // a.startPrototype()
-a.start()
+//console.log(a.start())

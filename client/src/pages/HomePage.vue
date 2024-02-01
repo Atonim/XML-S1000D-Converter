@@ -1,33 +1,35 @@
 <template>
-  <div class="home-page">
-    <h1>Конвертировать Word в XML S1000D</h1>
-    <Uploader @drop.prevent="drop" @change="selectedFile"></Uploader>
-    <span v-if="uploaderFile" class="file-info"
-      >Имя загруженного файла: <strong>{{ uploaderFile.name }}</strong></span
-    >
-    <button
-      class="home-page__next-btn next-bth"
-      :class="{ disabled: !uploaderFile }"
-      @click="uploaderFile ? startConverter(uploaderFile) : (message = true)"
-    >
-      Конвертировать
-    </button>
-    <span v-if="!uploaderFile && message">Сначала загрузите файл</span>
+  <div>
+    <Preloader v-if="isLoading" />
+    <div class="home-page" v-else>
+      <h1>Конвертировать Word в XML S1000D</h1>
+      <Uploader @drop.prevent="drop" @change="selectedFile"></Uploader>
+      <span v-if="uploaderFile" class="file-info">Имя загруженного файла: <strong>{{ uploaderFile.name
+      }}</strong></span>
+      <button class="home-page__next-btn next-bth" :class="{ disabled: !uploaderFile }"
+        @click="uploaderFile ? sendRequest() : (message = true)">
+        Конвертировать
+      </button>
+      <span v-if="!uploaderFile && message">Сначала загрузите файл</span>
+    </div>
   </div>
 </template>
 
 <script>
 import Uploader from "@/components/Uploader";
+import Preloader from '@/components/UI/Preloader'
 import { ref } from "vue";
-import FileSaver from "file-saver";
-import b64ToBlob from "b64-to-blob";
+import FileSaver from 'file-saver';
+import b64ToBlob from 'b64-to-blob';
 
 export default {
   components: {
     Uploader,
+    Preloader
   },
   data: () => ({
     message: false,
+    isLoading: false,
   }),
   setup() {
     let uploaderFile = ref("");
@@ -47,38 +49,35 @@ export default {
     };
   },
   methods: {
-    async sendRequest(file) {
-      const requestURL = "http://localhost:8085/converter";
+    async sendRequest() {
+      const requestURL = 'http://localhost:8085/converter'
+      const formData = new FormData()
+      formData.append('file', this.uploaderFile)
 
-      const formData = new FormData();
-      formData.append("file", file);
-      console.log(file);
-      console.log(formData);
+      console.log(formData) //  delete
+
       try {
+        this.isLoading = !this.isLoading;
         const response = await fetch(requestURL, {
-          method: "POST",
-          mode: "cors",
+          method: 'POST',
+          mode: 'cors',
           body: formData,
-        });
+        })
         if (response.ok) {
-          console.log(response);
-          const zipAsBase64 = await response.text();
-          const blob = await b64ToBlob(zipAsBase64, "application/zip");
-          FileSaver.saveAs(blob, "example.zip");
+          console.log(response) //  delete
+          const zipAsBase64 = await response.text() // move to download and connect btn backHome
+          const blob = await b64ToBlob(zipAsBase64, 'application/zip')
+          FileSaver.saveAs(blob, 'example.zip')
         } else {
-          console.log("Error HTTP: " + response.status);
+          console.log('Error HTTP: ' + response.status)
         }
       } catch (error) {
-        console.log("Request execution error: " + error.message);
+        console.log('Request execution error: ' + error.message)
+      } finally {
+         this.isLoading = !this.isLoading;
+         this.$router.push({ name: 'result' });
       }
-    },
-
-    startConverter(file) {
-      //startZip();
-      this.sendRequest(file);
-      //startUnzip(file);
-      this.$router.push("/getResult");
-    },
+    }
   },
 };
 </script>
