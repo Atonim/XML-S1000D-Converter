@@ -5,10 +5,12 @@ import ResultPage from '@/pages/ResultPage'
 const routes = [
   {
     path: '/',
+    name: 'home',
     component: HomePage
   },
   {
     path: '/getResult',
+    name: 'result',
     component: ResultPage
   }
 ]
