@@ -3,17 +3,20 @@ export async function fileSelector(unzipped) {
   const keys = Object.keys(unzipped.files)
   //console.log(unzipped)
   //console.log(keys)
-  let media = []
+  let media = null
   let documentRels = null
   let document = null
 
   for (let fullPath of keys) {
-    if (fullPath.endsWith('.jpeg') || fullPath.endsWith('.png') || fullPath.endsWith('.enf')) {
-      let fileData = await unzipped.files[fullPath].async('arraybuffer')
-      media.push({
-        name: fileName(fullPath),
-        data: fileData
-      })
+    //if (fullPath.endsWith('.jpeg') || fullPath.endsWith('.png') || fullPath.endsWith('.enf')) {
+    //  let fileData = await unzipped.files[fullPath].async('arraybuffer')
+    //  media.push({
+    //    name: fileName(fullPath),
+    //    data: fileData
+    //  })
+    //}
+    if (fullPath.endsWith('/media')) {
+      media = unzipped.files[fullPath]
     }
     else if (fullPath.endsWith('document.xml.rels')) {
       documentRels = await unzipped.files[fullPath].async('arraybuffer')
