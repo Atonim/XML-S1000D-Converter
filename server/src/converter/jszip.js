@@ -13,7 +13,7 @@ export async function startUnzip(file) {
           .then((unzipped) => {
 
             fileSelector(unzipped).then(filesToConvert => {
-              let a = new convertor(filesToConvert.document, filesToConvert.documentRels)
+              let a = new convertor(filesToConvert.document, filesToConvert.documentRels, filesToConvert.media)
               const result = a.start()
               //отправляю media и выход из конвертера
               linker(result)
