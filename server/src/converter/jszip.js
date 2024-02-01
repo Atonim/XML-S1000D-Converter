@@ -12,18 +12,19 @@ export async function startUnzip(file) {
         jszip.loadAsync(data)
           .then((unzipped) => {
 
-            const filesToConvert = fileSelector(unzipped)
-            let a = new convertor(filesToConvert.documentRels)
-            const xmlArray = a.start()
+            fileSelector(unzipped).then(filesToConvert => {
+              let a = new convertor(filesToConvert.document, filesToConvert.documentRels)
+              const result = a.start()
+              //отправляю media и выход из конвертера
+              linker(result)
+                .then(zipped => {
+                  zipped.generateAsync({ type: "base64" })
+                    .then(content => {
+                      resolve(content)
+                    });
+                })
+            })
 
-            //отправляю media и выход из конвертера
-            linker(unzipped, xmlArray)
-              .then(zipped => {
-                zipped.generateAsync({ type: "base64" })
-                  .then(content => {
-                    resolve(content)
-                  });
-              })
           })
       }
       else {
