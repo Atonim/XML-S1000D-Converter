@@ -1,9 +1,7 @@
 <template>
-	<div>
 		<div class="result-page">
 			<h1>Конвертированный документ</h1>
-			<Preloader v-if="isLoading" />
-			<div v-else class="result-page__btns">
+			<div class="result-page__btns">
 				<button
 					class="result-page__download-btn download-btn"
 					@click="download"
@@ -18,42 +16,28 @@
 				</button>
 			</div>
 		</div>
-	</div>
 </template>
 
 <script>
-//import { startZip, startUnzip } from '../../../server/src/converter/jszip' // delete
-import Preloader from '@/components/UI/Preloader'
+import { startZip, startUnzip } from '../../../server/src/converter/jszip' // delete?
 
 export default {
-	components: {
-		Preloader,
-	},
-	data: () => {
-		return {
-			isLoading: true,
-			base64File: ''
-		}
-	},
-	created() {
-		this.base64File = this.$route.query.file;
-		console.log(this.base64File);
-		/*const decodeBase64 = decodeURIComponent(window.atob(encodeBase64));
-		console.log(decodeBase64)*/
-	},
-	mounted() {
-		this.showToggle();
-	},
 	methods: {
-		download() {
-			//startUnzip();
-			//startZip();
-		},
-		showToggle() {
-			// temp
-			setTimeout(() => {
-				this.isLoading = false;
-			}, 5000);
+		async download() {
+			const requestURL = 'http://localhost:8085/converter'
+			try {
+				const response = await fetch(requestURL)
+				if (response.ok) {
+					console.log(response) //  delete
+				/* const zipAsBase64 = await response.text()
+					const blob = await b64ToBlob(zipAsBase64, 'application/zip')
+					FileSaver.saveAs(blob, 'example.zip')*/ 	// ???
+				} else {
+					console.log('Error HTTP: ' + response.status)
+				}
+			} catch (error) {
+				console.log('Request execution error: ' + error.message)
+			}
 		},
 	},
 }

@@ -1,18 +1,23 @@
 <template>
-  <div class="home-page">
-    <h1>Конвертировать Word в XML S1000D</h1>
-    <Uploader @drop.prevent="drop" @change="selectedFile"></Uploader>
-    <span v-if="uploaderFile" class="file-info">Имя загруженного файла: <strong>{{ uploaderFile.name }}</strong></span>
-    <button class="home-page__next-btn next-bth" :class="{ disabled: !uploaderFile }"
-      @click="uploaderFile ? startConverter() : (message = true)">
-      Конвертировать
-    </button>
-    <span v-if="!uploaderFile && message">Сначала загрузите файл</span>
+  <div>
+    <Preloader v-if="isLoading" />
+    <div class="home-page" v-else>
+      <h1>Конвертировать Word в XML S1000D</h1>
+      <Uploader @drop.prevent="drop" @change="selectedFile"></Uploader>
+      <span v-if="uploaderFile" class="file-info">Имя загруженного файла: <strong>{{ uploaderFile.name
+      }}</strong></span>
+      <button class="home-page__next-btn next-bth" :class="{ disabled: !uploaderFile }"
+        @click="uploaderFile ? sendRequest() : (message = true)">
+        Конвертировать
+      </button>
+      <span v-if="!uploaderFile && message">Сначала загрузите файл</span>
+    </div>
   </div>
 </template>
 
 <script>
 import Uploader from "@/components/Uploader";
+import Preloader from '@/components/UI/Preloader'
 import { ref } from "vue";
 import FileSaver from 'file-saver';
 import b64ToBlob from 'b64-to-blob';
@@ -20,9 +25,11 @@ import b64ToBlob from 'b64-to-blob';
 export default {
   components: {
     Uploader,
+    Preloader
   },
   data: () => ({
     message: false,
+    isLoading: false,
   }),
   setup() {
     let uploaderFile = ref("");
@@ -42,14 +49,15 @@ export default {
     };
   },
   methods: {
-    async sendRequest(file) {
+    async sendRequest() {
       const requestURL = 'http://localhost:8085/converter'
-
       const formData = new FormData()
-      formData.append('file', file)
-      console.log(file) //  delete
+      formData.append('file', this.uploaderFile)
+
       console.log(formData) //  delete
+
       try {
+        this.isLoading = !this.isLoading;
         const response = await fetch(requestURL, {
           method: 'POST',
           mode: 'cors',
@@ -65,32 +73,11 @@ export default {
         }
       } catch (error) {
         console.log('Request execution error: ' + error.message)
+      } finally {
+         this.isLoading = !this.isLoading;
+         this.$router.push({ name: 'result' });
       }
-    },
-    fileToBase64(file) {
-      return new Promise( (resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-
-        reader.onload = function () {
-          const base64 = btoa(encodeURIComponent(reader.result));
-          resolve(base64);
-        }
-        reader.onerror = function () {
-          reject(reader.error);
-        };
-      })
-    },
-
-    async startConverter() {
-      try {
-        const base64File = await this.fileToBase64(this.uploaderFile);
-        this.sendRequest(this.uploaderFile); // move to ResultPage
-        this.$router.push({ name: 'result', query: { file: base64File } });
-      } catch (error) {
-        console.error(error);
-      }
-    },
+    }
   },
 };
 </script>
