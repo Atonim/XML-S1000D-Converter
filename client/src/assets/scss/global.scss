@@ -131,15 +131,11 @@ button {
 	position: absolute;
 	top: 0;
 	left: 0;
-	&__loader,
-	&__percents {
+	&__loader {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-	}
-	&__percents {
-		@include font($black, bold);
 	}
 }
 
@@ -187,16 +183,16 @@ button {
 	box-sizing: content-box;
 }
 
-/*@font-face {
-	font-family: 'Montserrat-ExtraBold';
-	src: url('../fonts/Montserrat/static/Montserrat-ExtraBold.ttf') format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}*/
-
 @font-face {
 	font-family: 'Montserrat-Bold';
 	src: url('../fonts/Montserrat/static/Montserrat-Bold.ttf') format('truetype');
+	font-style: normal;
+	font-weight: bolder;
+}
+
+@font-face {
+	font-family: 'Montserrat-Medium';
+	src: url('../fonts/Montserrat/static/Montserrat-Medium.ttf') format('truetype');
 	font-style: normal;
 	font-weight: bolder;
 }
@@ -207,10 +203,3 @@ button {
 	font-style: normal;
 	font-weight: bolder;
 }*/
-
-@font-face {
-	font-family: 'Montserrat-Medium';
-	src: url('../fonts/Montserrat/static/Montserrat-Medium.ttf') format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}
