@@ -6,18 +6,27 @@ import { xmlCreator } from "./xmlCreator.js"
 import { codes } from "./codes.js"
 
 export class convertor {
-    // document = null
+
     document = document
     stringCodes = []
-    imagesAmount = 16
     files = {}
     docxParser = null
     // xmlCreator = null
     documentContents = null
     techName = "default name"
 
-    constructor(document, documentRels, media) {
-        console.log(media)
+    constructor(document, documentRels) {
+        //this.media = media
+        this.documentRels = documentRels
+        this.imagesId = {
+            'image1.jpeg': 'rId8',
+            'image2.jpeg': 'rId9',
+            'image3.jpeg': 'rId10',
+            'image4.jpeg': 'rId11',
+            'image5.jpeg': 'rId12',
+            'image17.emf': 'rId24',
+            'image18.emf': 'rId25',
+        }
         this.document = document
         this.docxParser = new docxParser(this.document)
         this.codesToString()
@@ -25,9 +34,8 @@ export class convertor {
         for (const code of this.stringCodes) {
             this.files[code] = null
         }
-
-        console.log(this.files)
     }
+
     codesToString() {
         const lastCodeLength = codes[codes.length - 1].toString().length
         for (let code of codes) {
@@ -38,6 +46,16 @@ export class convertor {
             this.stringCodes.push(code)
         }
     }
+    indexToString(index) {
+        const maxIndexLength = 5
+        index = index.toString()
+        while (index.length !== maxIndexLength) {
+            index = 0 + index
+        }
+        return index
+    }
+
+
     start() {
         return this.startLogic()
     }
@@ -80,9 +98,15 @@ export class convertor {
             let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
             result.XML[key] = this.files[code].stringify()
         }
-        for (let index = 1; index < this.imagesAmount; index++) {
-            let key = "ICN-VBMA-A-462001-A-00000-" + index + "-A-001-1.jpg"
-            result.Images[index] = null
+
+        const imagesNames = Object.keys(this.imagesId)
+        let index = 1
+
+        for (let name of imagesNames) {
+            let stringIndex = this.indexToString(index)
+            let convertedName = "ICN-VBMA-A-462001-A-00000-" + stringIndex + "-A-001-1.jpg"
+            result.Images[name] = convertedName
+            index++
         }
     }
 
