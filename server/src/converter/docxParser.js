@@ -13,7 +13,7 @@ export class docxParser {
     constructor(doc) {
         this.document = doc
         this.DOMxml = this.oParser.parseFromString(this.document, "text/xml")
-        this.currentNode = this.DOMxml.lastChild.childNodes[0] // w:body
+        this.currentNode = this.DOMxml.lastChild.childNodes[1] // w:body
     }
 
     getTechName() {
@@ -151,7 +151,6 @@ export class docxParser {
 
     getNextParagraf() {
         // if (this.currentNode.nextSibling === undefined) {console.log("undefined")}
-        // console.log(this.currentNode.tagName)
         this.currentNode = this.currentNode.nextSibling
         let buffer = ""
 
@@ -191,7 +190,7 @@ export class docxParser {
             }
             if (node.tagName === "w:bookmarkStart") {
                 if (String(node.attributes[1].nodeValue) === String(id)) {
-                    console.log(node.attributes[1].nodeValue, id)
+                    // console.log(node.attributes[1].nodeValue, id)
                     return true
                 }
                 if (String(node.attributes[1].nodeValue) !== String(id)) {

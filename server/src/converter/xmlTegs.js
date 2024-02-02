@@ -28,8 +28,8 @@ class Teg {
 
     stringify () {
         let contentInside = ""
-        for (let i = 0; i < this.content.length; i++) {
-            contentInside += String(this.content[i].stringify())
+        for (let element of this.content) {
+            contentInside += String(element.stringify())
         }
         // console.log("stringify: ", this.name, this.content.length, contentInside)
 
@@ -292,6 +292,24 @@ export class row extends Teg {
         this.name       = "row"
         this.openTeg    = `row`
         this.closeTeg   = `/row`
+    }
+}
+
+export class note extends Teg {
+    constructor () {
+        super()
+        this.name       = "note"
+        this.openTeg    = `note`
+        this.closeTeg   = `/note`
+    }
+}
+
+export class notePara extends Teg {
+    constructor () {
+        super()
+        this.name       = "notePara"
+        this.openTeg    = `notePara`
+        this.closeTeg   = `/notePara`
     }
 }
 
