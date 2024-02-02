@@ -3,20 +3,14 @@ export async function fileSelector(unzipped) {
   const keys = Object.keys(unzipped.files)
   //console.log(unzipped)
   //console.log(keys)
-  let media = null
+  let media = {}
   let documentRels = null
   let document = null
 
   for (let fullPath of keys) {
-    //if (fullPath.endsWith('.jpeg') || fullPath.endsWith('.png') || fullPath.endsWith('.enf')) {
-    //  let fileData = await unzipped.files[fullPath].async('arraybuffer')
-    //  media.push({
-    //    name: fileName(fullPath),
-    //    data: fileData
-    //  })
-    //}
-    if (fullPath.endsWith('/media')) {
-      media = unzipped.files[fullPath]
+
+    if (fullPath.includes('/media')) {
+      media[fullPath] = unzipped.files[fullPath]
     }
     else if (fullPath.endsWith('document.xml.rels')) {
       documentRels = await unzipped.files[fullPath].async('arraybuffer')
@@ -27,7 +21,6 @@ export async function fileSelector(unzipped) {
       document = await unzipped.files[fullPath].async('arraybuffer')
       document = new TextDecoder().decode(document);
     }
-    //еще есть формат enf в media
   }
   return { media, documentRels, document };
 }
