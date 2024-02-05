@@ -4,8 +4,8 @@
     @dragleave.prevent="toggleActive"
     @dragover.prevent
     @drop.prevent="toggleActive"
-    :class="{ 'active-uploader' : active}"
     class="uploader"
+    :class="{ 'uploader_active' : active }"
   >
      <span>Перетащите файл сюда</span>
      <span>ИЛИ</span>
@@ -22,20 +22,19 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref } from 'vue'
+
 export default {
-  name: "Uploader",
+  name: 'FileUploader',
   setup() {
     const active = ref(false);
-
     const toggleActive = () => {
       active.value = !active.value;
     };
-    
     return {
       active,
       toggleActive
     };
-  },
+  }
 }
 </script>

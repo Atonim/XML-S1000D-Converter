@@ -2,185 +2,135 @@
 @import './mixins.scss';
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
-.app{
-  padding: 20px;
+.app {
+	padding: 20px;
 }
 
 body {
-  @include font($black);
-  @include breakpoint(md) {
-    $font-size: calc($minFontSize + ($addFontSize + $addFontSize * 0.7) * ((100vw - 320px) / $widthScreen));
-    font-size: $font-size;
-    button {
-      padding: calc($font-size * 1.125) calc($font-size * 2);
-    }
-    label {
-      padding: calc($font-size * 1.125) calc($font-size * 2 + 5px);
-    }
-  };
-  background-color: $background-color;
+	@include font($black);
+	@include breakpoint(md) {
+		$font-size: calc(
+			$minFontSize + ($addFontSize + $addFontSize * 0.7) *
+				((100vw - 320px) / $widthScreen)
+		);
+		font-size: $font-size;
+		button {
+			padding: calc($font-size * 1.125) calc($font-size * 2);
+		}
+		label {
+			padding: calc($font-size * 1.125) calc($font-size * 2 + 5px);
+		}
+	}
+	background-color: $background-color;
 }
 
 button {
-    @include font(white);
-    transition: $transition;
-    border: none;
-    border-radius: 5px;
+	@include font(white);
+	transition: $transition;
+	border: none;
+	border-radius: 5px;
 }
 
-.home-page, .result-page {
-  height: 100vh;
-  @include flex(32px);
-
-  h1 {
-    font-family: 'Montserrat-Bold';
-  }
-
-  &__btns {
-    @include flex($align: stretch);
-  }
-
-  .next-bth, .download-btn {
-    background-color: $light-green;
-    &:hover {
-      background-color: $green;
-    }
-
-  }
-
-  .back-bth {
-    @include font(white);
-    background-color: $light-pink;
-    transition: $transition;
-    border-radius: 5px;
-    box-shadow: -10px 10px 10px $grey-shadow;
-
-    &:hover {
-		  background-color: $pink;
-	  }
-  }
+.header {
+	font-family: 'Montserrat-Bold';
 }
 
-.home-page {
-  strong {
-     color: $light-pink;
-  }
+.main-page,
+.result-page {
+	height: 100vh;
+	@include flex(32px);
+}
 
-  .disabled:hover {
-    background-color: $disabled-grey;
-  }
+.main-page__content {
+	height: 100vh;
+	@include flex(32px);
+	strong {
+		color: $light-pink;
+	}
+
+	.main-page__next-btn {
+		background-color: $light-green;
+		&:hover {
+			background-color: $green;
+		}
+		&_disabled:hover {
+			background-color: $disabled-grey;
+		}
+	}
+}
+
+.result-page {
+	&__back-btn {
+		@include font(white);
+		background-color: $light-pink;
+		transition: $transition;
+		border-radius: 5px;
+		box-shadow: -10px 10px 10px $grey-shadow;
+
+		&:hover {
+			background-color: $pink;
+		}
+	}
 }
 
 .uploader {
-  color: grey;
-  margin: 0 auto;
-  padding: 15px;
-  width: 70%;
-  @include breakpoint(md) {
-    width: 80%;
-  };
-  @include breakpoint(sm) {
-    width: 90%;
-  };
-  @include breakpoint(xs) {
-    width: 100%;
-  };
-  min-height: 200px;
-  @include flex;
-  flex: 0.5 0 0%;
-  border: 5px $grey dotted;
-  border-radius: 10px;
- 
-  transition: $transition;
+	color: grey;
+	padding: 15px;
+	@include flex;
+	flex: 0.5 0 0%;
+	width: 70%;
+	@include breakpoint(md) {
+		width: 80%;
+	}
+	@include breakpoint(sm) {
+		width: 90%;
+	}
+	@include breakpoint(xs) {
+		width: 100%;
+	}
+	border: 5px $grey dotted;
+	border-radius: 10px;
+	transition: $transition;
 
-  label {
-    @include font(white);
-    background-color: $light-pink;
-    transition: $transition;
-    border-radius: 5px;
-    box-shadow: -10px 10px 10px $grey-shadow;
+	label {
+		@include font(white);
+		background-color: $light-pink;
+		transition: $transition;
+		border-radius: 5px;
+		box-shadow: -10px 10px 10px $grey-shadow;
 
-    &:hover {
-		  background-color: $pink;
-	  }
+		&:hover {
+			background-color: $pink;
+		}
+		input {
+			display: none;
+		}
+	}
 
-    input {
-      display: none;
-    }
-  }
+	&_active {
+		color: white;
+		border: none;
+		background-color: $light-pink;
+		label {
+			color: $light-pink;
+			background-color: white;
+		}
+	}
 }
-  .active-uploader {
-    color: white;
-    border: none;
-    background-color: $light-pink;
-
-    label {
-      color: $light-pink;
-      background-color: white;
-    }
-  }
 
 .preloader {
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	&__loader {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
+	animation: preloader linear 5s infinite;
 }
 
-@keyframes ldio-h00fv1la8vf {
-	0% {
-		opacity: 1;
-	}
+@keyframes preloader {
 	100% {
-		opacity: 0;
+		transform: rotate(360deg);
 	}
-}
-.ldio-h00fv1la8vf div {
-	left: 94px;
-	top: 48px;
-	position: absolute;
-	animation: ldio-h00fv1la8vf linear 1s infinite;
-	background: nth($animation-color, random(2));
-	width: 12px;
-	height: 24px;
-	border-radius: 6px / 12px;
-	transform-origin: 6px 52px;
-  @for $i from 1 to 13 {
-    &:nth-child(#{$i}n) {
-      transform: rotate(30deg * ($i - 1));
-      animation-delay: nth($animation-delay, $i);
-    }
-  }
-}
-.loadingio-spinner-spinner-lubm59c3vdb {
-	width: 200px;
-	height: 200px;
-	display: inline-block;
-	overflow: hidden;
-	background: none;
-}
-.ldio-h00fv1la8vf {
-	width: 100%;
-	height: 100%;
-	position: relative;
-	transform: translateZ(0) scale(1);
-	backface-visibility: hidden;
-	transform-origin: 0 0; /* see note above */
-}
-.ldio-h00fv1la8vf div {
-	box-sizing: content-box;
 }
 
 @font-face {
@@ -192,14 +142,8 @@ button {
 
 @font-face {
 	font-family: 'Montserrat-Medium';
-	src: url('../fonts/Montserrat/static/Montserrat-Medium.ttf') format('truetype');
+	src: url('../fonts/Montserrat/static/Montserrat-Medium.ttf')
+		format('truetype');
 	font-style: normal;
 	font-weight: bolder;
 }
-
-/*@font-face {
-	font-family: 'Montserrat-Light';
-	src: url('../fonts/Montserrat/static/Montserrat-Light.ttf') format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}*/
