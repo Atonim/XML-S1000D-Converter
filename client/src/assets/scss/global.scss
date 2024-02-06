@@ -4,7 +4,7 @@
 * {
 	margin: 0;
 	padding: 0;
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .app {
@@ -12,138 +12,137 @@
 }
 
 body {
-	@include font($black);
-	@include breakpoint(md) {
-		$font-size: calc(
-			$minFontSize + ($addFontSize + $addFontSize * 0.7) *
-				((100vw - 320px) / $widthScreen)
+	background-color: $gray_blue_1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  @include font(
+			$font_weight: 400,
+			$line_height: 17px,
+			$font_size_start: 15px,
+			$color: $gray_12
 		);
-		font-size: $font-size;
-		button {
-			padding: calc($font-size * 1.125) calc($font-size * 2);
-		}
-		label {
-			padding: calc($font-size * 1.125) calc($font-size * 2 + 5px);
-		}
-	}
-	background-color: $background-color;
 }
 
-button {
-	@include font(white);
-	transition: $transition;
-	border: none;
-	border-radius: 5px;
+.main-page {
+  border: 2px solid $pink;  //rem
+  height: 40vh; // or 50vh ?
+
+  .preloader {
+    position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+    &__loader {
+      animation: loader linear 5s infinite;
+    }
+  }
+
+  @keyframes loader {
+	  100% {
+		  transform: rotate(360deg);
+	  }
+  }
+
+  &__content {
+    border: 2px solid $light-orange;//rem
+    height: 100%;
+
+    // move to mixin
+    display: flex;
+	  flex-direction: column;
+	  justify-content: center;
+	  align-items: center;
+	  row-gap: 16px;
+  }
+  &__header {
+    background-color: #fff;
+    @include font(
+			$font_weight: 700,
+			$line_height: 25px,
+			$font_size_start: 22px,
+			$color: $gray_blue_7
+		);
+  }
+  &__drag-drop {
+    height: 100%;
+    width: 280px;
+    padding: 16px;
+    background-color: #E8EBED;  // ask(1)
+    // move to mixin
+    display: flex;
+	  flex-direction: column;
+	  justify-content: center;
+	  align-items: center;
+	  row-gap: 16px;
+
+	  border-radius: 10px;
+
+    .uploader {
+      // move to mixin
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      row-gap: 16px;
+      transition: $transition;//
+
+      label {
+        input {
+			    display: none;
+		    }
+      }
+
+      &_active { //
+        background: $blue_2;
+        border: 1px solid $blue_4;
+      }
+    }
+  }
+  &__btn, label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: $transition;
+
+    @include font(
+			$font_weight: 400,
+			$line_height: 17px,
+			$font_size_start: 15px,
+			$color: $gray_12
+		);
+
+    padding: 7.5px 26px;
+    background: $gray_4;
+    border: 1px solid $gray_7;
+    border-radius: 3px;
+    &:hover{
+      background: $blue_1;
+      border: 1px solid $blue_3;
+    }
+    &:active{
+      background: $blue_2;
+      border: 1px solid $blue_4;
+    }
+    &_disabled:hover {
+      background: $gray_blue_3;
+      border: 1px solid $gray_5;
+      color: $gray_9;
+    }
+  }
+  &__warning {
+
+  }
 }
 
-.header {
-	font-family: 'Montserrat-Bold';
-}
-
-.main-page,
-.result-page {
-	height: 100vh;
-	@include flex(32px);
-}
-
-.main-page__content {
-	height: 100vh;
-	@include flex(32px);
-	strong {
-		color: $light-pink;
-	}
-
-	.main-page__next-btn {
-		background-color: $light-green;
-		&:hover {
-			background-color: $green;
-		}
-		&_disabled:hover {
-			background-color: $disabled-grey;
-		}
-	}
-}
-
-.result-page {
-	&__back-btn {
-		@include font(white);
-		background-color: $light-pink;
-		transition: $transition;
-		border-radius: 5px;
-		box-shadow: -10px 10px 10px $grey-shadow;
-
-		&:hover {
-			background-color: $pink;
-		}
-	}
-}
-
-.uploader {
-	color: grey;
-	padding: 15px;
-	@include flex;
-	flex: 0.5 0 0%;
-	width: 70%;
-	@include breakpoint(md) {
-		width: 80%;
-	}
-	@include breakpoint(sm) {
-		width: 90%;
-	}
-	@include breakpoint(xs) {
-		width: 100%;
-	}
-	border: 5px $grey dotted;
-	border-radius: 10px;
-	transition: $transition;
-
-	label {
-		@include font(white);
-		background-color: $light-pink;
-		transition: $transition;
-		border-radius: 5px;
-		box-shadow: -10px 10px 10px $grey-shadow;
-
-		&:hover {
-			background-color: $pink;
-		}
-		input {
-			display: none;
-		}
-	}
-
-	&_active {
-		color: white;
-		border: none;
-		background-color: $light-pink;
-		label {
-			color: $light-pink;
-			background-color: white;
-		}
-	}
-}
-
-.preloader {
-	animation: preloader linear 5s infinite;
-}
-
-@keyframes preloader {
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-@font-face {
-	font-family: 'Montserrat-Bold';
-	src: url('../fonts/Montserrat/static/Montserrat-Bold.ttf') format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}
-
-@font-face {
-	font-family: 'Montserrat-Medium';
-	src: url('../fonts/Montserrat/static/Montserrat-Medium.ttf')
-		format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}
+/* add in label
+@include font(
+			$font_weight: 400,
+			$line_height: 17px,
+			$font_size_start: 15px,
+			$color: $gray_12
+		);
+*/

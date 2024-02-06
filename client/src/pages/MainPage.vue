@@ -1,28 +1,34 @@
 <template>
   <div class="main-page">
-    <img 
-      src="@/assets/img/preloader.png"
-      alt="preloader"
-      class="preloader"
-      srcset="@/assets/img/preloader.svg"
-      v-if="isLoading" />
+    <div 
+      class="preloader" 
+      v-if="isLoading">
+      <img 
+          src="@/assets/img/preloader.png"
+          alt="preloader"
+          class="preloader__loader"
+          srcset="@/assets/img/preloader.svg"/>
+    </div>
     <div 
       class="main-page__content" 
       v-else>
-      <h1 class="main-page__header header">
-        Word в XML S1000D - всего в несколько кликов
+      <h1 class="main-page__header">
+        Word &#8594 XML S1000D
       </h1>
-      <FileUploader 
-        @drop.prevent="drop" 
-        @change="selectedFile"
-      />
-      <span 
-        v-if="uploaderFile"> 
-        Имя загруженного файла: <strong>{{ uploaderFile.name }}</strong>
-      </span>
+      <div class="main-page__drag-drop">
+        <FileUploader 
+          @drop.prevent="drop" 
+          @change="selectedFile"
+        />
+        <span 
+          v-if="uploaderFile"> 
+          Имя загруженного файла: <strong>{{ uploaderFile.name }}</strong>
+        </span>
+      </div>
+    
       <button 
-        class="main-page__next-btn" 
-        :class="{ 'main-page__next-btn_disabled' : !uploaderFile }"
+        class="main-page__btn" 
+        :class="{ 'main-page__btn_disabled' : !uploaderFile }"
         @click="uploaderFile ? sendRequest() : setMessage()">
         Конвертировать
       </button>
@@ -57,9 +63,8 @@ export default {
       let type = uploaderFile.value.type
       if (type !== 'application/msword' && 
           type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-          setMessage('Недопустимый формат файла: ' + uploaderFile.value.name)
+          setMessage('Недопустимый формат файла: .' + getFileExtension())
           deleteFile()
-          // Добавить код для обработки недопустимого формата файла!!!
       }
     };
     const selectedFile = () => {
@@ -71,9 +76,14 @@ export default {
     const toggleLoading = () => {
       isLoading.value = !isLoading.value;
     };
-    const setMessage = (text = 'Загрузите файл формата Word') => {
+    const setMessage = 
+      (text = 'Прикрепите недостающий документ в формате .doc или .docx') => {
       message.value = text;
     };
+    const getFileExtension = () => {
+      return uploaderFile.value.name.split('.').pop();
+    }
+
 
     return {
       uploaderFile,
@@ -84,7 +94,8 @@ export default {
       selectedFile,
       deleteFile,
       toggleLoading,
-      setMessage
+      setMessage,
+      getFileExtension
     };
   },
 

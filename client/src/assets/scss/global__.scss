@@ -1,0 +1,48 @@
+button {
+	//@include font(white);
+}
+
+.main-page__content {
+	strong {
+		color: $light-pink;
+	}
+}
+
+/*.result-page {
+	height: 100vh;
+	@include flex(32px);
+}*/
+
+/*.result-page {
+	&__back-btn {
+		@include font(white);
+		background-color: $light-pink;
+		transition: $transition;
+		border-radius: 5px;
+		box-shadow: -10px 10px 10px $grey-shadow;
+
+		&:hover {
+			background-color: $pink;
+		}
+	}
+}*/
+
+.uploader {
+	//color: grey;
+	//width: 70%;
+	transition: $transition;
+
+	label {
+		@include font(white);
+	}
+
+	&_active {
+		color: white;
+		border: none;
+		background-color: $light-pink;
+		label {
+			color: $light-pink;
+			background-color: white;
+		}
+	}
+}
