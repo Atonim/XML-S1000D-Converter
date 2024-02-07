@@ -4,7 +4,7 @@
 * {
 	margin: 0;
 	padding: 0;
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .app {
@@ -14,135 +14,154 @@
 body {
 	background-color: $gray_blue_1;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+	@include flex();
+	height: 100vh;
 
-  @include font(
-			$font_weight: 400,
-			$line_height: 17px,
-			$font_size_start: 15px,
-			$color: $gray_12
-		);
+	@include font(
+		$font_weight: 400,
+		$line_height: 17px,
+		$font_size_start: 15px,
+		$color: $gray_12
+	);
 }
 
 .main-page {
-  border: 2px solid $pink;  //rem
-  height: 40vh; // or 50vh ?
+	height: 40vh; 
 
-  .preloader {
-    position: absolute;
+	.preloader {
+		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-    &__loader {
-      animation: loader linear 5s infinite;
-    }
-  }
+		&__loader {
+			animation: loader linear 5s infinite;
+		}
+	}
 
-  @keyframes loader {
-	  100% {
-		  transform: rotate(360deg);
-	  }
-  }
+	@keyframes loader {
+		100% {
+			transform: rotate(360deg);
+		}
+	}
 
-  &__content {
-    border: 2px solid $light-orange;//rem
-    height: 100%;
-
-    // move to mixin
-    display: flex;
-	  flex-direction: column;
-	  justify-content: center;
-	  align-items: center;
-	  row-gap: 16px;
-  }
-  &__header {
-    background-color: #fff;
-    @include font(
+	&__content {
+		height: 100%;
+		@include flex();
+		row-gap: 16px;
+	}
+	&__header {
+		background-color: #fff;
+		@include font(
 			$font_weight: 700,
 			$line_height: 25px,
 			$font_size_start: 22px,
 			$color: $gray_blue_7
 		);
-  }
-  &__drag-drop {
-    height: 100%;
-    width: 280px;
-    padding: 16px;
-    background-color: #E8EBED;  // ask(1)
-    // move to mixin
-    display: flex;
-	  flex-direction: column;
-	  justify-content: center;
-	  align-items: center;
-	  row-gap: 16px;
+	}
+	.uploader {
+		height: 100%;
+		width: $widthDragDrop;
+		@include breakpoint(md) {
+			width: $widthDragDrop_md;
+		}
+		padding: 16px;
+		background-color: #e8ebed; // ask(1)
+		@include flex();
+		row-gap: 16px;
+		border-radius: 10px;
+		transition: $transition;
 
-	  border-radius: 10px;
+		label {
+			input {
+				display: none;
+			}
+		}
 
-    .uploader {
-      // move to mixin
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      row-gap: 16px;
-      transition: $transition;//
+		&_active {
+			background: $blue_2;
+			border: 1px solid $blue_4;
+		}
 
-      label {
-        input {
-			    display: none;
-		    }
-      }
+		&__view-file{
+			display: flex;
+			flex-direction: row;
+			//align-items: center;
+			//justify-content: center;
+		}
+		&__icon-file{ // ???
+				width: 30px;
+				height: 35px;
+				background-color: red;
+				background: #D5D9DC;
+				border: 0.25px solid #CCCCCC;
 
-      &_active { //
-        background: $blue_2;
-        border: 1px solid $blue_4;
-      }
-    }
-  }
-  &__btn, label {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    transition: $transition;
+				
+			}
+	}
+	&__btn,
+	label {
+		@include flex($flex-direction: row);
+		transition: $transition;
 
-    @include font(
+		@include font(
 			$font_weight: 400,
 			$line_height: 17px,
 			$font_size_start: 15px,
 			$color: $gray_12
 		);
 
-    padding: 7.5px 26px;
-    background: $gray_4;
-    border: 1px solid $gray_7;
-    border-radius: 3px;
-    &:hover{
-      background: $blue_1;
-      border: 1px solid $blue_3;
-    }
-    &:active{
-      background: $blue_2;
-      border: 1px solid $blue_4;
-    }
-    &_disabled:hover {
-      background: $gray_blue_3;
-      border: 1px solid $gray_5;
-      color: $gray_9;
-    }
-  }
-  &__warning {
-
-  }
+		padding: 7.5px 26px;
+		background: $gray_4;
+		border: 1px solid $gray_7;
+		border-radius: 3px;
+		&:hover {
+			background: $blue_1;
+			border: 1px solid $blue_3;
+		}
+		&:active {
+			background: $blue_2;
+			border: 1px solid $blue_4;
+		}
+		&_disabled:hover {
+			background: $gray_blue_3;
+			border: 1px solid $gray_5;
+			color: $gray_9;
+		}
+	}
+	&__warning {
+		// maybe change later
+		@include font(
+			$font_weight: 400,
+			$line_height: 15px,
+			$font_size_start: 13px,
+			$color: $gray_9
+		);
+		.icon {
+			width: 12px;
+			height: 12px;
+			@include breakpoint(md) {
+				width: 15px;
+				height: 15px;
+			}
+		}
+	}
 }
 
-/* add in label
-@include font(
-			$font_weight: 400,
-			$line_height: 17px,
-			$font_size_start: 15px,
-			$color: $gray_12
-		);
-*/
+/*.result-page {
+	height: 100vh;
+	@include flex(32px);
+}*/
+
+/*.result-page {
+	&__back-btn {
+		@include font(white);
+		background-color: $light-pink;
+		transition: $transition;
+		border-radius: 5px;
+		box-shadow: -10px 10px 10px $grey-shadow;
+
+		&:hover {
+			background-color: $pink;
+		}
+	}
+}*/

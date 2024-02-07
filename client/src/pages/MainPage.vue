@@ -4,10 +4,10 @@
       class="preloader" 
       v-if="isLoading">
       <img 
-          src="@/assets/img/preloader.png"
+          src="@/assets/img/png/preloader.png"
           alt="preloader"
           class="preloader__loader"
-          srcset="@/assets/img/preloader.svg"/>
+          srcset="@/assets/img/svg/preloader.svg"/>
     </div>
     <div 
       class="main-page__content" 
@@ -15,17 +15,11 @@
       <h1 class="main-page__header">
         Word &#8594 XML S1000D
       </h1>
-      <div class="main-page__drag-drop">
         <FileUploader 
           @drop.prevent="drop" 
           @change="selectedFile"
+          :uploaderFile="uploaderFile"
         />
-        <span 
-          v-if="uploaderFile"> 
-          Имя загруженного файла: <strong>{{ uploaderFile.name }}</strong>
-        </span>
-      </div>
-    
       <button 
         class="main-page__btn" 
         :class="{ 'main-page__btn_disabled' : !uploaderFile }"
@@ -35,6 +29,11 @@
       <span 
         v-if="!uploaderFile && message"
         class="main-page__warning">
+        <img 
+          src="@/assets/img/png/error.png"
+          alt="error"
+          class="icon"
+          srcset="@/assets/img/svg/error.svg"/>
         {{ message }}
       </span>
     </div>

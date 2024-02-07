@@ -15,13 +15,8 @@ $gray_7: #bfbfbf;
 $gray_9: #999999;
 $gray_12: #333333;
 
-
-$black: #0f292f;
-$pink: #c34271;
-$light-pink: #f070a1;
-$light-orange: #ffa44a;
-$disabled-grey: #b0afaf;
-$grey-shadow: rgba(121, 120, 120, 0.1);
+// sizes
+$widthDragDrop: 280px;
+$widthDragDrop_md:calc($widthDragDrop * 1.5);
 
 $transition: 0.3s ease all;
-
