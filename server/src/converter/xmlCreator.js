@@ -4,6 +4,7 @@ export class xmlCreator {
     currentElement = null
     resultDocument = null
     levelStack = []
+    isCurrentElementInSeq = true
 
     constructor (infoCode, techName) {
         this.currentElement = new tags.dmodule(infoCode, techName)
@@ -26,13 +27,25 @@ export class xmlCreator {
     }
 
     goToLastInsertedPara () {
-        console.log(this.currentElement.name)
+        // console.log(this.currentElement.name)
         if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).name !== "listItem") {
             this.currentElement = this.currentElement.content.at(-1)
         } else if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).content.at(-1)) {
             this.currentElement = this.currentElement.content.at(-1).content.at(-1)
         }
-        console.log(this.currentElement.name)
+        // console.log(this.currentElement.name)
+    }
+
+    goToLastParent () {
+        if (this.currentElement.name === "dmodule") {
+            
+        } else
+        //  if (this.currentElement.parent.name === "dmodule") 
+        {
+            this.currentElement = this.currentElement.parent
+        // } else if (this.currentElement.parent.parent) {
+        //     this.currentElement = this.currentElement.parent.parent
+        }
     }
 
     getDocument () {
@@ -75,7 +88,11 @@ export class xmlCreator {
         //  включаем в структуру документа sequentialList
         if (this.currentElement) {
             let newL = new tags.sequentialList()
-            this.goToLastInsertedPara()
+            if(this.isCurrentElementInSeq) {
+                this.goToLastInsertedPara()
+            } else {
+                this.goToLastParent()
+            }
 
             newL.parent = this.currentElement
             this.currentElement.content.push(newL)
@@ -89,7 +106,13 @@ export class xmlCreator {
         //  включаем в структуру документа randomList
         if (this.currentElement) {
             let newL = new tags.randomList()
-            this.goToLastInsertedPara()
+            // console.log
+            if(this.isCurrentElementInSeq) {
+                this.goToLastInsertedPara()
+            } else {
+                console.log("goUp!!!")
+                this.goToLastParent()
+            }
 
             newL.parent = this.currentElement
             this.currentElement.content.push(newL)
@@ -134,45 +157,59 @@ export class xmlCreator {
         }
     }
 
-    inSequence (seqId) {
+    actualizeSeqSteck (seqId) {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
-        console.log("this.levelStack", this.levelStack, this.levelStack.length, typeof(seqId))
-        if (seqId !== null && this.levelStack.length === 0) {
-            this.levelStack.push(seqId)
-            return true
-        }
+        // console.log("this.levelStack", this.levelStack, this.levelStack.length, typeof(seqId))
+        
         if (seqId === null) {
             // console.log("HERE")
             return true
-        } else if (this.levelStack.lenght === 0) {
-            console.log("HERE")
+        }
+        if (seqId && this.levelStack.length === 0) {
             this.levelStack.push(seqId)
             return true
-        } else if (this.levelStack.indexOf(seqId) !== -1 && this.levelStack.at(-1) !== seqId) {
-            console.log("HERE")
+        }
+        if (seqId === this.levelStack.at(-1)) {
+            return true
+        }
+        if (seqId && this.levelStack.indexOf(seqId) !== -1 && this.levelStack.at(-1) !== seqId) {
+            // console.log("HERE")
             while(this.levelStack.at(-1) !== seqId) {
+                if (this.levelStack.at(-1) !== "a1") {this.goUp()
+                this.goUp()
+                this.goUp()}
                 this.levelStack.pop()
             }
             return false
         // } else if (this.levelStack.lenght === 1 && this.levelStack.at(0) !== seqId) {
         //     levelStack.pop()
         //     return false
+        } else if (seqId && this.levelStack.indexOf(seqId) === -1) {
+            this.levelStack.push(seqId)
+            this.goDown()
+            this.goDown()
+            // this.goDown()
+            return true
         }
         return true
     }
 
     chooseTextParagraf (paragraf, seqId = null) {
-        console.log(seqId)
+        // console.log(seqId)
         // console.log(paragraf, paragraf.startsWith('ВНИМАНИЕ'))
+        this.isCurrentElementInSeq = this.actualizeSeqSteck(seqId)
         const seqVariants = ["sequentialList", "randomList"]
-        if (seqVariants.indexOf(this.currentElement.name) !== -1 && this.inSequence(seqId)) {
+        if (this.isCurrentElementInSeq && seqVariants.indexOf(this.currentElement.name) !== -1) {
             // console.log()
             this.addListItem(paragraf)
-        } else if (seqVariants.indexOf(this.currentElement.name) !== -1 && !this.inSequence(seqId)) {
-            this.goUp()
-            this.addPara(paragraf)
+        } else if (!this.isCurrentElementInSeq && seqVariants.indexOf(this.currentElement.name) !== -1) {
+            // this.goToLastParent()
+            // this.goToLastParent()
+            // this.goToLastParent()
+            // this.addPara(paragraf)
+            this.chooseTextParagraf(paragraf, seqId)
         } else if (this.currentElement.name === "caution" && paragraf === paragraf.toUpperCase()) {
             this.addCautionPara(paragraf)
         } else if (this.currentElement.name === "caution" && paragraf !== paragraf.toUpperCase()) {

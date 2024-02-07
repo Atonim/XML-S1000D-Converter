@@ -170,7 +170,7 @@ export class convertor {
             let paragrafText = this.docxParser.getPara().trim()
             if (paragrafText.trim() != "") {
                 creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            if (code === "030") { console.log(paragrafText) }
+            // if (code === "030") { console.log(paragrafText) }
             }
             this.docxParser.nextParagraf()
         }
