@@ -1,5 +1,5 @@
 
-import * as tegs from "./xmlTegs.js"
+import * as tegs from "./xmlTags.js"
 import { document } from "./temp.js"
 import { docxParser } from "./docxParser.js"
 import { xmlCreator } from "./xmlCreator.js"
@@ -75,7 +75,7 @@ export class convertor {
         }
         this.builder()
         this.setResult(result)
-        console.log(this.files['018'].stringify())
+        console.log(this.files['030'].stringify())
         return result
     }
 
@@ -114,10 +114,15 @@ export class convertor {
     build_018() {
         let creator = new xmlCreator("018", this.techName)
 
-        let element = this.docxParser.getNextParagraf()
-        while (element.status === "success") {
-            creator.addPara(element.value)
-            element = this.docxParser.getNextParagraf()
+        // let element = this.docxParser.getNextParagraf()
+        this.docxParser.nextParagraf()
+        // let element = this.docxParser.getPara()
+        while (!this.docxParser.isEnter()) {
+            let paragrafText = this.docxParser.getPara().trim()
+            if (paragrafText.trim() != "") {
+                creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
+            }
+            this.docxParser.nextParagraf()
         }
 
         this.files['018'] = creator.getDocument()
@@ -137,11 +142,11 @@ export class convertor {
         // console.log(id)
 
         id = this.documentContents.find(element => element.infoCode === "410").stopId
+        // this.docxParser.getStyleId()
         while (!this.docxParser.hasBookmarkId(id)) {
-            // console.log(this.docxParser.getPara(), this.docxParser.hasBookmarkId(id))
             let paragrafText = this.docxParser.getPara().trim()
             if (paragrafText.trim() != "") {
-                creator.chooseTextParagraf(paragrafText.trim())
+                creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
             }
             this.docxParser.nextParagraf()
         }
@@ -162,10 +167,10 @@ export class convertor {
 
         id = this.documentContents.find(element => element.infoCode === code).stopId
         while (!this.docxParser.hasBookmarkId(id)) {
-            // console.log(this.docxParser.getPara(), this.docxParser.hasBookmarkId(id))
             let paragrafText = this.docxParser.getPara().trim()
             if (paragrafText.trim() != "") {
-                creator.chooseTextParagraf(paragrafText.trim())
+                creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
+            if (code === "030") { console.log(paragrafText) }
             }
             this.docxParser.nextParagraf()
         }

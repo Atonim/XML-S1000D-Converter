@@ -1,6 +1,7 @@
 // Problems:
 //  - In *getFullParagraf* stack overflow while reading with recursion      (No problem)
 //      stack possibly can be too small for some cases
+//  - Remove legacy *getNextParagraf*
 
 import { DOMParser } from 'xmldom'
 
@@ -149,6 +150,15 @@ export class docxParser {
         return link
     }
 
+    getStyleId() {
+            // console.log(this.currentNode.childNodes[1].childNodes[1].attributes[0].value)
+        try {
+            return this.currentNode.childNodes[1].childNodes[1].attributes[0].value
+        } catch (e) {
+            return null
+        }
+    }
+
     getNextParagraf() {
         // if (this.currentNode.nextSibling === undefined) {console.log("undefined")}
         this.currentNode = this.currentNode.nextSibling
@@ -192,10 +202,6 @@ export class docxParser {
                 if (String(node.attributes[1].nodeValue) === String(id)) {
                     // console.log(node.attributes[1].nodeValue, id)
                     return true
-                }
-                if (String(node.attributes[1].nodeValue) !== String(id)) {
-                    // console.log(node.attributes[1].nodeValue, id)
-                    // console.log("rejected")
                 }
             }
             if (!result && node.nextSibling !== null) {

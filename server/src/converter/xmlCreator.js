@@ -1,8 +1,9 @@
-import * as tags from "./xmlTegs.js"
+import * as tags from "./xmlTags.js"
 
 export class xmlCreator {
     currentElement = null
     resultDocument = null
+    levelStack = []
 
     constructor (infoCode, techName) {
         this.currentElement = new tags.dmodule(infoCode, techName)
@@ -25,9 +26,13 @@ export class xmlCreator {
     }
 
     goToLastInsertedPara () {
-        if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).content.at(-1)) {
+        console.log(this.currentElement.name)
+        if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).name !== "listItem") {
+            this.currentElement = this.currentElement.content.at(-1)
+        } else if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).content.at(-1)) {
             this.currentElement = this.currentElement.content.at(-1).content.at(-1)
         }
+        console.log(this.currentElement.name)
     }
 
     getDocument () {
@@ -105,8 +110,11 @@ export class xmlCreator {
     addCautionPara (paragraf) {
         if (this.currentElement) {
             let newCP = new tags.warningAndCautionPara()
+            let newT = new tags.text(paragraf)
 
             newCP.parent = this.currentElement
+            newT.parent = newCP
+            newCP.content.push(newT)
             this.currentElement.content.push(newCP)
         }
     }
@@ -127,13 +135,40 @@ export class xmlCreator {
     }
 
     inSequence (seqId) {
+        // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
+        //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
+        //  и, следовательно, переход к следующему
+        console.log("this.levelStack", this.levelStack, this.levelStack.length, typeof(seqId))
+        if (seqId !== null && this.levelStack.length === 0) {
+            this.levelStack.push(seqId)
+            return true
+        }
+        if (seqId === null) {
+            // console.log("HERE")
+            return true
+        } else if (this.levelStack.lenght === 0) {
+            console.log("HERE")
+            this.levelStack.push(seqId)
+            return true
+        } else if (this.levelStack.indexOf(seqId) !== -1 && this.levelStack.at(-1) !== seqId) {
+            console.log("HERE")
+            while(this.levelStack.at(-1) !== seqId) {
+                this.levelStack.pop()
+            }
+            return false
+        // } else if (this.levelStack.lenght === 1 && this.levelStack.at(0) !== seqId) {
+        //     levelStack.pop()
+        //     return false
+        }
         return true
     }
 
-    chooseTextParagraf (paragraf, seqId = '') {
+    chooseTextParagraf (paragraf, seqId = null) {
+        console.log(seqId)
         // console.log(paragraf, paragraf.startsWith('ВНИМАНИЕ'))
         const seqVariants = ["sequentialList", "randomList"]
         if (seqVariants.indexOf(this.currentElement.name) !== -1 && this.inSequence(seqId)) {
+            // console.log()
             this.addListItem(paragraf)
         } else if (seqVariants.indexOf(this.currentElement.name) !== -1 && !this.inSequence(seqId)) {
             this.goUp()
@@ -144,7 +179,7 @@ export class xmlCreator {
             this.goUp()
             this.chooseTextParagraf(paragraf, seqId)
         } else if (paragraf.startsWith("ВНИМАНИЕ: ")) {
-            console.log("ВНИМАНИЕ", paragraf)
+            // console.log("ВНИМАНИЕ", paragraf)
             this.addCaution()
             this.chooseTextParagraf(paragraf.replace("ВНИМАНИЕ: ", ''), seqId)
         } else if (paragraf.startsWith("Примечание - ")) {
