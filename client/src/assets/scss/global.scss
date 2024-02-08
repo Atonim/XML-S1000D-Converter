@@ -50,7 +50,6 @@ body {
 		row-gap: 16px;
 	}
 	&__header {
-		background-color: #fff;
 		@include font(
 			$font_weight: 700,
 			$line_height: 25px,
@@ -129,7 +128,8 @@ body {
 		}
 	}
 	&__warning {
-		// maybe change later
+    @include flex($flex-direction: row);
+    column-gap: 8px;
 		@include font(
 			$font_weight: 400,
 			$line_height: 15px,

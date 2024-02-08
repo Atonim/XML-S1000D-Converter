@@ -38,6 +38,18 @@
       </span>
     </div>
   </div>
+  <!-- modal window
+<div class="result-page">
+		<h1 class="result-page__header header">
+			Файл успешно сконвертирован и загружен
+		</h1>
+		<button 
+			class="result-page__back-btn" 
+			@click="$router.push({ name: 'main-page' })">
+			Назад
+		</button>
+	</div>
+  -->
 </template>
 
 <script>
@@ -83,7 +95,6 @@ export default {
       return uploaderFile.value.name.split('.').pop();
     }
 
-
     return {
       uploaderFile,
       isLoading,
@@ -122,9 +133,11 @@ export default {
         console.log('Request execution error: ' + error.message)
       } finally {
          this.toggleLoading()
-         this.$router.push({ name: 'result-page' });
+         //this.$router.push({ name: 'result-page' });
+         //replace modal window
       }
     }
   },
 };
 </script>
+
