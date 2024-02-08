@@ -20,11 +20,27 @@
 		</label>
 
 		<div
-			class="uploader__view-file"
+			class="uploader__file-view"
 			v-if="uploaderFile">
-			<div class="uploader__icon-file"></div>
-			<span>{{ uploaderFile.name.slice(0, maxLength) + "..." + uploaderFile.name.slice(-maxLength)}}</span>
-			<!--button?-->
+			<div class="uploader__file-name">
+				<img 
+          src="@/assets/img/png/DOC_file.png"
+          alt="doc"
+          class="uploader__file-icon"
+          srcset="@/assets/img/svg/DOC_file.svg"/>
+				<span>{{ uploaderFile.name.slice(0, maxLength) + "..." + uploaderFile.name.slice(-maxLength)}}</span>
+			</div>
+			<button
+				class="uploader__trash-btn">
+				<div class="uploader__trash-tooltip">
+					<img 
+          src="@/assets/img/png/trash.png"
+          alt="trash"
+          class="uploader__trash-icon"
+          srcset="@/assets/img/svg/trash.svg"/>
+					<span class="uploader__trash-tooltiptext">Удалить файл</span>
+				</div>
+			</button>
 		</div>
 		<!--<span 
 			v-if="uploaderFile">
