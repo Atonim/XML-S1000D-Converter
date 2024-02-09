@@ -5,6 +5,7 @@ export class xmlCreator {
     resultDocument = null
     levelStack = []
     isCurrentElementInSeq = true
+    // inserted = false
 
     constructor (infoCode, techName) {
         this.currentElement = new tags.dmodule(infoCode, techName)
@@ -39,12 +40,8 @@ export class xmlCreator {
     goToLastParent () {
         if (this.currentElement.name === "dmodule") {
             
-        } else
-        //  if (this.currentElement.parent.name === "dmodule") 
-        {
+        } else {
             this.currentElement = this.currentElement.parent
-        // } else if (this.currentElement.parent.parent) {
-        //     this.currentElement = this.currentElement.parent.parent
         }
     }
 
@@ -94,6 +91,7 @@ export class xmlCreator {
                 this.goToLastParent()
             }
 
+            // this.inserted = true
             newL.parent = this.currentElement
             this.currentElement.content.push(newL)
             this.currentElement = newL
@@ -110,10 +108,11 @@ export class xmlCreator {
             if(this.isCurrentElementInSeq) {
                 this.goToLastInsertedPara()
             } else {
-                console.log("goUp!!!")
+                // console.log("goUp!!!")
                 this.goToLastParent()
             }
 
+            // this.inserted = true
             newL.parent = this.currentElement
             this.currentElement.content.push(newL)
             this.currentElement = newL
@@ -161,13 +160,14 @@ export class xmlCreator {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
-        // console.log("this.levelStack", this.levelStack, this.levelStack.length, typeof(seqId))
+        let newT = new tags.text(String(this.levelStack))
+        this.currentElement.content.push(newT)
         
-        if (seqId === null) {
-            // console.log("HERE")
-            return true
-        }
-        if (seqId && this.levelStack.length === 0) {
+        // if (seqId === null) {
+        //     return true
+        // }
+        // if (seqId && this.levelStack.length === 0) {
+        if (this.levelStack.length === 0) {
             this.levelStack.push(seqId)
             return true
         }
@@ -175,21 +175,28 @@ export class xmlCreator {
             return true
         }
         if (seqId && this.levelStack.indexOf(seqId) !== -1 && this.levelStack.at(-1) !== seqId) {
-            // console.log("HERE")
             while(this.levelStack.at(-1) !== seqId) {
-                if (this.levelStack.at(-1) !== "a1") {this.goUp()
-                this.goUp()
-                this.goUp()}
+                if (this.levelStack.at(-2) === "a1") {
+
+                } else if (this.levelStack.at(-2) === "4a") {
+                    // this.goUp()
+                } else {
+                    this.goUp()
+                    this.goUp()
+                    this.goUp()
+                    // this.goToLastParent()
+                    // this.goToLastParent()
+                    // this.goToLastParent()
+                }
                 this.levelStack.pop()
             }
             return false
-        // } else if (this.levelStack.lenght === 1 && this.levelStack.at(0) !== seqId) {
-        //     levelStack.pop()
-        //     return false
-        } else if (seqId && this.levelStack.indexOf(seqId) === -1) {
+        // } else if (seqId && this.levelStack.indexOf(seqId) === -1) {
+        } else if (this.levelStack.indexOf(seqId) === -1) {
             this.levelStack.push(seqId)
             this.goDown()
             this.goDown()
+            // this.goToLastInsertedPara()
             // this.goDown()
             return true
         }
@@ -204,7 +211,7 @@ export class xmlCreator {
         if (this.isCurrentElementInSeq && seqVariants.indexOf(this.currentElement.name) !== -1) {
             // console.log()
             this.addListItem(paragraf)
-        } else if (!this.isCurrentElementInSeq && seqVariants.indexOf(this.currentElement.name) !== -1) {
+        } else if (!this.isCurrentElementInSeq) {
             // this.goToLastParent()
             // this.goToLastParent()
             // this.goToLastParent()
@@ -227,13 +234,14 @@ export class xmlCreator {
             this.addPara(paragraf)
         }
 
-        if (paragraf.endsWith(':') && this.currentElement.name === "sequentialList") {
-            // console.log("randomList detected")
-            this.addRandomList()
-        } else if (paragraf.endsWith(':')) {
-            // console.log("sequentialList detected")
-            this.addSequentialList()
-        }
+            if (paragraf.endsWith(':') && this.currentElement.name === "sequentialList" && this.currentElement.content[0]) {
+                // console.log("randomList detected", )
+                this.addRandomList()
+            } else if (paragraf.endsWith(':') && this.currentElement.content[0]) {
+                // console.log("sequentialList detected", paragraf)
+                this.addSequentialList()
+            }
+        // this.inserted = false
     }
 
 }
