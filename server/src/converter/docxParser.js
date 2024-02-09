@@ -3,17 +3,27 @@
 //      stack possibly can be too small for some cases
 
 import { DOMParser } from 'xmldom'
+import { fileName } from '../fileName.js'
 
 export class docxParser {
     document = null
+    documentRels = null
     DOMxml = null
     oParser = new DOMParser()
     currentNode = null
-
-    constructor(doc) {
+    imagesRels = {}
+    constructor(doc, docRels) {
         this.document = doc
+        this.documentRels = docRels
         this.DOMxml = this.oParser.parseFromString(this.document, "text/xml")
+        this.DOMxmlRels = this.oParser.parseFromString(this.documentRels, "text/xml")
         this.currentNode = this.DOMxml.lastChild.childNodes[0] // w:body
+        this.currentRelsNode = this.DOMxmlRels.lastChild.childNodes[0] // w:body
+        console.log('-----------')
+        console.log(this.DOMxmlRels)
+        console.log('-----------')
+        //console.log(this.relsCurrentNode)
+        //console.log('-----------')
     }
 
     getTechName() {
@@ -58,9 +68,31 @@ export class docxParser {
         return paragrafText
     }
 
+    getRelsPara() {
+        if (this.currentRelsNode.tagName === undefined || Object.keys(this.currentRelsNode.childNodes) == false) { return "" }
+        this.currentRelsNode = this.currentRelsNode.firstChild
+        let paragrafText = this.getFullParagraf("")
+        this.currentNode = this.currentNode.parentNode
+        return paragrafText
+    }
+
     isEnter() {
         if (this.currentNode.tagName === "w:p" && this.getPara() === "") return true
         return false
+    }
+
+    isRelsEnter() {
+        if (this.currentRelsNode.tagName === "w:p" && this.getRelsPara() === "") return true
+        return false
+    }
+
+    getRelsContents() {
+        while (this.currentRelsNode) {
+            if (this.currentRelsNode.attributes[1].value.endsWith('/image'))
+                this.imagesRels[fileName(this.currentRelsNode.attributes[2].value)] = this.currentRelsNode.attributes[0].value
+            this.currentRelsNode = this.currentRelsNode.nextSibling
+        }
+        return this.imagesRels
     }
 
     getContents() {
@@ -212,5 +244,7 @@ export class docxParser {
         }
         return false
     }
+
+
 
 }

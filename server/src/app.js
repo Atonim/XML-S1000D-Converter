@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer'
 import morgan from 'morgan';
-import { startUnzip } from "./converter/jszip.js";
+import { startUnzip } from "./jszip.js";
 
 const app = express();
 const corsOptions = {

@@ -25,7 +25,3 @@ export async function fileSelector(unzipped) {
   return { media, documentRels, document };
 }
 
-const fileName = (fullPath) => {
-  let fileNameArr = fullPath.split("/")
-  return fileNameArr[fileNameArr.length - 1];
-}
