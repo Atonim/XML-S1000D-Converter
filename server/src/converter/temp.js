@@ -4202,7 +4202,7 @@ w:hAnsiTheme="minorHAnsi" w:cstheme="minorBidi" />
 <w:t>Технические х</w:t>
 </w:r>
 <w:r w:rsidR="00D6618F">
-<w:t>арактеристики</w:t>
+<w:t>арактеристики:</w:t>
 </w:r>
 <w:bookmarkEnd w:id="11" />
 <w:r w:rsidR="00D6618F">
@@ -40667,3 +40667,4 @@ w:footer="709" w:gutter="0" />
 </w:sectPr>
 </w:body>
 </w:document>`
+

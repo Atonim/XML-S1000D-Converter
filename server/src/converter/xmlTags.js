@@ -2,6 +2,7 @@
 //  - In *dmodule* class: media can be not only jpeg
 //  - In *internalRef* class: how to show 1 tag in *stringify*                          (soluted)
 //  - 58
+//  - In *dmodule* class: in stringifing media, loop .forEach() will not work
 // All classes override this methods:
 //  :constructor (params?)          -> create object
 //  :addContent (newElement)        -> add content *newElement* inside current tag
@@ -207,11 +208,14 @@ export class levelledPara extends Tag {
 }
 
 export class title extends Tag {
-    constructor () {
+    constructor (title) {
         super()
         this.name       = "title"
         this.openTag    = `title`
         this.closeTag   = `/title`
+        let newT = new text(title)
+        newT.parent = this
+        this.content.push(newT)
     }
 }
 
