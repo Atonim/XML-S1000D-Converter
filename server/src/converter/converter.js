@@ -1,6 +1,7 @@
 
 import * as tegs from "./xmlTags.js"
 import { document } from "./temp.js"
+import { documentRels } from "./temp2.js"
 import { docxParser } from "./docxParser.js"
 import { xmlCreator } from "./xmlCreator.js"
 import { codes } from "./codes.js"
@@ -14,21 +15,18 @@ export class convertor {
     // xmlCreator = null
     documentContents = null
     techName = "default name"
+    imageIdObject = null
+    idImage_S1000D_Object = {}
+    result = {
+        "Images": {},
+        "XML": {}
+    }
 
     constructor(document, documentRels) {
         //this.media = media
         this.documentRels = documentRels
-        this.imagesId = {
-            'image1.jpeg': 'rId8',
-            'image2.jpeg': 'rId9',
-            'image3.jpeg': 'rId10',
-            'image4.jpeg': 'rId11',
-            'image5.jpeg': 'rId12',
-            'image17.emf': 'rId24',
-            'image18.emf': 'rId25',
-        }
         this.document = document
-        this.docxParser = new docxParser(this.document)
+        this.docxParser = new docxParser(this.document, this.documentRels)
         this.codesToString()
 
         for (const code of this.stringCodes) {
@@ -67,16 +65,18 @@ export class convertor {
 
     startLogic() {
         this.techName = this.docxParser.getTechName()
+        this.imageIdObject = this.docxParser.getRelsContents()
+
+        this.setMediaObjects()
+
         this.documentContents = this.docxParser.getContents()
 
-        let result = {
-            "Images": {},
-            "XML": {}
-        }
         this.builder()
-        this.setResult(result)
+        // this.setResult(result)
+        // return result
+        this.setResultXML()
         console.log(this.files['030'].stringify())
-        return result
+        return this.result
     }
 
     builder() {
@@ -93,21 +93,21 @@ export class convertor {
         }
 
     }
-
-    setResult(result) {
-        for (let infoCode of this.stringCodes) {
-            let key = "DMC-VBMA-A-46-20-01-00A-" + infoCode + "A-A_000_01_ru_RU.xml"
-            result.XML[key] = this.files[infoCode].stringify()
-        }
-
-        const imagesNames = Object.keys(this.imagesId)
-        let index = 1
+    setMediaObjects() {
+        let imagesNames = Object.keys(this.imageIdObject)
 
         for (let name of imagesNames) {
-            let stringIndex = this.indexToString(index)
+            let stringIndex = this.indexToString(name.split('.')[0].slice(5))
             let convertedName = "ICN-VBMA-A-462001-A-00000-" + stringIndex + "-A-001-1.jpg"
-            result.Images[name] = convertedName
-            index++
+            this.result.Images[name] = convertedName
+            this.idImage_S1000D_Object[this.imageIdObject[name]] = convertedName
+        }
+    }
+
+    setResultXML() {
+        for (let code of this.stringCodes) {
+            let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
+            this.result.XML[key] = this.files[code].stringify()
         }
     }
 
@@ -183,7 +183,7 @@ export class convertor {
     }
 }
 
-let a = new convertor(document, 1,1)
+let a = new convertor(document, documentRels)
 // a.startPrototype()
 a.start()
 // console.log(a.start())

@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-
+import { fileName } from '../fileName.js'
 export async function linker(result, media) {
   const zipped = new JSZip();
   let imgFolder = zipped.folder("Images");
@@ -9,7 +9,6 @@ export async function linker(result, media) {
   const imgFileNames = Object.keys(media)
 
   for (let filename of xmlFileNames) {
-
     xmlFolder.file(filename, result.XML[filename])
 
   }
@@ -18,10 +17,15 @@ export async function linker(result, media) {
     let fileData = await media[fullName].async('arraybuffer')
     imgFolder.file(result.Images[name], fileData)
   }
+  //console.log(imgFileNames)
+  for (let fullName of imgFileNames) {
+    let name = fileName(fullName)
+    let fileData = await media[fullName].async('arraybuffer')
+    //console.log(name)
+    if (result.Images[name] !== undefined)
+      imgFolder.file(result.Images[name], fileData)
+  }
   return zipped;
 }
 
-const fileName = (fullPath) => {
-  let fileNameArr = fullPath.split("/")
-  return fileNameArr[fileNameArr.length - 1];
-}
+
