@@ -69,23 +69,23 @@ export class docxParser {
         return paragrafText
     }
 
-    getRelsPara() {
-        if (this.currentRelsNode.tagName === undefined || Object.keys(this.currentRelsNode.childNodes) == false) { return "" }
-        this.currentRelsNode = this.currentRelsNode.firstChild
-        let paragrafText = this.getFullParagraf("")
-        this.currentNode = this.currentNode.parentNode
-        return paragrafText
-    }
+    // getRelsPara() {
+    //     if (this.currentRelsNode.tagName === undefined || Object.keys(this.currentRelsNode.childNodes) == false) { return "" }
+    //     this.currentRelsNode = this.currentRelsNode.firstChild
+    //     let paragrafText = this.getFullParagraf("")
+    //     this.currentNode = this.currentNode.parentNode
+    //     return paragrafText
+    // }
 
     isEnter() {
         if (this.currentNode.tagName === "w:p" && this.getPara() === "") return true
         return false
     }
 
-    isRelsEnter() {
-        if (this.currentRelsNode.tagName === "w:p" && this.getRelsPara() === "") return true
-        return false
-    }
+    // isRelsEnter() {
+    //     if (this.currentRelsNode.tagName === "w:p" && this.getRelsPara() === "") return true
+    //     return false
+    // }
 
     getRelsContents() {
         while (this.currentRelsNode) {
