@@ -86,11 +86,11 @@ export class xmlCreator {
         //  включаем в структуру документа sequentialList
         if (this.currentElement) {
             let newL = new tags.sequentialList()
-            if(this.isCurrentElementInSeq) {
+            // if(this.isCurrentElementInSeq) {
                 this.goToLastInsertedPara()
-            } else {
-                this.goToLastParent()
-            }
+            // } else {
+                // this.goToLastParent()
+            // }
 
             // this.inserted = true
             newL.parent = this.currentElement
@@ -106,12 +106,12 @@ export class xmlCreator {
         if (this.currentElement) {
             let newL = new tags.randomList()
             // console.log
-            if(this.isCurrentElementInSeq) {
+            // if(this.isCurrentElementInSeq) {
                 this.goToLastInsertedPara()
-            } else {
+            // } else {
                 // console.log("goUp!!!")
-                this.goToLastParent()
-            }
+                // this.goToLastParent()
+            // }
 
             // this.inserted = true
             newL.parent = this.currentElement
@@ -120,7 +120,7 @@ export class xmlCreator {
         }
     }
 
-    addLeveledPara (title="defaulr title") {
+    addLeveledPara (title="default title") {
         let newLP = new tags.levelledPara()
         let newTi = new tags.title(title)
 
@@ -190,31 +190,33 @@ export class xmlCreator {
         }
     }
 
-    actualizeSeqSteck (paragraf, seqId) {
+    actualizeSeqStack (paragraf, seqId) {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
-        let newT = new tags.text(String(this.levelStack) + String(this.currentElement.name))
-        this.currentElement.content.push(newT)
+        // let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
+        // this.currentElement.content.push(newT)
         
         if (seqId === null) {
             return true
         }
+
         if (this.levelStack.length === 0) {
-            // if(seqId === "3e") {
-            //     this.addLeveledPara()
-            // }
+            if(seqId === "3e") {
+                this.addLeveledPara()
+            }
             this.levelStack.push(seqId)
             return true
         }
+
         if (seqId === this.levelStack.at(-1)) {
-            // this.checkNote(paragraf)
-            // if(seqId === "3e") {
-            //     this.goUp()
-            //     this.addLeveledPara()
-            // }
+            if(seqId === "3e") {
+                this.goUp()
+                this.addLeveledPara()
+            }
             return true
         }
+
         if (this.levelStack.indexOf(seqId) !== -1 && this.levelStack.at(-1) !== seqId) {
             while(this.levelStack.at(-1) !== seqId) {
                 if (this.levelStack.at(-1) === null) {
@@ -223,41 +225,36 @@ export class xmlCreator {
                     this.goUp()
                 } else if (this.levelStack.at(-1) === "4a") {
                 } else if (this.levelStack.at(-2) === "affffa") {
-                // } else if (this.levelStack.at(-1) === "preserve") {
+                } else if (this.levelStack.at(-1) === "preserve" && this.currentElement.name === "listItem") {
                 } else if (this.levelStack.at(-2) === "preserve") {
                 } else {
                     this.goUp()
                     this.goUp()
                     this.goUp()
                 }
-
                 this.levelStack.pop()
             }
             if(seqId === "3e") {
                 this.addLeveledPara()
             }
+            
             return false
-        // } else if (seqId && this.levelStack.indexOf(seqId) === -1) {
         } else if (this.levelStack.indexOf(seqId) === -1) {
             this.levelStack.push(seqId)
             if (seqId === "preserve" && this.seqVariants.indexOf(this.currentElement.name) !== -1) {
                 this.goDown()
                 this.goDown()
-                // this.addPara(paragraf)
                 this.goUp()
                 this.goUp()
-            // } else if(seqId === null) {
-            // } else if(seqId === "affffa") {
             } else if(seqId === "3e" && this.currentElement.name === "dmodule") {
                 this.addLeveledPara()
             } else {
                 this.goDown()
                 this.goDown()
             }
-            // this.goToLastInsertedPara()
-            // this.goDown()
             return true
         }
+
         return true
     }
 
@@ -266,9 +263,14 @@ export class xmlCreator {
         // if (paragraf.startsWith('Примечание – ')) {console.log(paragraf, paragraf.startsWith('Примечание - '))}
 
         // this.isCurrentElementInSeq = this.actualizeSeqSteck(paragraf, seqId)
-        if (this.isCurrentElementInSeq && this.seqVariants.indexOf(this.currentElement.name) !== -1) {
+        if (this.seqVariants.indexOf(this.currentElement.name) !== -1) {
             // console.log()
+            // this.addListItem(paragraf + " [" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
             this.addListItem(paragraf)
+            // this.goDown()
+            // this.chooseTextParagraf(paragraf, seqId)
+            // this.goUp()
+
         // } else if (!this.isCurrentElementInSeq) {
         //     // this.goToLastParent()
         //     // this.goToLastParent()
@@ -294,6 +296,7 @@ export class xmlCreator {
             this.addNote(paragraf.replace("Примечание - ", ''))
         }
         else {
+            // this.addPara(paragraf + " [" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
             this.addPara(paragraf)
         }
 
@@ -303,7 +306,7 @@ export class xmlCreator {
 
     chooseTag (paragraf, seqId) {
         if (paragraf) {
-        this.isCurrentElementInSeq = this.actualizeSeqSteck(paragraf, seqId)
+            this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
             // console.log(paragraf)
             this.chooseTextParagraf(paragraf, seqId)
         }

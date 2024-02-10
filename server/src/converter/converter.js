@@ -75,7 +75,7 @@ export class convertor {
         }
         this.builder()
         this.setResult(result)
-        console.log(this.files['044'].stringify())
+        console.log(this.files['030'].stringify())
         return result
     }
 
