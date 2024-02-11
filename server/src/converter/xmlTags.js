@@ -217,6 +217,10 @@ export class title extends Tag {
         newT.parent = this
         this.content.push(newT)
     }
+
+    stringify (level) {
+        return `\n${paddng(level)}<${this.openTag}${this.attribute}>${this.content[0].stringify(0)}<${this.closeTag}>`
+    }
 }
 
 export class internalRef extends Tag {
@@ -242,7 +246,11 @@ export class graphic extends Tag {
         super()
         this.name       = "graphic"
         this.openTag    = `graphic`
-        this.closeTag   = `/graphic`
+        this.closeTag   = ``
+    }
+
+    stringify (level) {
+        return `\n${paddng(level)}<${this.openTag}${this.attribute}>`
     }
 }
 

@@ -3,13 +3,16 @@ import * as tags from "./xmlTags.js"
 export class xmlCreator {
     currentElement = null
     resultDocument = null
+    imagesList = null
     levelStack = []
     isCurrentElementInSeq = true
     seqVariants = ["sequentialList", "randomList"]
     // inserted = false
 
-    constructor (infoCode, techName) {
+    constructor (infoCode, techName, imagesList) {
         this.currentElement = new tags.dmodule(infoCode, techName)
+        this.imagesList = imagesList
+        // console.log(imagesList)
         // let newElement = new tags.caution()
         // newElement.parent = this.currentElement
         // this.currentElement.addContent(newElement)
@@ -24,7 +27,7 @@ export class xmlCreator {
 
     goDown () {
         if (this.currentElement && this.currentElement.content.lenght) {
-            this.currentElement = this.currentElement.content[0]
+            this.currentElement = this.currentElement.content.at(-1)
         }
     }
 
@@ -86,13 +89,8 @@ export class xmlCreator {
         //  включаем в структуру документа sequentialList
         if (this.currentElement) {
             let newL = new tags.sequentialList()
-            // if(this.isCurrentElementInSeq) {
-                this.goToLastInsertedPara()
-            // } else {
-                // this.goToLastParent()
-            // }
-
-            // this.inserted = true
+            this.goToLastInsertedPara()
+                
             newL.parent = this.currentElement
             this.currentElement.content.push(newL)
             this.currentElement = newL
@@ -105,15 +103,8 @@ export class xmlCreator {
         //  включаем в структуру документа randomList
         if (this.currentElement) {
             let newL = new tags.randomList()
-            // console.log
-            // if(this.isCurrentElementInSeq) {
-                this.goToLastInsertedPara()
-            // } else {
-                // console.log("goUp!!!")
-                // this.goToLastParent()
-            // }
+            this.goToLastInsertedPara()
 
-            // this.inserted = true
             newL.parent = this.currentElement
             this.currentElement.content.push(newL)
             this.currentElement = newL
@@ -190,12 +181,41 @@ export class xmlCreator {
         }
     }
 
+    addFigure (rIds, paragraf) {
+        rIds.forEach(element => {
+            let newF = new tags.figure()
+            // let newT = new tags.title(paragraf)
+            let newG = new tags.graphic()
+            newG.addAttribute(` infoEntityIdent="${this.imagesList[element]}"`)
+            newF.addAttribute(` id="fig-${element.replace('rId', '')}"`)
+
+            newF.parent = this.currentElement
+            newG.parent = newF
+            // newT.parent = newF
+
+            // newF.addContent(newT)
+            newF.addContent(newG)
+            this.currentElement.addContent(newF)
+        })
+    }
+
+    addFigureTitle (paragraf) {
+        this.currentElement = this.currentElement.content.at(-1)
+
+        let newT = new tags.title(paragraf)
+        newT.parent = this.currentElement
+        this.currentElement.content.unshift(newT)
+
+        this.goUp()
+    }
+
     actualizeSeqStack (paragraf, seqId) {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
-        // let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
-        // this.currentElement.content.push(newT)
+        let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
+        this.currentElement.addContent(newT)
+        newT.setParent(this.currentElement)
         
         if (seqId === null) {
             return true
@@ -283,6 +303,14 @@ export class xmlCreator {
         } else if (this.currentElement.name === "caution" && paragraf !== paragraf.toUpperCase()) {
             this.goUp()
             this.chooseTextParagraf(paragraf, seqId)
+        } else if (paragraf.startsWith("Рисунок")) {
+            // console.log(this.currentElement.content.at(-1).name)
+            // console.log(this.currentElement.name)
+            // if (this.currentElement.name !== "figure") { this.goDown() }
+            this.addFigureTitle(paragraf)
+            // this.goUp()
+            // this.goUp()
+
         } else if (paragraf.startsWith("ВНИМАНИЕ: ")) {
             // console.log("ВНИМАНИЕ", paragraf)
             this.addCaution()
@@ -304,11 +332,14 @@ export class xmlCreator {
 
     }
 
-    chooseTag (paragraf, seqId) {
+    chooseTag (paragraf, seqId, imageIds) {
         if (paragraf) {
             this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
             // console.log(paragraf)
             this.chooseTextParagraf(paragraf, seqId)
+        } else if (imageIds) {
+            // console.log(imageIds)
+            this.addFigure(imageIds)
         }
     }
 

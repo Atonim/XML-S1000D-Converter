@@ -18,13 +18,8 @@ export class docxParser {
         this.documentRels = docRels
         this.DOMxml = this.oParser.parseFromString(this.document, "text/xml")
         this.DOMxmlRels = this.oParser.parseFromString(this.documentRels, "text/xml")
-        this.currentNode = this.DOMxml.lastChild.childNodes[1] // w:body
-        this.currentRelsNode = this.DOMxmlRels.lastChild.childNodes[1] // w:body
-        // console.log('-----------')
-        // console.log(this.DOMxmlRels)
-        // console.log('-----------')
-        // console.log(this.currentRelsNode.tagName)
-        //console.log('-----------')
+        this.currentNode = this.DOMxml.lastChild.childNodes[0] // w:body
+        this.currentRelsNode = this.DOMxmlRels.lastChild.childNodes[0] // w:body
     }
 
     getTechName() {
@@ -45,14 +40,19 @@ export class docxParser {
             buffer = this.getFullParagraf(buffer)
             this.currentNode = this.currentNode.parentNode
         }
+        if (this.currentNode.tagName === "w:fldSimple") {
+            let stratIndex = this.currentNode.attributes[0].value.indexOf("_Ref")
+            if (stratIndex !== -1){
+                let address = this.currentNode.attributes[0].value.substring(stratIndex)
+                let finishIndex = address.indexOf(" ")
+                address = address.substring(0, finishIndex)
+                // console.log("REF:========:", this.currentNode.attributes[0].value, "}"+address)
+                buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
+                return buffer
+            }
+        }
         if (this.currentNode.tagName === "w:t") {
             buffer += this.currentNode.firstChild
-            // let textNode = this.currentNode.firstChild  // Same as string higher, but must work in case when text separeted in many Text elements
-            // buffer += textNode.data
-            // while (textNode.nextSibling) {
-            //     textNode = textNode.nextSibling
-            //     buffer += textNode.data
-            // }
         }
         if (this.currentNode.nextSibling !== null) {
             this.currentNode = this.currentNode.nextSibling
@@ -184,39 +184,17 @@ export class docxParser {
     }
 
     getStyleId() {
-            // console.log(this.currentNode.childNodes[1].childNodes[1].attributes[0].value)
         try {
-            return this.currentNode.childNodes[1].childNodes[1].attributes[0].value
+            return this.currentNode.childNodes[0].childNodes[0].attributes[0].value
         } catch (e) {
             return null
         }
-    }
-
-    getNextParagraf() {
-        // if (this.currentNode.nextSibling === undefined) {console.log("undefined")}
-        this.currentNode = this.currentNode.nextSibling
-        let buffer = ""
-
-        while (!this.isEnter() && buffer === "") {
-            buffer = this.getPara()
-            this.currentNode = this.currentNode.nextSibling
-        }
-        // console.log(this.currentNode.tagName)
-
-        if (buffer !== "") {
-            return { "status": "success", "value": buffer }
-        }
-        return { "status": "fail", "value": buffer }
     }
 
     nextParagraf() {
         if (this.currentNode.nextSibling) {
             this.currentNode = this.currentNode.nextSibling
         }
-        // while (this.currentNode.nextSibling && this.currentNode.tagName === undefined) {
-        //     this.currentNode = this.currentNode.nextSibling
-        // }
-        // console.log("next", this.currentNode.tagName)
     }
 
     prevSibling() {
@@ -233,7 +211,6 @@ export class docxParser {
             }
             if (node.tagName === "w:bookmarkStart") {
                 if (String(node.attributes[1].nodeValue) === String(id)) {
-                    // console.log(node.attributes[1].nodeValue, id)
                     return true
                 }
             }
@@ -252,6 +229,25 @@ export class docxParser {
         return false
     }
 
-
+    getImageRId (node = this.currentNode.firstChild, id = null) {
+        // Method run tree recursively, while searching every a:blip tag 
+        //  - It returns xor null if no images found, xor array of rId's
+        if (node) {
+            if (node.tagName !== "a:blip" && this.hasChild(node)) {
+                id = this.getImageRId(node.firstChild, id)
+            }
+            if (node.tagName === "a:blip") {
+                if (id !== null) {
+                    id.push(node.attributes[0].value)
+                } else {
+                    id = [node.attributes[0].value]
+                }
+            }
+            if (node.nextSibling !== null) {
+                id = this.getImageRId(node.nextSibling, id)
+            }
+        }
+        return id
+    }
 
 }

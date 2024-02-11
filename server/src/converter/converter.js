@@ -75,7 +75,7 @@ export class convertor {
         // this.setResult(result)
         // return result
         this.setResultXML()
-        console.log(this.files['030'].stringify())
+        console.log(this.files['044'].stringify())
         return this.result
     }
 
@@ -157,20 +157,27 @@ export class convertor {
     }
 
     build(code) {
-        let creator = new xmlCreator(code, this.techName)
+        let creator = new xmlCreator(code, this.techName, this.idImage_S1000D_Object)
 
         let id = this.documentContents.find(element => element.infoCode === code).startId
         let element = this.docxParser.nextParagraf()
-        // console.log(id)
         while (!this.docxParser.hasBookmarkId(id)) {
             element = this.docxParser.nextParagraf()
         }
-        // console.log(id)
 
         id = this.documentContents.find(element => element.infoCode === code).stopId
         while (!this.docxParser.hasBookmarkId(id)) {
             let paragrafText = this.docxParser.getPara().trim()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId())
+            let imagesIds = this.docxParser.getImageRId()
+                creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds)
+            if (paragrafText) {
+            } else if (imagesIds) {
+                // this.docxParser.nextParagraf()
+                // this.docxParser.nextParagraf()
+                // creator.addFigure(imagesIds, this.docxParser.getPara().trim())
+                // if (this.docxParser.hasBookmarkId(id)) { break }
+            }
+            
             // if (paragrafText.trim() != "") {
             //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
             // // if (code === "030") { console.log(paragrafText) }
@@ -183,7 +190,7 @@ export class convertor {
     }
 }
 
-let a = new convertor(document, documentRels)
-// a.startPrototype()
-a.start()
-// console.log(a.start())
+// let a = new convertor(document, documentRels)
+// // a.startPrototype()
+// a.start()
+// // console.log(a.start())
