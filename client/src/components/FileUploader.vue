@@ -24,27 +24,28 @@
 			v-if="uploaderFile">
 			<div class="uploader__file-name">
 				<img 
-          src="@/assets/img/png/DOC_file.png"
+          src="@/assets/img/png/doc_file.png"
           alt="doc"
           class="uploader__file-icon"
-          srcset="@/assets/img/svg/DOC_file.svg"/>
-				<span>{{ uploaderFile.name.slice(0, maxLength) + "..." + uploaderFile.name.slice(-maxLength)}}</span>
+          srcset="@/assets/img/svg/doc_file.svg"/>
+				<span v-if="uploaderFile.name.length > maxLength * 2">{{ uploaderFile.name.slice(0, maxLength) + "..." + uploaderFile.name.slice(-maxLength)}}</span>
+				<span v-else>{{ uploaderFile.name }}</span>
 			</div>
 			<button
-				class="uploader__trash-btn">
+				class="uploader__trash-btn"
+				@click="$emit('deleteFile')">
 				<div class="uploader__trash-tooltip">
 					<img 
           src="@/assets/img/png/trash.png"
           alt="trash"
           class="uploader__trash-icon"
           srcset="@/assets/img/svg/trash.svg"/>
-					<span class="uploader__trash-tooltiptext">Удалить файл</span>
+					<span class="uploader__trash-tooltip-text">
+						Удалить файл
+					</span>
 				</div>
 			</button>
 		</div>
-		<!--<span 
-			v-if="uploaderFile">
-		</span>-->
 	</div>
 </template>
 
@@ -60,7 +61,7 @@ export default {
 	},
 	setup() {
 		const active = ref(false)
-		const maxLength = 11;
+		const maxLength = 12;
 		const toggleActive = () => {
 			active.value = !active.value
 		}

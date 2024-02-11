@@ -18,6 +18,7 @@
         <FileUploader 
           @drop.prevent="drop" 
           @change="selectedFile"
+          @deleteFile="deleteFile"
           :uploaderFile="uploaderFile"
         />
       <button 
@@ -36,38 +37,32 @@
           srcset="@/assets/img/svg/error.svg"/>
         {{ message }}
       </span>
+      <DialogWindow 
+        :isDownload="isDownload"
+        @hideWindow="showHideDialogWindow"/>
     </div>
   </div>
-  <!-- modal window
-<div class="result-page">
-		<h1 class="result-page__header header">
-			Файл успешно сконвертирован и загружен
-		</h1>
-		<button 
-			class="result-page__back-btn" 
-			@click="$router.push({ name: 'main-page' })">
-			Назад
-		</button>
-	</div>
-  -->
 </template>
 
 <script>
 import FileUploader from '@/components/FileUploader'
+import DialogWindow from '@/components/DialogWindow.vue'
 import b64ToBlob from 'b64-to-blob'
 import FileSaver from 'file-saver'
 import { ref } from 'vue'
 
 export default {
   components: {
-    FileUploader
-  },
+    FileUploader,
+    DialogWindow,
+},
 
   setup() {
     let uploaderFile = ref('');
-    const isLoading = ref(false);
     const message = ref('');
-
+    const isLoading = ref(false);
+    const isDownload = ref(false);
+    
     const drop = (e) => {
       uploaderFile.value = e.dataTransfer.files[0];
 
@@ -93,10 +88,14 @@ export default {
     };
     const getFileExtension = () => {
       return uploaderFile.value.name.split('.').pop();
-    }
+    };
+    const showHideDialogWindow = () => {
+      isDownload.value = !isDownload.value;
+    };
 
     return {
       uploaderFile,
+      isDownload,
       isLoading,
       message,
 
@@ -105,7 +104,8 @@ export default {
       deleteFile,
       toggleLoading,
       setMessage,
-      getFileExtension
+      getFileExtension,
+      showHideDialogWindow
     };
   },
 
@@ -132,9 +132,9 @@ export default {
       } catch (error) {
         console.log('Request execution error: ' + error.message)
       } finally {
-         this.toggleLoading()
-         //this.$router.push({ name: 'result-page' });
-         //replace modal window
+        this.toggleLoading()
+        this.showHideDialogWindow()
+        this.deleteFile()
       }
     }
   },

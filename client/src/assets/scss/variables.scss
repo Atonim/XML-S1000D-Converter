@@ -5,9 +5,11 @@ $blue_3: #91b4cb;
 $blue_4: #6499B9;
 
 $gray_blue_1: #F5F7FA;
+$gray_blue_2: #e8ebed;
 $gray_blue_3: #e1e4e6;
 $gray_blue_7: #414e5b;
 
+$gray_1: #FFFFFF;
 $gray_4: #e6e6e6;
 $gray_5: #D9D9D9;
 $gray_6: #CCCCCC;
@@ -18,7 +20,9 @@ $gray_12: #333333;
 $tooltip_bg_color: #ffffcd;
 
 // sizes
+$heightDragDrop: 210px;
 $widthDragDrop: 280px;
 $widthDragDrop_md:calc($widthDragDrop * 1.5);
+$tooltip_size: 100px;
 
 $transition: 0.3s ease all;
