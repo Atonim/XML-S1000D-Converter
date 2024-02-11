@@ -200,22 +200,23 @@ export class xmlCreator {
     }
 
     addFigureTitle (paragraf) {
-        this.currentElement = this.currentElement.content.at(-1)
+        for (let tag of this.currentElement.content) {
+            if (tag.name === "figure" && tag.content[0] && tag.content[0].name === "graphic") {
 
-        let newT = new tags.title(paragraf)
-        newT.parent = this.currentElement
-        this.currentElement.content.unshift(newT)
-
-        this.goUp()
+                let newT = new tags.title(paragraf)
+                newT.setParent(tag)
+                tag.content.unshift(newT)
+            }
+        }
     }
 
     actualizeSeqStack (paragraf, seqId) {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
-        let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
-        this.currentElement.addContent(newT)
-        newT.setParent(this.currentElement)
+        // let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
+        // this.currentElement.addContent(newT)
+        // newT.setParent(this.currentElement)
         
         if (seqId === null) {
             return true
@@ -304,6 +305,7 @@ export class xmlCreator {
             this.goUp()
             this.chooseTextParagraf(paragraf, seqId)
         } else if (paragraf.startsWith("Рисунок")) {
+            // console.log(paragraf)
             // console.log(this.currentElement.content.at(-1).name)
             // console.log(this.currentElement.name)
             // if (this.currentElement.name !== "figure") { this.goDown() }
