@@ -42,7 +42,7 @@ export class docxParser {
         }
         if (this.currentNode.tagName === "w:fldSimple") {
             let stratIndex = this.currentNode.attributes[0].value.indexOf("_Ref")
-            if (stratIndex !== -1){
+            if (stratIndex !== -1) {
                 let address = this.currentNode.attributes[0].value.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
@@ -191,6 +191,67 @@ export class docxParser {
         }
     }
 
+    getTable() {
+        let result = { id: 2 }
+
+        if (this.currentNode.tagName != 'w:tbl')
+            return null
+
+        result.id = 2
+        let currentTableNode = this.currentNode.firstChild
+
+        while (currentTableNode.tagName !== 'w:tblGrid') {
+            currentTableNode = currentTableNode.nextSibling
+        }
+
+        result.columns = currentTableNode.childNodes.length
+        result.globalrows = 0
+
+        while (currentTableNode.tagName != 'w:tr') {
+            currentTableNode = currentTableNode.nextSibling
+        }
+
+        let currentRowTableNode = currentTableNode.firstChild
+
+        result.text = []
+        while (currentRowTableNode) {
+            if (currentRowTableNode.tagName == 'w:tc') {
+                let currentColumnTableNode = currentRowTableNode.firstChild
+                while (currentColumnTableNode) {
+                    if (currentColumnTableNode.tagName == 'w:p') {
+                        let currentParaNode = currentColumnTableNode.firstChild
+                        while (currentParaNode) {
+                            if (currentParaNode.tagName == 'w:r') {
+                                let currentTextRowNode = currentParaNode.firstChild
+                                while (currentTextRowNode) {
+                                    if (currentTextRowNode.tagName == 'w:t') {
+                                        let currentTextNode = currentParaNode.firstChild
+                                        result.text.push(currentTextNode.firstChild)
+                                        console.log(currentTextNode.firstChild)
+                                    }
+                                    currentTextRowNode = currentTextRowNode.nextSibling
+                                }
+                            }
+                            currentParaNode = currentParaNode.nextSibling
+                        }
+                    }
+                    currentColumnTableNode = currentColumnTableNode.nextSibling
+                }
+            }
+            currentRowTableNode = currentRowTableNode.nextSibling
+        }
+
+        while (currentTableNode) {
+            if (currentTableNode.tagName == 'w:tr') {
+                result.globalrows += 1
+            }
+            currentTableNode = currentTableNode.nextSibling
+
+        }
+        //console.log(this.currentNode.tagName)
+        return result
+    }
+
     nextParagraf() {
         if (this.currentNode.nextSibling) {
             this.currentNode = this.currentNode.nextSibling
@@ -229,7 +290,7 @@ export class docxParser {
         return false
     }
 
-    getImageRId (node = this.currentNode.firstChild, id = null) {
+    getImageRId(node = this.currentNode.firstChild, id = null) {
         // Method run tree recursively, while searching every a:blip tag 
         //  - It returns xor null if no images found, xor array of rId's
         if (node) {
