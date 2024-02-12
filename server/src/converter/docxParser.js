@@ -50,6 +50,16 @@ export class docxParser {
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
                 return buffer
             }
+        } else if (this.currentNode.tagName === "w:instrText") {
+            let stratIndex = this.currentNode.firstChild.data.indexOf("_Ref")
+            if (stratIndex !== -1){
+                let address = this.currentNode.firstChild.data.substring(stratIndex)
+                let finishIndex = address.indexOf(" ")
+                address = address.substring(0, finishIndex)
+                // console.log("REF:========:", this.currentNode.attributes[0].value, "}"+address)
+                buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
+                return buffer
+            }
         }
         if (this.currentNode.tagName === "w:t") {
             buffer += this.currentNode.firstChild
@@ -69,23 +79,10 @@ export class docxParser {
         return paragrafText
     }
 
-    // getRelsPara() {
-    //     if (this.currentRelsNode.tagName === undefined || Object.keys(this.currentRelsNode.childNodes) == false) { return "" }
-    //     this.currentRelsNode = this.currentRelsNode.firstChild
-    //     let paragrafText = this.getFullParagraf("")
-    //     this.currentNode = this.currentNode.parentNode
-    //     return paragrafText
-    // }
-
     isEnter() {
         if (this.currentNode.tagName === "w:p" && this.getPara() === "") return true
         return false
     }
-
-    // isRelsEnter() {
-    //     if (this.currentRelsNode.tagName === "w:p" && this.getRelsPara() === "") return true
-    //     return false
-    // }
 
     getRelsContents() {
         while (this.currentRelsNode) {
@@ -231,7 +228,7 @@ export class docxParser {
 
     getImageRId (node = this.currentNode.firstChild, id = null) {
         // Method run tree recursively, while searching every a:blip tag 
-        //  - It returns xor null if no images found, xor array of rId's
+        //  - It returns xor null if no images found, xor array of rIds
         if (node) {
             if (node.tagName !== "a:blip" && this.hasChild(node)) {
                 id = this.getImageRId(node.firstChild, id)
@@ -245,6 +242,27 @@ export class docxParser {
             }
             if (node.nextSibling !== null) {
                 id = this.getImageRId(node.nextSibling, id)
+            }
+        }
+        return id
+    }
+
+    getBookmarkId (node = this.currentNode.firstChild, id = null) {
+        // Method run tree recursively, while searching every w:bookmarkStart tag 
+        //  - It returns xor null if no bookmarks found, xor array of bookmarks names
+        if (node) {
+            if (node.tagName !== "w:bookmarkStart" && this.hasChild(node)) {
+                id = this.getBookmarkId(node.firstChild, id)
+            }
+            if (node.tagName === "w:bookmarkStart" && node.attributes[1].value.startsWith("_Ref")) {
+                if (id !== null) {
+                    id.push(node.attributes[1].value)
+                } else {
+                    id = [node.attributes[1].value]
+                }
+            }
+            if (node.nextSibling !== null) {
+                id = this.getBookmarkId(node.nextSibling, id)
             }
         }
         return id

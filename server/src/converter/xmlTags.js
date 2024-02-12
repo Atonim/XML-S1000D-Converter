@@ -18,6 +18,7 @@ class Tag {
     content     = []
     parent      = null
     tags        = 2
+    id          = null
 
     addContent (newElement) {
         this.content.push(newElement)

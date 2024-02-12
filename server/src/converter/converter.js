@@ -75,7 +75,7 @@ export class convertor {
         // this.setResult(result)
         // return result
         this.setResultXML()
-        console.log(this.files['044'].stringify())
+        console.log(this.files['410'])
         return this.result
     }
 
@@ -107,7 +107,7 @@ export class convertor {
     setResultXML() {
         for (let code of this.stringCodes) {
             let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
-            this.result.XML[key] = this.files[code].stringify()
+            this.result.XML[key] = this.files[code]
         }
     }
 
@@ -146,12 +146,13 @@ export class convertor {
         // this.docxParser.getStyleId()
         while (!this.docxParser.hasBookmarkId(id)) {
             let paragrafText = this.docxParser.getPara().trim()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId())
-            // if (paragrafText.trim() != "") {
-            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            // }
+            let imagesIds = this.docxParser.getImageRId()
+            let bookmarks = this.docxParser.getBookmarkId()
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, bookmarks)
+
             this.docxParser.nextParagraf()
         }
+        // console.log(creator.refsDict)
         this.docxParser.prevSibling()
         this.files['410'] = creator.getDocument()
     }
@@ -169,14 +170,9 @@ export class convertor {
         while (!this.docxParser.hasBookmarkId(id)) {
             let paragrafText = this.docxParser.getPara().trim()
             let imagesIds = this.docxParser.getImageRId()
-                creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds)
-            if (paragrafText) {
-            } else if (imagesIds) {
-                // this.docxParser.nextParagraf()
-                // this.docxParser.nextParagraf()
-                // creator.addFigure(imagesIds, this.docxParser.getPara().trim())
-                // if (this.docxParser.hasBookmarkId(id)) { break }
-            }
+            let bookmarks = this.docxParser.getBookmarkId()
+            // console.log(bookmarks)
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, bookmarks)
             
             // if (paragrafText.trim() != "") {
             //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
