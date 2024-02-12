@@ -1,6 +1,7 @@
 
-import * as tegs from "./xmlTegs.js"
+import * as tegs from "./xmlTags.js"
 import { document } from "./temp.js"
+import { documentRels } from "./temp2.js"
 import { docxParser } from "./docxParser.js"
 import { xmlCreator } from "./xmlCreator.js"
 import { codes } from "./codes.js"
@@ -71,7 +72,10 @@ export class convertor {
         this.documentContents = this.docxParser.getContents()
 
         this.builder()
+        // this.setResult(result)
+        // return result
         this.setResultXML()
+        console.log(this.files['044'].stringify())
         return this.result
     }
 
@@ -110,10 +114,16 @@ export class convertor {
     build_018() {
         let creator = new xmlCreator("018", this.techName)
 
-        let element = this.docxParser.getNextParagraf()
-        while (element.status === "success") {
-            creator.addPara(element.value)
-            element = this.docxParser.getNextParagraf()
+        // let element = this.docxParser.getNextParagraf()
+        this.docxParser.nextParagraf()
+        // let element = this.docxParser.getPara()
+        while (!this.docxParser.isEnter()) {
+            let paragrafText = this.docxParser.getPara().trim()
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId())
+            // if (paragrafText.trim() != "") {
+            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
+            // }
+            this.docxParser.nextParagraf()
         }
 
         this.files['018'] = creator.getDocument()
@@ -133,9 +143,13 @@ export class convertor {
         // console.log(id)
 
         id = this.documentContents.find(element => element.infoCode === "410").stopId
+        // this.docxParser.getStyleId()
         while (!this.docxParser.hasBookmarkId(id)) {
-            // console.log(this.docxParser.getPara(), this.docxParser.hasBookmarkId(id))
-            creator.addPara(this.docxParser.getPara())
+            let paragrafText = this.docxParser.getPara().trim()
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId())
+            // if (paragrafText.trim() != "") {
+            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
+            // }
             this.docxParser.nextParagraf()
         }
         this.docxParser.prevSibling()
@@ -143,20 +157,31 @@ export class convertor {
     }
 
     build(code) {
-        let creator = new xmlCreator(code, this.techName)
+        let creator = new xmlCreator(code, this.techName, this.idImage_S1000D_Object)
 
         let id = this.documentContents.find(element => element.infoCode === code).startId
         let element = this.docxParser.nextParagraf()
-        // console.log(id)
         while (!this.docxParser.hasBookmarkId(id)) {
             element = this.docxParser.nextParagraf()
         }
-        // console.log(id)
 
         id = this.documentContents.find(element => element.infoCode === code).stopId
         while (!this.docxParser.hasBookmarkId(id)) {
-            // console.log(this.docxParser.getPara(), this.docxParser.hasBookmarkId(id))
-            creator.addPara(this.docxParser.getPara())
+            let paragrafText = this.docxParser.getPara().trim()
+            let imagesIds = this.docxParser.getImageRId()
+                creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds)
+            if (paragrafText) {
+            } else if (imagesIds) {
+                // this.docxParser.nextParagraf()
+                // this.docxParser.nextParagraf()
+                // creator.addFigure(imagesIds, this.docxParser.getPara().trim())
+                // if (this.docxParser.hasBookmarkId(id)) { break }
+            }
+            
+            // if (paragrafText.trim() != "") {
+            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
+            // // if (code === "030") { console.log(paragrafText) }
+            // }
             this.docxParser.nextParagraf()
         }
         this.docxParser.prevSibling()
@@ -164,3 +189,8 @@ export class convertor {
         this.files[code] = creator.getDocument()
     }
 }
+
+// let a = new convertor(document, documentRels)
+// // a.startPrototype()
+// a.start()
+// // console.log(a.start())

@@ -1,22 +1,23 @@
 // Possible problems:
 //  - In *dmodule* class: media can be not only jpeg
-//  - In *internalRef* class: how to show 1 teg in *stringify*                          (soluted)
+//  - In *internalRef* class: how to show 1 tag in *stringify*                          (soluted)
 //  - 58
+//  - In *dmodule* class: in stringifing media, loop .forEach() will not work
 // All classes override this methods:
 //  :constructor (params?)          -> create object
-//  :addContent (newElement)        -> add content *newElement* inside current teg
-//  :addAttribute (attributeString) -> add attribute *attributeString* into open teg
-//  :stringify ()                   -> stringify current teg and it's content
-//  :setParent (element)            -> set link on parent teg *element*
+//  :addContent (newElement)        -> add content *newElement* inside current tag
+//  :addAttribute (attributeString) -> add attribute *attributeString* into open tag
+//  :stringify ()                   -> stringify current tag and it's content
+//  :setParent (element)            -> set link on parent tag *element*
 
-class Teg {
+class Tag {
     name        = ""
-    openTeg     = ""
-    closeTeg    = ""
+    openTag     = ""
+    closeTag    = ""
     attribute   = ""
     content     = []
     parent      = null
-    tegs        = 2
+    tags        = 2
 
     addContent (newElement) {
         this.content.push(newElement)
@@ -26,20 +27,21 @@ class Teg {
         this.attribute += ` ${attributeString}`
     }
 
-    stringify () {
+    stringify (level = 3) {
         let contentInside = ""
-        for (let i = 0; i < this.content.length; i++) {
-            contentInside += String(this.content[i].stringify())
+        for (let element of this.content) {
+            contentInside += String(element.stringify(level + 1))
         }
         // console.log("stringify: ", this.name, this.content.length, contentInside)
 
-        if (this.tegs === 2){
-    return `<${this.openTeg} ${this.attribute}>
-    ${contentInside}
-<${this.closeTeg}>
+        if (this.tags === 2){
+    return (
 `
+${paddng(level)}<${this.openTag} ${this.attribute}>
+${contentInside}
+${paddng(level)}<${this.closeTag}>`)
         } else {
-            return `<${this.openTeg}${this.attribute} />\n`
+            return `<${this.openTag}${this.attribute} />\n`
         }
     }
 
@@ -48,7 +50,7 @@ class Teg {
     }
 }
 
-export class dmodule extends Teg {
+export class dmodule extends Tag {
     constructor (infoCode = "018", techName = "default name") {
         super()
         let currentTime     = new Date()
@@ -58,7 +60,7 @@ export class dmodule extends Teg {
         let infoName        = infoTable.find(element => element.infoCode === infoCode).infoName
         this.media      = []
         this.name       = "dmodule"
-        this.openTeg    = 
+        this.openTag    = 
 `!--Arbortext, Inc., 1988-2017, v.4002-->
 <?Pub Inc?>
 <dmodule xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -91,9 +93,9 @@ export class dmodule extends Teg {
             <originator enterpriseCode="00000"></originator>
         </dmStatus>
     </identAndStatusSection>
-<content>
-<description`
-        this.closeTeg   = 
+    <content>
+        <description`
+        this.closeTag   = 
 `/description>
     </content>
 </dmodule`
@@ -123,175 +125,204 @@ ${mediaInside}
         }
 
         return `<?xml version="1.0" encoding="UTF-8"?>${stringifiedMedia}
-<${this.openTeg}>
+<${this.openTag}>
     ${contentInside}
-<${this.closeTeg}>`
+        <${this.closeTag}>`
     }
 }
 
-export class para extends Teg {
+export class para extends Tag {
     constructor () {
         super()
         this.name       = "para"
-        this.openTeg    = `para`
-        this.closeTeg   = `/para`
+        this.openTag    = `para`
+        this.closeTag   = `/para`
     }
 }
 
-export class text extends Teg {
+export class text extends Tag {
     constructor (someText) {
         super()
         this.name       = "text"
-        this.openTeg    = someText
-        this.closeTeg   = ""
+        this.openTag    = someText
+        this.closeTag   = ""
     }
 
-    stringify () {
-        return this.openTeg
+    stringify (level) {
+        return `${paddng(level)}${this.openTag}`
     }
 }
 
-export class caution extends Teg {
+export class caution extends Tag {
     constructor () {
         super()
         this.name       = "caution"
-        this.openTeg    = `caution`
-        this.closeTeg   = `/caution`
+        this.openTag    = `caution`
+        this.closeTag   = `/caution`
     }
 }
 
-export class warningAndCautionPara extends Teg {
+export class warningAndCautionPara extends Tag {
     constructor () {
         super()
         this.name       = "warningAndCautionPara"
-        this.openTeg    = `warningAndCautionPara`
-        this.closeTeg   = `/warningAndCautionPara`
+        this.openTag    = `warningAndCautionPara`
+        this.closeTag   = `/warningAndCautionPara`
     }
 }
 
-export class sequentialList extends Teg {
+export class sequentialList extends Tag {
     constructor () {
         super()
         this.name       = "sequentialList"
-        this.openTeg    = `sequentialList`
-        this.closeTeg   = `/sequentialList`
+        this.openTag    = `sequentialList`
+        this.closeTag   = `/sequentialList`
     }
 }
 
-export class listItem extends Teg {
+export class listItem extends Tag {
     constructor () {
         super()
         this.name       = "listItem"
-        this.openTeg    = `listItem`
-        this.closeTeg   = `/listItem`
+        this.openTag    = `listItem`
+        this.closeTag   = `/listItem`
     }
 }
 
-export class randomList extends Teg {
+export class randomList extends Tag {
     constructor () {
         super()
         this.name       = "randomList"
-        this.openTeg    = `randomList`
-        this.closeTeg   = `/randomList`
+        this.openTag    = `randomList`
+        this.closeTag   = `/randomList`
     }
 }
 
-export class levelledPara extends Teg {
+export class levelledPara extends Tag {
     constructor () {
         super()
         this.name       = "levelledPara"
-        this.openTeg    = `levelledPara`
-        this.closeTeg   = `/levelledPara`
+        this.openTag    = `levelledPara`
+        this.closeTag   = `/levelledPara`
     }
 }
 
-export class title extends Teg {
-    constructor () {
+export class title extends Tag {
+    constructor (title) {
         super()
         this.name       = "title"
-        this.openTeg    = `title`
-        this.closeTeg   = `/title`
+        this.openTag    = `title`
+        this.closeTag   = `/title`
+        let newT = new text(title)
+        newT.parent = this
+        this.content.push(newT)
+    }
+
+    stringify (level) {
+        return `\n${paddng(level)}<${this.openTag}${this.attribute}>${this.content[0].stringify(0)}<${this.closeTag}>`
     }
 }
 
-export class internalRef extends Teg {
+export class internalRef extends Tag {
     constructor () {
         super()
         this.name       = "internalRef"
-        this.openTeg    = `internalRef`
-        this.tegs       = 1
+        this.openTag    = `internalRef`
+        this.tags       = 1
     }
 }
 
-export class figure extends Teg {
+export class figure extends Tag {
     constructor () {
         super()
         this.name       = "figure"
-        this.openTeg    = `figure`
-        this.closeTeg   = `/figure`
+        this.openTag    = `figure`
+        this.closeTag   = `/figure`
     }
 }
 
-export class graphic extends Teg {
+export class graphic extends Tag {
     constructor () {
         super()
         this.name       = "graphic"
-        this.openTeg    = `graphic`
-        this.closeTeg   = `/graphic`
+        this.openTag    = `graphic`
+        this.closeTag   = ``
+    }
+
+    stringify (level) {
+        return `\n${paddng(level)}<${this.openTag}${this.attribute}>`
     }
 }
 
-export class table extends Teg {
+export class table extends Tag {
     constructor () {
         super()
         this.name       = "table"
-        this.openTeg    = `table`
-        this.closeTeg   = `/table`
+        this.openTag    = `table`
+        this.closeTag   = `/table`
     }
 }
 
-export class tgroup extends Teg {
+export class tgroup extends Tag {
     constructor () {
         super()
         this.name       = "tgroup"
-        this.openTeg    = `tgroup`
-        this.closeTeg   = `/tgroup`
+        this.openTag    = `tgroup`
+        this.closeTag   = `/tgroup`
     }
 }
 
-export class colspec extends Teg {
+export class colspec extends Tag {
     constructor () {
         super()
         this.name       = "colspec"
-        this.openTeg    = `colspec`
-        this.closeTeg   = `/colspec`
+        this.openTag    = `colspec`
+        this.closeTag   = `/colspec`
     }
 }
 
-export class thead extends Teg {
+export class thead extends Tag {
     constructor () {
         super()
         this.name       = "thead"
-        this.openTeg    = `thead`
-        this.closeTeg   = `/thead`
+        this.openTag    = `thead`
+        this.closeTag   = `/thead`
     }
 }
 
-export class entry extends Teg {
+export class entry extends Tag {
     constructor () {
         super()
         this.name       = "entry"
-        this.openTeg    = `entry`
-        this.closeTeg   = `/entry`
+        this.openTag    = `entry`
+        this.closeTag   = `/entry`
     }
 }
 
-export class row extends Teg {
+export class row extends Tag {
     constructor () {
         super()
         this.name       = "row"
-        this.openTeg    = `row`
-        this.closeTeg   = `/row`
+        this.openTag    = `row`
+        this.closeTag   = `/row`
+    }
+}
+
+export class note extends Tag {
+    constructor () {
+        super()
+        this.name       = "note"
+        this.openTag    = `note`
+        this.closeTag   = `/note`
+    }
+}
+
+export class notePara extends Tag {
+    constructor () {
+        super()
+        this.name       = "notePara"
+        this.openTag    = `notePara`
+        this.closeTag   = `/notePara`
     }
 }
 
@@ -306,3 +337,10 @@ const infoTable = [
     {"infoCode": "123", "infoName": "Установка и настройка программного обеспечения"},
     {"infoCode": "410", "infoName": "Перечень возможных неисправностей в процессе использования изделия и рекомендации по действиям при их возникновении"},
 ]
+
+function paddng(level = 0) {
+    const tab = '    '
+    return tab.repeat(level)
+}
+
+// function newLine() {}

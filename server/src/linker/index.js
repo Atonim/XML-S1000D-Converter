@@ -10,6 +10,12 @@ export async function linker(result, media) {
 
   for (let filename of xmlFileNames) {
     xmlFolder.file(filename, result.XML[filename])
+
+  }
+  for (let fullName of imgFileNames) {
+    let name = fileName(fullName)
+    let fileData = await media[fullName].async('arraybuffer')
+    imgFolder.file(result.Images[name], fileData)
   }
   //console.log(imgFileNames)
   for (let fullName of imgFileNames) {

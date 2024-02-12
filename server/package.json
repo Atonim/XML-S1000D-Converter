@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
-    "convert": "node src/converter/converter.js"
+    "convert": "node src/converter/converter.js",
+    "dev": "node src/dev.js"
   },
   "keywords": [],
   "author": "",
