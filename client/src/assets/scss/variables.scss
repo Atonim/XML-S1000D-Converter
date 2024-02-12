@@ -1,24 +1,28 @@
 // colorScheme
-$background-color: #ECECEC;
-$black: #0F292F;
+$blue_1: #ddf2fd;
+$blue_2: #B3D7ED;
+$blue_3: #91b4cb;
+$blue_4: #6499B9;
 
-$pink: #C34271;
-$light-pink: #F070A1;
-$light-orange: #FFA44A;
-$light-green: #16FFBD;
-$green: #12C998;
-$dark-green: #439F76;
+$gray_blue_1: #F5F7FA;
+$gray_blue_2: #e8ebed;
+$gray_blue_3: #e1e4e6;
+$gray_blue_7: #414e5b;
 
-$disabled-grey: #b0afaf;
+$gray_1: #FFFFFF;
+$gray_4: #e6e6e6;
+$gray_5: #D9D9D9;
+$gray_6: #CCCCCC;
+$gray_7: #bfbfbf;
+$gray_9: #999999;
+$gray_12: #333333;
 
-$grey: #CCCCCC;
-$grey-shadow: rgba(121, 120, 120, 0.1);
+$tooltip_bg_color: #ffffcd;
 
-$minFontSize: 12px;
-$addFontSize: 4;
-$widthScreen: 1024;
+// sizes
+$heightDragDrop: 210px;
+$widthDragDrop: 280px;
+$widthDragDrop_md:calc($widthDragDrop * 1.5);
+$tooltip_size: 100px;
 
 $transition: 0.3s ease all;
-
-$animation-delay: -0.9166666666666666s, -0.8333333333333334s, -0.75s, -0.6666666666666666s, -0.5833333333333334s, -0.5s, -0.4166666666666667s, -0.3333333333333333s, -0.25s, -0.16666666666666666s, -0.08333333333333333s, 0s;
-$animation-color: $light-green, $light-pink, $light-orange; 
