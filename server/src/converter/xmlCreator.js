@@ -8,6 +8,7 @@ export class xmlCreator {
     isCurrentElementInSeq = true
     seqVariants = ["sequentialList", "randomList"]
     refsDict = {}
+    mediaList = []
     // lastInsertedTag = null
 
     constructor (infoCode, techName, imagesList) {
@@ -50,6 +51,7 @@ export class xmlCreator {
         while (this.currentElement.parent) {
             this.currentElement = this.currentElement.parent
         }
+        this.currentElement.media = this.mediaList
         let proccessedDoc = this.currentElement.stringify()
         proccessedDoc = this.preproccessing(proccessedDoc)
         return proccessedDoc
@@ -221,6 +223,7 @@ export class xmlCreator {
             let id = `fig-${element.replace('rId', '')}`
             let newG = new tags.graphic()
             newG.addAttribute(` infoEntityIdent="${this.imagesList[element]}"`)
+            this.mediaList.push(this.imagesList[element])
             this.addId(newF, id)
 
             newF.parent = this.currentElement
@@ -266,7 +269,7 @@ export class xmlCreator {
             // node = node.content.at(-1).content.at(-1)
             this.addId(node, bookmarkIds[0])
         }
-        console.log(this.currentElement.name)
+        // console.log(this.currentElement.name)
         // while (node.name !== "dmodule" && node.id === null) {
         //     node = node.parent
         // }

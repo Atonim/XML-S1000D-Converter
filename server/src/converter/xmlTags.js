@@ -115,13 +115,16 @@ export class dmodule extends Tag {
         let stringifiedMedia = ""
         if (this.media.length) {
             let mediaInside = ""
-            this.media.forEach(element => mediaInside + `
-    <!ENTITY ${element.filename} SYSTEM "../Images/${element.filename}.${element.fileformat}" NDATA ${element.fileformat}>`
-            )
+            for (let mediaEl of this.media) {
+                mediaInside += 
+                `\n<!ENTITY ${mediaEl} SYSTEM "../Images/${mediaEl}.jpg" NDATA jpg>`
+            }
+    //         this.media.forEach(element => mediaInside + `
+    // <!ENTITY ${element.filename} SYSTEM "../Images/${element.filename}.${element.fileformat}" NDATA ${element.fileformat}>`
+    //         )
             stringifiedMedia = `
 <!DOCTYPE dmodule [
-<!NOTATION jpg PUBLIC "jpg" "jpg">
-${mediaInside}
+<!NOTATION jpg PUBLIC "jpg" "jpg">${mediaInside}
 ]>`
         }
 
