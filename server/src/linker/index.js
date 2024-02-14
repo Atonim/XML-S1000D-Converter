@@ -27,6 +27,7 @@ export async function linker(result, media) {
 			} else {
 				// png
         await sharp(fileData)
+					.flatten( {background: {r: 255, g: 255, b: 255}})
 					.toFormat('jpeg') //	.jpeg({quality: 100})
 					.toBuffer()
 					.then(jpegData => {
