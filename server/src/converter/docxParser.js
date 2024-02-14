@@ -103,63 +103,63 @@ export class docxParser {
             // console.log(buffer)
         }
 
-        let keepNode = this.currentNode
+        let previousNode = this.currentNode
         let contents = []
         while (!this.isEnter()) {
             this.currentNode = this.currentNode.nextSibling
             buffer = this.getPara()
             // console.log(this.getPara())
 
-            keepNode = this.currentNode
             if (buffer.startsWith("1.1.1 ")) {
-                contents.push({ "infoCode": "020", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "020", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
             if (buffer.startsWith("1.1.2 ")) {
-                contents.push({ "infoCode": "030", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "030", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
             if (buffer.startsWith("1.1.3 ")) {
-                contents.push({ "infoCode": "034", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "034", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
             if (buffer.startsWith("1.1.4 ")) {
-                contents.push({ "infoCode": "041", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "041", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
             if (buffer.startsWith("1.2 ")) {
-                contents.push({ "infoCode": "044", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "044", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
             if (buffer.startsWith("2.2.3 ")) {
-                contents.push({ "infoCode": "122", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "122", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
             if (buffer.startsWith("2.2.4 ")) {
-                contents.push({ "infoCode": "123", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "123", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
             if (buffer.startsWith("2.3.3 ")) {
-                contents.push({ "infoCode": "410", "startId": this.getLinkId(keepNode.firstChild) })
+                contents.push({ "infoCode": "410", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
 
             if (buffer.startsWith("1.1.2 ")) {
-                contents.find(element => element.infoCode === "020").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "020").stopId = this.getLinkId(previousNode.firstChild)
             }
             if (buffer.startsWith("1.1.3 ")) {
-                contents.find(element => element.infoCode === "030").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "030").stopId = this.getLinkId(previousNode.firstChild)
             }
             if (buffer.startsWith("1.1.4 ")) {
-                contents.find(element => element.infoCode === "034").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "034").stopId = this.getLinkId(previousNode.firstChild)
             }
             if (buffer.startsWith("1.1.5 ")) {
-                contents.find(element => element.infoCode === "041").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "041").stopId = this.getLinkId(previousNode.firstChild)
             }
             if (buffer.startsWith("2 ")) {
-                contents.find(element => element.infoCode === "044").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "044").stopId = this.getLinkId(previousNode.firstChild)
             }
             if (buffer.startsWith("2.2.4 ")) {
-                contents.find(element => element.infoCode === "122").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "122").stopId = this.getLinkId(previousNode.firstChild)
             }
             if (buffer.startsWith("2.3 ")) {
-                contents.find(element => element.infoCode === "123").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "123").stopId = this.getLinkId(previousNode.firstChild)
             }
             if (buffer.startsWith("2.3.4 ")) {
-                contents.find(element => element.infoCode === "410").stopId = this.getLinkId(keepNode.firstChild)
+                contents.find(element => element.infoCode === "410").stopId = this.getLinkId(previousNode.firstChild)
             }
+            previousNode = this.currentNode
         }
 
         return contents
