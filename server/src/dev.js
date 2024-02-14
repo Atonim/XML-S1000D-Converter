@@ -1,4 +1,4 @@
-import { startUnzip } from "./jszip.js";
+import { startUnzip } from './jszip.js'
 
-const file = {path: "files/6c62f7380645065b3c0c934838fc0a8a"}
+const file = { path: 'files/161579ef914e11737a60ece3948d25bb' }
 startUnzip(file)

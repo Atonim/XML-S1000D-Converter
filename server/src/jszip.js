@@ -11,23 +11,28 @@ export async function startUnzip(file) {
       if (!err) {
         const jszip = new JSZip();
         jszip.loadAsync(data)
-          .then((unzipped) => {
+        .then((unzipped) => {
 
             fileSelector(unzipped)
               .then(filesToConvert => {
-                //const rels = relsAnalyzer(filesToConvert.documentRels)
-                let a = new convertor(filesToConvert.document, filesToConvert.documentRels)
-                const result = a.start()
-                //отправляю media и выход из конвертера
-                linker(result, filesToConvert.media)
-                  .then(zipped => {
-                    zipped.generateAsync({ type: "base64" })
-                      .then(content => {
-                        resolve(content)
-                      });
-                  })
-              })
+								//const rels = relsAnalyzer(filesToConvert.documentRels)
+								let a = new convertor(
+									filesToConvert.document,
+									filesToConvert.documentRels
+								)
+								const result = a.start()
+								// let convimg = func(filesToConvert.media)
+								// change filesToConvert.media to mediaJPG !!!!!!!!!!!!1
 
+								//отправляю media и выход из конвертера
+             //   mediaConverter(filesToConvert.media).then(mediaJPG => {
+                  linker(result, filesToConvert.media).then(zipped => {
+										zipped.generateAsync({ type: 'base64' }).then(content => {
+											resolve(content)
+										})
+									})
+               // })			
+							})
           })
       }
       else {
