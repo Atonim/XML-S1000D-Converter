@@ -107,56 +107,56 @@ export class docxParser {
         let contents = []
         while (!this.isEnter()) {
             this.currentNode = this.currentNode.nextSibling
-            buffer = this.getPara()
+            buffer = this.getPara().toLowerCase()
             // console.log(this.getPara())
 
-            if (buffer.startsWith("1.1.1 ")) {
+            if (buffer.indexOf("назначение")) {
                 contents.push({ "infoCode": "020", "startId": this.getLinkId(this.currentNode.firstChild) })
-            }
-            if (buffer.startsWith("1.1.2 ")) {
+            } else if (buffer.indexOf("технические характеристики")) {
                 contents.push({ "infoCode": "030", "startId": this.getLinkId(this.currentNode.firstChild) })
-            }
-            if (buffer.startsWith("1.1.3 ")) {
+            } else if (buffer.indexOf("состав изделия") !== -1) {
                 contents.push({ "infoCode": "034", "startId": this.getLinkId(this.currentNode.firstChild) })
-            }
-            if (buffer.startsWith("1.1.4 ")) {
+            } else if (buffer.indexOf("описание и работа") !== -1) {
                 contents.push({ "infoCode": "041", "startId": this.getLinkId(this.currentNode.firstChild) })
-            }
-            if (buffer.startsWith("1.2 ")) {
+            } else if (buffer.indexOf("описание работы основных частей изделия") !== -1) {
                 contents.push({ "infoCode": "044", "startId": this.getLinkId(this.currentNode.firstChild) })
-            }
-            if (buffer.startsWith("2.2.3 ")) {
+            } else if (buffer.indexOf("осмотры, тесты и проверки") !== -1) {
+                contents.push({ "infoCode": "300", "startId": this.getLinkId(this.currentNode.firstChild) })
+            } else if (buffer.indexOf("визуальные проверки") !== -1) {
+                contents.push({ "infoCode": "310", "startId": this.getLinkId(this.currentNode.firstChild) })
+            } else if (buffer.indexOf("указания по включению") !== -1) {
                 contents.push({ "infoCode": "122", "startId": this.getLinkId(this.currentNode.firstChild) })
-            }
-            if (buffer.startsWith("2.2.4 ")) {
+            } else if (buffer.indexOf("установка и настройка программного обеспечения") !== -1) {
                 contents.push({ "infoCode": "123", "startId": this.getLinkId(this.currentNode.firstChild) })
-            }
-            if (buffer.startsWith("2.3.3 ")) {
+            } else if (buffer.indexOf("перечень возможных неисправностей") !== -1) {
                 contents.push({ "infoCode": "410", "startId": this.getLinkId(this.currentNode.firstChild) })
+            } else if (buffer.indexOf("процедура поиска неисправностей") !== -1) {
+                contents.push({ "infoCode": "421", "startId": this.getLinkId(this.currentNode.firstChild) })
+            } else if (buffer.indexOf("демонтаж") !== -1) {
+                contents.push({ "infoCode": "520", "startId": this.getLinkId(this.currentNode.firstChild) })
+            } else if (buffer.indexOf("монтаж") !== -1) {
+                contents.push({ "infoCode": "720", "startId": this.getLinkId(this.currentNode.firstChild) })
+            } else if (buffer.indexOf("иллюстрированный каталог деталей") !== -1) {
+                contents.push({ "infoCode": "941", "startId": this.getLinkId(this.currentNode.firstChild) })
+            } else if (buffer.indexOf("регламент то") !== -1) {
+                contents.push({ "infoCode": "000", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
 
-            if (buffer.startsWith("1.1.2 ")) {
+            if (buffer.indexOf("1.1.2 ") !== -1) {
                 contents.find(element => element.infoCode === "020").stopId = this.getLinkId(previousNode.firstChild)
-            }
-            if (buffer.startsWith("1.1.3 ")) {
+            } else if (buffer.indexOf("1.1.3 ") !== -1) {
                 contents.find(element => element.infoCode === "030").stopId = this.getLinkId(previousNode.firstChild)
-            }
-            if (buffer.startsWith("1.1.4 ")) {
+            } else if (buffer.indexOf("1.1.4 ") !== -1) {
                 contents.find(element => element.infoCode === "034").stopId = this.getLinkId(previousNode.firstChild)
-            }
-            if (buffer.startsWith("1.1.5 ")) {
+            } else if (buffer.indexOf("1.1.5 ") !== -1) {
                 contents.find(element => element.infoCode === "041").stopId = this.getLinkId(previousNode.firstChild)
-            }
-            if (buffer.startsWith("2 ")) {
+            } else if (buffer.indexOf("2 ") !== -1) {
                 contents.find(element => element.infoCode === "044").stopId = this.getLinkId(previousNode.firstChild)
-            }
-            if (buffer.startsWith("2.2.4 ")) {
+            } else if (buffer.indexOf("2.2.4 ") !== -1) {
                 contents.find(element => element.infoCode === "122").stopId = this.getLinkId(previousNode.firstChild)
-            }
-            if (buffer.startsWith("2.3 ")) {
+            } else if (buffer.indexOf("2.3 ") !== -1) {
                 contents.find(element => element.infoCode === "123").stopId = this.getLinkId(previousNode.firstChild)
-            }
-            if (buffer.startsWith("2.3.4 ")) {
+            } else if (buffer.indexOf("2.3.4 ") !== -1) {
                 contents.find(element => element.infoCode === "410").stopId = this.getLinkId(previousNode.firstChild)
             }
             previousNode = this.currentNode
