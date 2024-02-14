@@ -64,7 +64,7 @@ export class xmlCreator {
     }
 
     goDown () {
-        if (this.currentElement && this.currentElement.content.lenght) {
+        if (this.currentElement && this.currentElement.content.lengh) {
             this.currentElement = this.currentElement.content.at(-1)
         }
     }

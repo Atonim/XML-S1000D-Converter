@@ -75,12 +75,15 @@ export class convertor {
         // this.setResult(result)
         // return result
         this.setResultXML()
-        console.log(this.files['044'])
+        console.log(this.files['030'])
         return this.result
     }
 
     builder() {
         for (let code of this.stringCodes) {
+            if (!this.documentContents.find(element => element.infoCode === code)) { continue }
+            if (!this.documentContents.find(element => element.infoCode === code).startId) { continue }
+            if (!this.documentContents.find(element => element.infoCode === code).stopId) { continue }
             if (code === '018')
                 this.build_018()
             else if (code === '410') {
@@ -119,15 +122,15 @@ export class convertor {
         // let element = this.docxParser.getPara()
         while (!this.docxParser.isEnter()) {
             let paragrafText = this.docxParser.getPara().trim()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId())
-            // if (paragrafText.trim() != "") {
-            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            // }
+            let imagesIds = this.docxParser.getImageRId()
+            let bookmarks = this.docxParser.getBookmarkId()
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, bookmarks)
+
             this.docxParser.nextParagraf()
         }
 
         this.files['018'] = creator.getDocument()
-        // console.log(this.file_018.stringify())
+        // console.log(this.file_018)
     }
 
     build_410() {
@@ -171,13 +174,8 @@ export class convertor {
             let paragrafText = this.docxParser.getPara().trim()
             let imagesIds = this.docxParser.getImageRId()
             let bookmarks = this.docxParser.getBookmarkId()
-            // console.log(bookmarks)
             creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, bookmarks)
-            
-            // if (paragrafText.trim() != "") {
-            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            // // if (code === "030") { console.log(paragrafText) }
-            // }
+    
             this.docxParser.nextParagraf()
         }
         this.docxParser.prevSibling()

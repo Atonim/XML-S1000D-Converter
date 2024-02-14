@@ -32,50 +32,50 @@ export class docxParser {
         return this.getPara()
     }
 
-    getFullParagraf(buffer = "") {
+    getFullParagraf(node = this.currentNode, buffer = "") {
         // You must be lower than main tag (<w:p>...</w:p>)
 
-        if (this.currentNode.tagName !== "w:t" && this.hasChild(this.currentNode)) {
-            this.currentNode = this.currentNode.firstChild
-            buffer = this.getFullParagraf(buffer)
-            this.currentNode = this.currentNode.parentNode
+        if (node.tagName !== "w:t" && this.hasChild(node)) {
+            node = node.firstChild
+            buffer = this.getFullParagraf(node, buffer)
+            node = node.parentNode
         }
-        if (this.currentNode.tagName === "w:fldSimple") {
-            let stratIndex = this.currentNode.attributes[0].value.indexOf("_Ref")
+        if (node.tagName === "w:fldSimple") {
+            let stratIndex = node.attributes[0].value.indexOf("_Ref")
             if (stratIndex !== -1){
-                let address = this.currentNode.attributes[0].value.substring(stratIndex)
+                let address = node.attributes[0].value.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
-                // console.log("REF:========:", this.currentNode.attributes[0].value, "}"+address)
+                // console.log("REF:========:", node.attributes[0].value, "}"+address)
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
                 return buffer
             }
-        } else if (this.currentNode.tagName === "w:instrText") {
-            let stratIndex = this.currentNode.firstChild.data.indexOf("_Ref")
+        } else if (node.tagName === "w:instrText") {
+            let stratIndex = node.firstChild.data.indexOf("_Ref")
             if (stratIndex !== -1){
-                let address = this.currentNode.firstChild.data.substring(stratIndex)
+                let address = node.firstChild.data.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
-                // console.log("REF:========:", this.currentNode.attributes[0].value, "}"+address)
+                // console.log("REF:========:", node.attributes[0].value, "}"+address)
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
                 return buffer
             }
         }
-        if (this.currentNode.tagName === "w:t") {
-            buffer += this.currentNode.firstChild
+        if (node.tagName === "w:t") {
+            buffer += node.firstChild
         }
-        if (this.currentNode.nextSibling !== null) {
-            this.currentNode = this.currentNode.nextSibling
-            buffer = this.getFullParagraf(buffer)
+        if (node.nextSibling !== null) {
+            node = node.nextSibling
+            buffer = this.getFullParagraf(node, buffer)
         }
         return buffer
     }
 
-    getPara() {
-        if (this.currentNode.tagName === undefined || Object.keys(this.currentNode.childNodes) == false) { return "" }
-        this.currentNode = this.currentNode.firstChild
-        let paragrafText = this.getFullParagraf("")
-        this.currentNode = this.currentNode.parentNode
+    getPara(node = this.currentNode) {
+        if (node.tagName === undefined || Object.keys(node.childNodes) == false) { return "" }
+        // node = node.firstChild
+        let paragrafText = this.getFullParagraf(node.firstChild, "")
+        // node = node.parentNode
         return paragrafText
     }
 
@@ -97,7 +97,7 @@ export class docxParser {
     getContents() {
         let buffer = ""
 
-        while (buffer !== "Содержание" && this.currentNode.nextSibling) {
+        while (buffer.toLowerCase() !== "содержание" && this.currentNode.nextSibling) {
             this.currentNode = this.currentNode.nextSibling
             buffer = this.getPara()
             // console.log(buffer)
@@ -110,15 +110,15 @@ export class docxParser {
             buffer = this.getPara().toLowerCase()
             // console.log(this.getPara())
 
-            if (buffer.indexOf("назначение")) {
+            if (buffer.indexOf("назначение") !== -1) {
                 contents.push({ "infoCode": "020", "startId": this.getLinkId(this.currentNode.firstChild) })
-            } else if (buffer.indexOf("технические характеристики")) {
+            } else if (buffer.indexOf("технические характеристики") !== -1) {
                 contents.push({ "infoCode": "030", "startId": this.getLinkId(this.currentNode.firstChild) })
             } else if (buffer.indexOf("состав изделия") !== -1) {
                 contents.push({ "infoCode": "034", "startId": this.getLinkId(this.currentNode.firstChild) })
-            } else if (buffer.indexOf("описание и работа") !== -1) {
+            } else if (buffer.indexOf("устройство и работа") !== -1) {
                 contents.push({ "infoCode": "041", "startId": this.getLinkId(this.currentNode.firstChild) })
-            } else if (buffer.indexOf("описание работы основных частей изделия") !== -1) {
+            } else if (buffer.indexOf("описание и работа составных частей") !== -1) {
                 contents.push({ "infoCode": "044", "startId": this.getLinkId(this.currentNode.firstChild) })
             } else if (buffer.indexOf("осмотры, тесты и проверки") !== -1) {
                 contents.push({ "infoCode": "300", "startId": this.getLinkId(this.currentNode.firstChild) })
@@ -142,23 +142,56 @@ export class docxParser {
                 contents.push({ "infoCode": "000", "startId": this.getLinkId(this.currentNode.firstChild) })
             }
 
-            if (buffer.indexOf("1.1.2 ") !== -1) {
-                contents.find(element => element.infoCode === "020").stopId = this.getLinkId(previousNode.firstChild)
-            } else if (buffer.indexOf("1.1.3 ") !== -1) {
-                contents.find(element => element.infoCode === "030").stopId = this.getLinkId(previousNode.firstChild)
-            } else if (buffer.indexOf("1.1.4 ") !== -1) {
-                contents.find(element => element.infoCode === "034").stopId = this.getLinkId(previousNode.firstChild)
-            } else if (buffer.indexOf("1.1.5 ") !== -1) {
-                contents.find(element => element.infoCode === "041").stopId = this.getLinkId(previousNode.firstChild)
-            } else if (buffer.indexOf("2 ") !== -1) {
-                contents.find(element => element.infoCode === "044").stopId = this.getLinkId(previousNode.firstChild)
-            } else if (buffer.indexOf("2.2.4 ") !== -1) {
-                contents.find(element => element.infoCode === "122").stopId = this.getLinkId(previousNode.firstChild)
-            } else if (buffer.indexOf("2.3 ") !== -1) {
-                contents.find(element => element.infoCode === "123").stopId = this.getLinkId(previousNode.firstChild)
-            } else if (buffer.indexOf("2.3.4 ") !== -1) {
-                contents.find(element => element.infoCode === "410").stopId = this.getLinkId(previousNode.firstChild)
+            buffer = this.getPara(previousNode).toLowerCase()
+            if (buffer.indexOf("назначение") !== -1) {
+                contents.find(element => element.infoCode === "020").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("технические характеристики") !== -1) {
+                contents.find(element => element.infoCode === "030").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("состав изделия") !== -1) {
+                contents.find(element => element.infoCode === "034").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("устройство и работа") !== -1) {
+                contents.find(element => element.infoCode === "041").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("описание и работа составных частей изделия") !== -1) {
+                contents.find(element => element.infoCode === "044").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("осмотры, тесты и проверки") !== -1) {
+                contents.find(element => element.infoCode === "300").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("визуальные проверки") !== -1) {
+                contents.find(element => element.infoCode === "310").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("указания по включению") !== -1) {
+                contents.find(element => element.infoCode === "122").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("установка и настройка программного обеспечения") !== -1) {
+                contents.find(element => element.infoCode === "123").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("перечень возможных неисправностей") !== -1) {
+                contents.find(element => element.infoCode === "410").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("процедура поиска неисправностей") !== -1) {
+                contents.find(element => element.infoCode === "421").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("демонтаж") !== -1) {
+                contents.find(element => element.infoCode === "520").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("монтаж") !== -1) {
+                contents.find(element => element.infoCode === "720").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("иллюстрированный каталог деталей") !== -1) {
+                contents.find(element => element.infoCode === "941").stopId = this.getLinkId(this.currentNode.firstChild)
+            } else if (buffer.indexOf("регламент то") !== -1) {
+                contents.find(element => element.infoCode === "000").stopId = this.getLinkId(this.currentNode.firstChild)
             }
+
+            // if (buffer.indexOf("1.1.2 ") !== -1) {
+            //     contents.find(element => element.infoCode === "020").stopId = this.getLinkId(previousNode.firstChild)
+            // } else if (buffer.indexOf("1.1.3 ") !== -1) {
+            //     contents.find(element => element.infoCode === "030").stopId = this.getLinkId(previousNode.firstChild)
+            // } else if (buffer.indexOf("1.1.4 ") !== -1) {
+            //     contents.find(element => element.infoCode === "034").stopId = this.getLinkId(previousNode.firstChild)
+            // } else if (buffer.indexOf("1.1.5 ") !== -1) {
+            //     contents.find(element => element.infoCode === "041").stopId = this.getLinkId(previousNode.firstChild)
+            // } else if (buffer.indexOf("2 ") !== -1) {
+            //     contents.find(element => element.infoCode === "044").stopId = this.getLinkId(previousNode.firstChild)
+            // } else if (buffer.indexOf("2.2.4 ") !== -1) {
+            //     contents.find(element => element.infoCode === "122").stopId = this.getLinkId(previousNode.firstChild)
+            // } else if (buffer.indexOf("2.3 ") !== -1) {
+            //     contents.find(element => element.infoCode === "123").stopId = this.getLinkId(previousNode.firstChild)
+            // } else if (buffer.indexOf("2.3.4 ") !== -1) {
+            //     contents.find(element => element.infoCode === "410").stopId = this.getLinkId(previousNode.firstChild)
+            // }
             previousNode = this.currentNode
         }
 
