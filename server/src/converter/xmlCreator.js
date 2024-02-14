@@ -245,11 +245,28 @@ export class xmlCreator {
             newPara.addContent(newText)
         }
 
-        for (let i = 0; i < tableInfo.globalrows; i++) {
+        console.log(tableInfo.globalrows)
+        for (let i = 0; i < tableInfo.globalrows.length; i++) {
 
             let newRow = new tags.row()
             newRow.parent = newTbody
             newTbody.addContent(newRow)
+
+            for (let j = 0; j < tableInfo.globalrows[i].columns.length; j++) {
+                let newEntry = new tags.entry()
+                newEntry.parent = newRow
+                newRow.addContent(newEntry)
+
+                for (let k = 0; k < tableInfo.globalrows[i].columns[j].paragraphs.length; k++) {
+                    let newPara = new tags.para()
+                    newPara.parent = newEntry
+                    newEntry.addContent(newPara)
+
+                    let newText = new tags.text(tableInfo.globalrows[i].columns[j].paragraphs[k].text)
+                    newText.setParent(newPara)
+                    newPara.addContent(newText)
+                }
+            }
         }
 
         newTgroup.addContent(newThead)

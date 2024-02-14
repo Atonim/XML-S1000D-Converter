@@ -32,40 +32,38 @@ export class docxParser {
         return this.getPara()
     }
 
-    getFullParagraf(buffer = "") {
+    getFullParagraf(node = this.currentNode, buffer = "") {
         // You must be lower than main tag (<w:p>...</w:p>)
 
-        if (this.currentNode.tagName !== "w:t" && this.hasChild(this.currentNode)) {
-            this.currentNode = this.currentNode.firstChild
-            buffer = this.getFullParagraf(buffer)
-            this.currentNode = this.currentNode.parentNode
+        if (node.tagName !== "w:t" && this.hasChild(node)) {
+            node = node.firstChild
+            buffer = this.getFullParagraf(node, buffer)
+            node = node.parentNode
         }
-        if (this.currentNode.tagName === "w:fldSimple") {
-            let stratIndex = this.currentNode.attributes[0].value.indexOf("_Ref")
+        if (node.tagName === "w:fldSimple") {
+            let stratIndex = node.attributes[0].value.indexOf("_Ref")
             if (stratIndex !== -1) {
-                let address = this.currentNode.attributes[0].value.substring(stratIndex)
+                let address = node.attributes[0].value.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
-                // console.log("REF:========:", this.currentNode.attributes[0].value, "}"+address)
+                // console.log("REF:========:", node.attributes[0].value, "}"+address)
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
                 return buffer
             }
         }
-        if (this.currentNode.tagName === "w:t") {
-            buffer += this.currentNode.firstChild
+        if (node.tagName === "w:t") {
+            buffer += node.firstChild
         }
-        if (this.currentNode.nextSibling !== null) {
-            this.currentNode = this.currentNode.nextSibling
-            buffer = this.getFullParagraf(buffer)
+        if (node.nextSibling !== null) {
+            node = node.nextSibling
+            buffer = this.getFullParagraf(node, buffer)
         }
         return buffer
     }
 
-    getPara() {
-        if (this.currentNode.tagName === undefined || Object.keys(this.currentNode.childNodes) == false) { return "" }
-        this.currentNode = this.currentNode.firstChild
-        let paragrafText = this.getFullParagraf("")
-        this.currentNode = this.currentNode.parentNode
+    getPara(node = this.currentNode) {
+        if (node.tagName === undefined || Object.keys(node.childNodes) == false) { return "" }
+        let paragrafText = this.getFullParagraf(node.firstChild, "")
         return paragrafText
     }
 
@@ -205,7 +203,7 @@ export class docxParser {
         }
 
         result.columns = currentTableNode.childNodes.length
-        result.globalrows = 0
+        result.globalrows = []
 
         while (currentTableNode.tagName != 'w:tr') {
             currentTableNode = currentTableNode.nextSibling
@@ -243,7 +241,52 @@ export class docxParser {
 
         while (currentTableNode) {
             if (currentTableNode.tagName == 'w:tr') {
-                result.globalrows += 1
+                const currentRow = { columns: [] }
+                result.globalrows.push(currentRow)
+
+                let currentRowTableNode = currentTableNode.firstChild
+
+                while (currentRowTableNode) {
+                    if (currentRowTableNode.tagName == 'w:tc') {
+                        const currentColumn = { paragraphs: [] }
+                        currentRow.columns.push(currentColumn)
+
+                        let currentColumnTableNode = currentRowTableNode.firstChild
+
+                        while (currentColumnTableNode) {
+                            if (currentColumnTableNode.tagName == 'w:p') {
+                                const currentParagraph = { text: this.getPara(currentColumnTableNode) }
+                                currentColumn.paragraphs.push(currentParagraph)
+
+                                //currentParagraph
+                                //let currentParaNode = currentColumnTableNode.firstChild
+
+                                //while (currentParaNode) {
+                                //    if (currentParaNode.tagName == 'w:r') {
+                                //        const currentTextFragment = { text: [] }
+                                //        currentParagraph.textFragments.push(currentTextFragment)
+
+                                //        let currentTextRowNode = currentParaNode.firstChild
+
+                                //        while (currentTextRowNode) {
+                                //            if (currentTextRowNode.tagName == 'w:t') {
+
+                                //                const currentTextNode = currentParaNode.firstChild
+                                //                result.text.push(currentTextNode.firstChild)
+
+                                //            }
+                                //            currentTextRowNode = currentTextRowNode.nextSibling
+                                //        }
+
+                                //    }
+                                //    currentParaNode = currentParaNode.nextSibling
+                                //}
+                            }
+                            currentColumnTableNode = currentColumnTableNode.nextSibling
+                        }
+                    }
+                    currentRowTableNode = currentRowTableNode.nextSibling
+                }
             }
             currentTableNode = currentTableNode.nextSibling
 
