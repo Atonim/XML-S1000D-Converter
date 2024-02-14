@@ -1,38 +1,42 @@
-@mixin font ($color, $fontW: normal) {
-  font-family: 'Montserrat-Medium';
-  $font-size: calc($minFontSize + $addFontSize * (100vw / $widthScreen));
-  font-size: $font-size;
-  button {
-    padding: calc($font-size * 1.125) calc($font-size * 2);
-  }
-  label {
-    padding: calc($font-size * 1.125)  calc($font-size * 2 + 5px);
-  }
-  font-weight: $fontW;
-  text-align: center;
-  letter-spacing: 2px;
-  color: $color;
+@mixin font($color, $font_weight, $line_height, $font_size_start) {
+	font-family: 'Liberation Sans';
+	font-style: normal;
+	font-weight: $font_weight;
+	line-height: $line_height;
+	font-size: $font_size_start;
+	@include breakpoint(md) {
+		font-size: calc($font_size_start * 1.5);
+	}
+	/*@include breakpoint(xll) {
+		font-size: calc($font_size_start * 1.5 * 1.5);
+	}*/
+	color: $color;
+	text-align: center;
 }
 
-@mixin flex ($gap: 16px, $align: center) {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: $align;
-  row-gap: $gap;
+@mixin flex($flex-direction: column, $justify-content: center) {
+	display: flex;
+	flex-direction: $flex-direction;
+	justify-content: $justify-content;
+	align-items: center;
 }
 
 @mixin breakpoint($point) {
-  @if $point == lg {
-    @media (max-width: 992px) {@content;}
-  }
-  @else if $point == md {
-    @media (max-width: 768px) {@content;}
-  }
-  @else if $point == sm {
-    @media (max-width: 576px) {@content;}
-  }
-  @else if $point == xs {
-    @media (max-width: 320px) {@content;}
-  }
+	@if $point == xll {
+		@media (min-width: 1400px) {
+			@content;
+		}
+	} @else if $point == xl {
+		@media (min-width: 1200px) {
+			@content;
+		}
+	} @else if $point == lg {
+		@media (min-width: 992px) {
+			@content;
+		}
+	} @else if $point == md {
+		@media (min-width: 768px) {
+			@content;
+		}
+	}
 }
