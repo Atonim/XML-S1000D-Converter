@@ -99,17 +99,17 @@ export class xmlCreator {
         }
     }
 
-    addListItem (paragraf) {
+    addListItem (paragraf = "") {
         if (this.currentElement) {
             let newI = new tags.listItem()
-            let newP = new tags.para()
-            let newT = new tags.text(paragraf)
+            // let newP = new tags.para()
+            // let newT = new tags.text(paragraf)
             newI.setParent(this.currentElement)
-            newP.setParent(newI)
-            newT.setParent(newP)
+            // newP.setParent(newI)
+            // newT.setParent(newP)
             
-            newP.addContent(newT)
-            newI.addContent(newP)
+            // newP.addContent(newT)
+            // newI.addContent(newP)
             this.currentElement.addContent(newI)
         }
     }
@@ -360,10 +360,11 @@ export class xmlCreator {
         if (this.seqVariants.indexOf(this.currentElement.name) !== -1) {
             // console.log()
             // this.addListItem(paragraf + " [" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
-            this.addListItem(paragraf)
+            this.addListItem()
             // this.goDown()
-            // this.chooseTextParagraf(paragraf, seqId)
-            // this.goUp()
+            this.currentElement = this.currentElement.content.at(-1)
+            this.chooseTextParagraf(paragraf, seqId)
+            this.goUp()
 
         // } else if (!this.isCurrentElementInSeq) {
         //     // this.goToLastParent()
@@ -403,7 +404,7 @@ export class xmlCreator {
             this.addPara(paragraf)
         }
 
-        this.chooseListVariant(paragraf)
+        // this.chooseListVariant(paragraf)
 
         this.setBookmark(bookmarkIds)
     }
@@ -413,6 +414,7 @@ export class xmlCreator {
             this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
             // console.log(paragraf)
             this.chooseTextParagraf(paragraf, seqId, bookmarkIds)
+                this.chooseListVariant(paragraf)
         } else if (imageIds) {
             // console.log(imageIds)
             this.addFigure(imageIds)

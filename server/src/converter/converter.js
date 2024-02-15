@@ -17,6 +17,7 @@ export class convertor {
     techName = "default name"
     imageIdObject = null
     idImage_S1000D_Object = {}
+    documentReferences = {}
     result = {
         "Images": {},
         "XML": {}
@@ -75,7 +76,7 @@ export class convertor {
         // this.setResult(result)
         // return result
         this.setResultXML()
-        console.log(this.files['044'])
+        console.log(this.files['030'])
         return this.result
     }
 
@@ -126,6 +127,7 @@ export class convertor {
             this.docxParser.nextParagraf()
         }
 
+        let moduleReferences = creator.refsDict
         this.files['018'] = creator.getDocument()
         // console.log(this.file_018.stringify())
     }
@@ -154,7 +156,9 @@ export class convertor {
         }
         // console.log(creator.refsDict)
         this.docxParser.prevSibling()
+        let moduleReferences = creator.refsDict
         this.files['410'] = creator.getDocument()
+        // console.log(moduleReferences, this.files['410'])
     }
 
     build(code) {
@@ -182,11 +186,7 @@ export class convertor {
         }
         this.docxParser.prevSibling()
 
+        let moduleReferences = creator.refsDict
         this.files[code] = creator.getDocument()
     }
 }
-
-// let a = new convertor(document, documentRels)
-// // a.startPrototype()
-// a.start()
-// // console.log(a.start())
