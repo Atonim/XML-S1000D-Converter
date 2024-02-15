@@ -2,204 +2,185 @@
 @import './mixins.scss';
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
-.app{
-  padding: 20px;
+.app {
+	padding: 20px;
 }
 
 body {
-  @include font($black);
-  @include breakpoint(md) {
-    $font-size: calc($minFontSize + ($addFontSize + $addFontSize * 0.7) * ((100vw - 320px) / $widthScreen));
-    font-size: $font-size;
-    button {
-      padding: calc($font-size * 1.125) calc($font-size * 2);
-    }
-    label {
-      padding: calc($font-size * 1.125) calc($font-size * 2 + 5px);
-    }
-  };
-  background-color: $background-color;
+	background-color: $gray_blue_1;
+
+	@include flex();
+	height: 100vh;
+
+	@include font(
+		$font_weight: 400,
+		$line_height: 17px,
+		$font_size_start: 15px,
+		$color: $gray_12
+	);
 }
 
-button {
-    @include font(white);
-    transition: $transition;
-    border: none;
-    border-radius: 5px;
-}
+.main-page {
+	height: 40vh;
 
-.home-page, .result-page {
-  height: 100vh;
-  @include flex(32px);
-
-  h1 {
-    font-family: 'Montserrat-Bold';
-  }
-
-  &__btns {
-    @include flex($align: stretch);
-  }
-
-  .next-bth, .download-btn {
-    background-color: $light-green;
-    &:hover {
-      background-color: $green;
-    }
-
-  }
-
-  .back-bth {
-    @include font(white);
-    background-color: $light-pink;
-    transition: $transition;
-    border-radius: 5px;
-    box-shadow: -10px 10px 10px $grey-shadow;
-
-    &:hover {
-		  background-color: $pink;
-	  }
-  }
-}
-
-.home-page {
-  strong {
-     color: $light-pink;
-  }
-
-  .disabled:hover {
-    background-color: $disabled-grey;
-  }
-}
-
-.uploader {
-  color: grey;
-  margin: 0 auto;
-  padding: 15px;
-  width: 70%;
-  @include breakpoint(md) {
-    width: 80%;
-  };
-  @include breakpoint(sm) {
-    width: 90%;
-  };
-  @include breakpoint(xs) {
-    width: 100%;
-  };
-  min-height: 200px;
-  @include flex;
-  flex: 0.5 0 0%;
-  border: 5px $grey dotted;
-  border-radius: 10px;
- 
-  transition: $transition;
-
-  label {
-    @include font(white);
-    background-color: $light-pink;
-    transition: $transition;
-    border-radius: 5px;
-    box-shadow: -10px 10px 10px $grey-shadow;
-
-    &:hover {
-		  background-color: $pink;
-	  }
-
-    input {
-      display: none;
-    }
-  }
-}
-  .active-uploader {
-    color: white;
-    border: none;
-    background-color: $light-pink;
-
-    label {
-      color: $light-pink;
-      background-color: white;
-    }
-  }
-
-.preloader {
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-	&__loader {
+	.preloader {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+		&__loader {
+			animation: loader linear 5s infinite;
+		}
+	}
+
+	@keyframes loader {
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	&__content {
+		height: 100%;
+		@include flex();
+		row-gap: 16px;
+	}
+	&__header {
+		@include font(
+			$font_weight: 700,
+			$line_height: 25px,
+			$font_size_start: 22px,
+			$color: $gray_blue_7
+		);
+	}
+
+	.uploader {
+		//height: 100%;
+		height: $heightDragDrop;
+		width: $widthDragDrop;
+		@include breakpoint(md) {
+			width: $widthDragDrop_md;
+		}
+		padding: 16px;
+		background-color: $gray_blue_2; // ask(1)
+	//	opacity: 0.7;
+		@include flex();
+		row-gap: 16px;
+		border-radius: 10px;
+		transition: $transition;
+
+		label {
+			input {
+				display: none;
+			}
+		}
+
+		&_active {
+			background: $blue_2;
+			border: 1px solid $blue_4;
+		}
+		&__file-view {
+			width: $widthDragDrop;
+			@include breakpoint(md) {
+				width: $widthDragDrop_md;
+			}
+			//height: 100%;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-around;
+			//@include flex($flex-direction: row);
+		}
+		&__file-name {
+			@include flex($flex-direction: row, $justify-content: start);
+			column-gap: 4px;
+		}
+		&__trash-tooltip {
+			position: relative;
+			display: inline-block;
+		}
+		&__trash-icon,
+		&__file-icon {
+			width: 15px;
+			height: 15px;
+			@include breakpoint(md) {
+				width: 18px;
+				height: 18px;
+			}
+		}
+		&__trash-icon:hover {
+			content: url(@/assets/img/svg/trash_active.svg);
+		}
+		&__trash-tooltip-text {
+			visibility: hidden;
+			width: $tooltip_size; 
+			background: $tooltip_bg_color;
+			border: 1px solid $gray_7;
+			border-radius: 3px;
+			padding: 2px 4px;
+			position: absolute;
+			z-index: 1;
+		}
+		&__trash-tooltip .uploader__trash-tooltip-text {
+			width: $tooltip_size;
+			top: 100%;
+			left: 50%;
+			margin-left: -60px;
+		}
+		&__trash-tooltip:hover .uploader__trash-tooltip-text {
+			visibility: visible;
+		}
+	}
+	&__btn,
+	label {
+		@include flex($flex-direction: row);
+		transition: $transition;
+
+		@include font(
+			$font_weight: 400,
+			$line_height: 17px,
+			$font_size_start: 15px,
+			$color: $gray_12
+		);
+
+		padding: 7.5px 26px;
+		background: $gray_4;
+		border: 1px solid $gray_7;
+		border-radius: 3px;
+		&:hover {
+			background: $blue_1;
+			border: 1px solid $blue_3;
+		}
+		&:active {
+			background: $blue_2;
+			border: 1px solid $blue_4;
+		}
+		&_disabled:hover {
+			background: $gray_blue_3;
+			border: 1px solid $gray_5;
+			color: $gray_9;
+		}
+	}
+	&__warning {
+		@include flex($flex-direction: row);
+		column-gap: 8px;
+		@include font(
+			$font_weight: 400,
+			$line_height: 15px,
+			$font_size_start: 13px,
+			$color: $gray_9
+		);
+		.icon {
+			width: 12px;
+			height: 12px;
+			@include breakpoint(md) {
+				width: 15px;
+				height: 15px;
+			}
+		}
 	}
 }
-
-@keyframes ldio-h00fv1la8vf {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-.ldio-h00fv1la8vf div {
-	left: 94px;
-	top: 48px;
-	position: absolute;
-	animation: ldio-h00fv1la8vf linear 1s infinite;
-	background: nth($animation-color, random(2));
-	width: 12px;
-	height: 24px;
-	border-radius: 6px / 12px;
-	transform-origin: 6px 52px;
-  @for $i from 1 to 13 {
-    &:nth-child(#{$i}n) {
-      transform: rotate(30deg * ($i - 1));
-      animation-delay: nth($animation-delay, $i);
-    }
-  }
-}
-.loadingio-spinner-spinner-lubm59c3vdb {
-	width: 200px;
-	height: 200px;
-	display: inline-block;
-	overflow: hidden;
-	background: none;
-}
-.ldio-h00fv1la8vf {
-	width: 100%;
-	height: 100%;
-	position: relative;
-	transform: translateZ(0) scale(1);
-	backface-visibility: hidden;
-	transform-origin: 0 0; /* see note above */
-}
-.ldio-h00fv1la8vf div {
-	box-sizing: content-box;
-}
-
-@font-face {
-	font-family: 'Montserrat-Bold';
-	src: url('../fonts/Montserrat/static/Montserrat-Bold.ttf') format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}
-
-@font-face {
-	font-family: 'Montserrat-Medium';
-	src: url('../fonts/Montserrat/static/Montserrat-Medium.ttf') format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}
-
-/*@font-face {
-	font-family: 'Montserrat-Light';
-	src: url('../fonts/Montserrat/static/Montserrat-Light.ttf') format('truetype');
-	font-style: normal;
-	font-weight: bolder;
-}*/
