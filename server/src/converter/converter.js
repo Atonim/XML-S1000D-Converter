@@ -76,13 +76,13 @@ export class convertor {
     builder() {
         for (let code of this.stringCodes) {
             if (code === '018')
-                //this.build_018()
-                console.log('-');
+                this.build_018()
+
             else if (code === '410') {
                 this.build_410()
             }
             else {
-                //this.build(code)
+                this.build(code)
             }
 
         }

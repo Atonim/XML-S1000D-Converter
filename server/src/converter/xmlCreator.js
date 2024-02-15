@@ -210,47 +210,56 @@ export class xmlCreator {
         }
     }
 
+    isTableNew(element = this.currentElement) {
+        if (element.content.at(-1).name === 'para' && element.content.at(-1).content[0].openTag.startsWith('Продолжение таблицы')) {
+            element.content.pop()
+            return element.content.at(-1).content[0].content[1]
+        }
+        return null
+    }
+
     addTable(tableInfo) {
-        let newT = new tags.table()
-        newT.addAttribute(`id="tab-${tableInfo.id}"`)
-        newT.parent = this.currentElement
+        let newTbody = this.isTableNew()
 
-        let newTgroup = new tags.tgroup()
-        newTgroup.addAttribute(`col="${tableInfo.columns}"`)
-        newTgroup.parent = newT
+        if (!newTbody) {
+            let newT = new tags.table()
+            newT.addAttribute(`id="tab-${tableInfo.id}"`)
+            newT.parent = this.currentElement
 
+            let newTgroup = new tags.tgroup()
+            newTgroup.addAttribute(`col="${tableInfo.columns}"`)
+            newTgroup.parent = newT
 
-        let newThead = new tags.thead()
-        let newTbody = new tags.tbody()
-        newThead.parent = newTgroup
-        newTbody.parent = newTgroup
+            let newThead = new tags.thead()
+            newTbody = new tags.tbody()
+            newThead.parent = newTgroup
+            newTbody.parent = newTgroup
 
-        let newHeadRow = new tags.row()
-        newHeadRow.parent = newThead
-        newThead.addContent(newHeadRow)
-
-        for (let i = 0; i < tableInfo.columns; i++) {
-            let newEntry = new tags.entry()
-            newEntry.parent = newHeadRow
-            newEntry.addAttribute(`align="center"`)
-            newEntry.addAttribute(`valign="top"`)
-            newHeadRow.addContent(newEntry)
-
-            let newPara = new tags.para()
-            newPara.parent = newEntry
-            newEntry.addContent(newPara)
-
-            let newText = new tags.text(tableInfo.text[i])
-            newText.setParent(newPara)
-            newPara.addContent(newText)
+            newTgroup.addContent(newThead)
+            newTgroup.addContent(newTbody)
+            newT.addContent(newTgroup)
+            this.currentElement.addContent(newT)
+        }
+        else {
+            tableInfo.globalrows.shift()
         }
 
-        console.log(tableInfo.globalrows)
+
+
+
+        //console.log(tableInfo.globalrows)
         for (let i = 0; i < tableInfo.globalrows.length; i++) {
 
             let newRow = new tags.row()
-            newRow.parent = newTbody
-            newTbody.addContent(newRow)
+            if (i == 0 && !newTbody) {
+                newRow.parent = newThead
+                newThead.addContent(newRow)
+
+            } else {
+                newRow.parent = newTbody
+                newTbody.addContent(newRow)
+            }
+
 
             for (let j = 0; j < tableInfo.globalrows[i].columns.length; j++) {
                 let newEntry = new tags.entry()
@@ -268,11 +277,6 @@ export class xmlCreator {
                 }
             }
         }
-
-        newTgroup.addContent(newThead)
-        newTgroup.addContent(newTbody)
-        newT.addContent(newTgroup)
-        this.currentElement.addContent(newT)
     }
 
     actualizeSeqStack(paragraf, seqId) {

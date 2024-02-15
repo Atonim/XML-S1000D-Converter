@@ -205,40 +205,6 @@ export class docxParser {
         result.columns = currentTableNode.childNodes.length
         result.globalrows = []
 
-        while (currentTableNode.tagName != 'w:tr') {
-            currentTableNode = currentTableNode.nextSibling
-        }
-
-        let currentRowTableNode = currentTableNode.firstChild
-
-        result.text = []
-        while (currentRowTableNode) {
-            if (currentRowTableNode.tagName == 'w:tc') {
-                let currentColumnTableNode = currentRowTableNode.firstChild
-                while (currentColumnTableNode) {
-                    if (currentColumnTableNode.tagName == 'w:p') {
-                        let currentParaNode = currentColumnTableNode.firstChild
-                        while (currentParaNode) {
-                            if (currentParaNode.tagName == 'w:r') {
-                                let currentTextRowNode = currentParaNode.firstChild
-                                while (currentTextRowNode) {
-                                    if (currentTextRowNode.tagName == 'w:t') {
-                                        let currentTextNode = currentParaNode.firstChild
-                                        result.text.push(currentTextNode.firstChild)
-                                        console.log(currentTextNode.firstChild)
-                                    }
-                                    currentTextRowNode = currentTextRowNode.nextSibling
-                                }
-                            }
-                            currentParaNode = currentParaNode.nextSibling
-                        }
-                    }
-                    currentColumnTableNode = currentColumnTableNode.nextSibling
-                }
-            }
-            currentRowTableNode = currentRowTableNode.nextSibling
-        }
-
         while (currentTableNode) {
             if (currentTableNode.tagName == 'w:tr') {
                 const currentRow = { columns: [] }
@@ -258,29 +224,6 @@ export class docxParser {
                                 const currentParagraph = { text: this.getPara(currentColumnTableNode) }
                                 currentColumn.paragraphs.push(currentParagraph)
 
-                                //currentParagraph
-                                //let currentParaNode = currentColumnTableNode.firstChild
-
-                                //while (currentParaNode) {
-                                //    if (currentParaNode.tagName == 'w:r') {
-                                //        const currentTextFragment = { text: [] }
-                                //        currentParagraph.textFragments.push(currentTextFragment)
-
-                                //        let currentTextRowNode = currentParaNode.firstChild
-
-                                //        while (currentTextRowNode) {
-                                //            if (currentTextRowNode.tagName == 'w:t') {
-
-                                //                const currentTextNode = currentParaNode.firstChild
-                                //                result.text.push(currentTextNode.firstChild)
-
-                                //            }
-                                //            currentTextRowNode = currentTextRowNode.nextSibling
-                                //        }
-
-                                //    }
-                                //    currentParaNode = currentParaNode.nextSibling
-                                //}
                             }
                             currentColumnTableNode = currentColumnTableNode.nextSibling
                         }
@@ -294,6 +237,18 @@ export class docxParser {
         //console.log(this.currentNode.tagName)
         return result
     }
+
+
+    //код ниже не язаем
+    //table(node, tag){
+    //    while(node){
+    //        if (node.tagName === tag){
+    //            const currentRow = { columns: [] }
+    //            result.globalrows.push(currentRow)
+    //        }
+    //    }
+    //    return result
+    //}
 
     nextParagraf() {
         if (this.currentNode.nextSibling) {
