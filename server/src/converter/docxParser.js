@@ -42,11 +42,14 @@ export class docxParser {
         }
         if (node.tagName === "w:fldSimple") {
             let stratIndex = node.attributes[0].value.indexOf("_Ref")
-            if (stratIndex !== -1){
+
+            if (stratIndex !== -1) {
+
                 let address = node.attributes[0].value.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
                 // console.log("REF:========:", node.attributes[0].value, "}"+address)
+
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
                 return buffer
             }
@@ -57,6 +60,7 @@ export class docxParser {
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
                 // console.log("REF:========:", node.attributes[0].value, "}"+address)
+
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
                 return buffer
             }
@@ -73,9 +77,9 @@ export class docxParser {
 
     getPara(node = this.currentNode) {
         if (node.tagName === undefined || Object.keys(node.childNodes) == false) { return "" }
-        // node = node.firstChild
+
         let paragrafText = this.getFullParagraf(node.firstChild, "")
-        // node = node.parentNode
+
         return paragrafText
     }
 
@@ -221,6 +225,67 @@ export class docxParser {
         }
     }
 
+    getTable() {
+        let result = { id: 2 }
+
+        if (this.currentNode.tagName != 'w:tbl')
+            return null
+
+        result.id = 2
+        let currentTableNode = this.currentNode.firstChild
+
+        while (currentTableNode.tagName !== 'w:tblGrid') {
+            currentTableNode = currentTableNode.nextSibling
+        }
+
+        result.columns = currentTableNode.childNodes.length
+        result.globalrows = []
+
+        while (currentTableNode) {
+            if (currentTableNode.tagName == 'w:tr') {
+                const currentRow = { columns: [] }
+                result.globalrows.push(currentRow)
+
+                let currentRowTableNode = currentTableNode.firstChild
+
+                while (currentRowTableNode) {
+                    if (currentRowTableNode.tagName == 'w:tc') {
+                        const currentColumn = { paragraphs: [] }
+                        currentRow.columns.push(currentColumn)
+
+                        let currentColumnTableNode = currentRowTableNode.firstChild
+
+                        while (currentColumnTableNode) {
+                            if (currentColumnTableNode.tagName == 'w:p') {
+                                const currentParagraph = { text: this.getPara(currentColumnTableNode) }
+                                currentColumn.paragraphs.push(currentParagraph)
+
+                            }
+                            currentColumnTableNode = currentColumnTableNode.nextSibling
+                        }
+                    }
+                    currentRowTableNode = currentRowTableNode.nextSibling
+                }
+            }
+            currentTableNode = currentTableNode.nextSibling
+
+        }
+        //console.log(this.currentNode.tagName)
+        return result
+    }
+
+
+    //код ниже не язаем
+    //table(node, tag){
+    //    while(node){
+    //        if (node.tagName === tag){
+    //            const currentRow = { columns: [] }
+    //            result.globalrows.push(currentRow)
+    //        }
+    //    }
+    //    return result
+    //}
+
     nextParagraf() {
         if (this.currentNode.nextSibling) {
             this.currentNode = this.currentNode.nextSibling
@@ -259,7 +324,7 @@ export class docxParser {
         return false
     }
 
-    getImageRId (node = this.currentNode.firstChild, id = null) {
+    getImageRId(node = this.currentNode.firstChild, id = null) {
         // Method run tree recursively, while searching every a:blip tag 
         //  - It returns xor null if no images found, xor array of rIds
         if (node) {

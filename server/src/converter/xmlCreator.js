@@ -11,7 +11,7 @@ export class xmlCreator {
     mediaList = []
     // lastInsertedTag = null
 
-    constructor (infoCode, techName, imagesList) {
+    constructor(infoCode, techName, imagesList) {
         this.currentElement = new tags.dmodule(infoCode, techName)
         this.imagesList = imagesList
         // console.log(imagesList)
@@ -20,6 +20,7 @@ export class xmlCreator {
         // this.currentElement.addContent(newElement)
         // this.currentElement = newElement
     }
+
 
     preproccessing (xmlCode) {
         let start = xmlCode.indexOf("//**")
@@ -58,18 +59,21 @@ export class xmlCreator {
     }
 
     goUp () {
+
         if (this.currentElement && this.currentElement.parent) {
             this.currentElement = this.currentElement.parent
         }
     }
 
+
     goDown () {
         if (this.currentElement && this.currentElement.content.lengh) {
+
             this.currentElement = this.currentElement.content.at(-1)
         }
     }
 
-    goToLastInsertedPara () {
+    goToLastInsertedPara() {
         // console.log(this.currentElement.name)
         if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).name !== "listItem") {
             this.currentElement = this.currentElement.content.at(-1)
@@ -79,56 +83,62 @@ export class xmlCreator {
         // console.log(this.currentElement.name)
     }
 
-    goToLastParent () {
+    goToLastParent() {
         if (this.currentElement.name === "dmodule") {
-            
+
         } else {
             this.currentElement = this.currentElement.parent
         }
     }
 
+
     addPara (paragraf) {
+
         if (this.currentElement) {
             let newP = new tags.para()
             let newT = new tags.text(paragraf)
             newP.setParent(this.currentElement)
             newT.setParent(newP)
-            
+
             newP.addContent(newT)
             this.currentElement.addContent(newP)
         }
     }
 
+
     addListItem (paragraf = "") {
+
         if (this.currentElement) {
             let newI = new tags.listItem()
             // let newP = new tags.para()
             // let newT = new tags.text(paragraf)
             newI.setParent(this.currentElement)
+
             // newP.setParent(newI)
             // newT.setParent(newP)
             
             // newP.addContent(newT)
             // newI.addContent(newP)
+
             this.currentElement.addContent(newI)
         }
     }
 
-    addSequentialList () {
+    addSequentialList() {
         // Если встречено ":" на конце абзаца, далее будет идти перечисление
         //  Находим подходящее место и
         //  включаем в структуру документа sequentialList
         if (this.currentElement) {
             let newL = new tags.sequentialList()
             this.goToLastInsertedPara()
-                
+
             newL.parent = this.currentElement
             this.currentElement.content.push(newL)
             this.currentElement = newL
         }
     }
 
-    addRandomList () {
+    addRandomList() {
         // Если встречено ":" на конце абзаца, далее будет идти перечисление
         //  Находим подходящее место и
         //  включаем в структуру документа randomList
@@ -142,7 +152,7 @@ export class xmlCreator {
         }
     }
 
-    addLeveledPara (title="default title") {
+    addLeveledPara(title = "default title") {
         let newLP = new tags.levelledPara()
         let newTi = new tags.title(title)
 
@@ -155,7 +165,7 @@ export class xmlCreator {
 
     }
 
-    addCaution () {
+    addCaution() {
         if (this.currentElement) {
             let newC = new tags.caution()
 
@@ -165,7 +175,7 @@ export class xmlCreator {
         }
     }
 
-    addCautionPara (paragraf) {
+    addCautionPara(paragraf) {
         if (this.currentElement) {
             let newCP = new tags.warningAndCautionPara()
             let newT = new tags.text(paragraf)
@@ -177,7 +187,7 @@ export class xmlCreator {
         }
     }
 
-    addNote (paragraf) {
+    addNote(paragraf) {
         if (this.currentElement) {
             let newN = new tags.note()
             let newNP = new tags.notePara()
@@ -192,12 +202,14 @@ export class xmlCreator {
         }
     }
 
+
     addId (node, id) {
         node.id = id
         node.addAttribute(` id="${id}"`)
     }
 
     checkNote (paragraf) {
+
         if (paragraf.startsWith("Примечание – ")) {
             // this.chooseTextParagraf(paragraf.replace("Примечание – ", ''), seqId)
             this.addNote(paragraf.replace("Примечание – ", ''))
@@ -207,7 +219,7 @@ export class xmlCreator {
         }
     }
 
-    chooseListVariant (paragraf) {
+    chooseListVariant(paragraf) {
         if (paragraf.endsWith(':') && this.currentElement.name === "sequentialList" && this.currentElement.content[0]) {
             // console.log("randomList detected", )
             this.addRandomList()
@@ -217,7 +229,9 @@ export class xmlCreator {
         }
     }
 
+
     addFigure (rIds) {
+
         rIds.forEach(element => {
             let newF = new tags.figure()
             let id = `fig-${element.replace('rId', '')}`
@@ -240,6 +254,7 @@ export class xmlCreator {
         let tag = null
         let lastImg = null
         for (tag of this.currentElement.content) {
+
             if (tag.name === "figure" && tag.content[0] && tag.content[0].name === "graphic") {
 
                 let newT = new tags.title(paragraf)
@@ -283,20 +298,89 @@ export class xmlCreator {
         }
     }
 
-    actualizeSeqStack (paragraf, seqId) {
+    isTableNew(element = this.currentElement) {
+        if (element.content.at(-1).name === 'para' && element.content.at(-1).content[0].openTag.startsWith('Продолжение таблицы')) {
+            element.content.pop()
+            return element.content.at(-1).content[0].content[1]
+        }
+        return null
+    }
+
+    addTable(tableInfo) {
+        let newTbody = this.isTableNew()
+
+        if (!newTbody) {
+            let newT = new tags.table()
+            newT.addAttribute(`id="tab-${tableInfo.id}"`)
+            newT.parent = this.currentElement
+
+            let newTgroup = new tags.tgroup()
+            newTgroup.addAttribute(`col="${tableInfo.columns}"`)
+            newTgroup.parent = newT
+
+            let newThead = new tags.thead()
+            newTbody = new tags.tbody()
+            newThead.parent = newTgroup
+            newTbody.parent = newTgroup
+
+            newTgroup.addContent(newThead)
+            newTgroup.addContent(newTbody)
+            newT.addContent(newTgroup)
+            this.currentElement.addContent(newT)
+        }
+        else {
+            tableInfo.globalrows.shift()
+        }
+
+
+
+
+        //console.log(tableInfo.globalrows)
+        for (let i = 0; i < tableInfo.globalrows.length; i++) {
+
+            let newRow = new tags.row()
+            if (i == 0 && !newTbody) {
+                newRow.parent = newThead
+                newThead.addContent(newRow)
+
+            } else {
+                newRow.parent = newTbody
+                newTbody.addContent(newRow)
+            }
+
+
+            for (let j = 0; j < tableInfo.globalrows[i].columns.length; j++) {
+                let newEntry = new tags.entry()
+                newEntry.parent = newRow
+                newRow.addContent(newEntry)
+
+                for (let k = 0; k < tableInfo.globalrows[i].columns[j].paragraphs.length; k++) {
+                    let newPara = new tags.para()
+                    newPara.parent = newEntry
+                    newEntry.addContent(newPara)
+
+                    let newText = new tags.text(tableInfo.globalrows[i].columns[j].paragraphs[k].text)
+                    newText.setParent(newPara)
+                    newPara.addContent(newText)
+                }
+            }
+        }
+    }
+
+    actualizeSeqStack(paragraf, seqId) {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
         // let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
         // this.currentElement.addContent(newT)
         // newT.setParent(this.currentElement)
-        
+
         if (seqId === null) {
             return true
         }
 
         if (this.levelStack.length === 0) {
-            if(seqId === "3e") {
+            if (seqId === "3e") {
                 this.addLeveledPara()
             }
             this.levelStack.push(seqId)
@@ -304,7 +388,7 @@ export class xmlCreator {
         }
 
         if (seqId === this.levelStack.at(-1)) {
-            if(seqId === "3e") {
+            if (seqId === "3e") {
                 this.goUp()
                 this.addLeveledPara()
             }
@@ -312,7 +396,7 @@ export class xmlCreator {
         }
 
         if (this.levelStack.indexOf(seqId) !== -1 && this.levelStack.at(-1) !== seqId) {
-            while(this.levelStack.at(-1) !== seqId) {
+            while (this.levelStack.at(-1) !== seqId) {
                 if (this.levelStack.at(-1) === null) {
                 } else if (this.levelStack.at(-2) === "a1") {
                 } else if (this.levelStack.at(-2) === "4a") {
@@ -328,10 +412,10 @@ export class xmlCreator {
                 }
                 this.levelStack.pop()
             }
-            if(seqId === "3e") {
+            if (seqId === "3e") {
                 this.addLeveledPara()
             }
-            
+
             return false
         } else if (this.levelStack.indexOf(seqId) === -1) {
             this.levelStack.push(seqId)
@@ -340,7 +424,7 @@ export class xmlCreator {
                 this.goDown()
                 this.goUp()
                 this.goUp()
-            } else if(seqId === "3e" && this.currentElement.name === "dmodule") {
+            } else if (seqId === "3e" && this.currentElement.name === "dmodule") {
                 this.addLeveledPara()
             } else {
                 this.goDown()
@@ -352,7 +436,9 @@ export class xmlCreator {
         return true
     }
 
+
     chooseTextParagraf (paragraf, seqId = null, bookmarkIds = null) {
+
         // console.log(seqId)
         // if (paragraf.startsWith('Примечание – ')) {console.log(paragraf, paragraf.startsWith('Примечание - '))}
 
@@ -366,13 +452,13 @@ export class xmlCreator {
             this.chooseTextParagraf(paragraf, seqId)
             this.goUp()
 
-        // } else if (!this.isCurrentElementInSeq) {
-        //     // this.goToLastParent()
-        //     // this.goToLastParent()
-        //     // this.goToLastParent()
-        //     // this.addPara(paragraf)
-        //     this.isCurrentElementInSeq = true
-        //     this.chooseTextParagraf(paragraf, seqId)
+            // } else if (!this.isCurrentElementInSeq) {
+            //     // this.goToLastParent()
+            //     // this.goToLastParent()
+            //     // this.goToLastParent()
+            //     // this.addPara(paragraf)
+            //     this.isCurrentElementInSeq = true
+            //     this.chooseTextParagraf(paragraf, seqId)
         } else if (this.currentElement.name === "caution" && paragraf === paragraf.toUpperCase()) {
             this.addCautionPara(paragraf)
         } else if (this.currentElement.name === "caution" && paragraf !== paragraf.toUpperCase()) {
@@ -391,7 +477,7 @@ export class xmlCreator {
             // console.log("ВНИМАНИЕ", paragraf)
             this.addCaution()
             this.chooseTextParagraf(paragraf.replace("ВНИМАНИЕ: ", ''), seqId)
-        } 
+        }
         else if (paragraf.startsWith("Примечание – ")) {
             // this.chooseTextParagraf(paragraf.replace("Примечание – ", ''), seqId)
             this.addNote(paragraf.replace("Примечание – ", ''))
@@ -409,8 +495,13 @@ export class xmlCreator {
         this.setBookmark(bookmarkIds)
     }
 
-    chooseTag (paragraf, seqId, imageIds, bookmarkIds) {
-        if (paragraf) {
+
+    chooseTag(paragraf, seqId, imageIds, table, bookmarkIds) {
+        if (table) {
+            this.addTable(table)
+        }
+        else if (paragraf) {
+
             this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
             // console.log(paragraf)
             this.chooseTextParagraf(paragraf, seqId, bookmarkIds)
