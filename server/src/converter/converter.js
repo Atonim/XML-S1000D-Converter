@@ -17,6 +17,7 @@ export class convertor {
     techName = "default name"
     imageIdObject = null
     idImage_S1000D_Object = {}
+    documentReferences = {}
     result = {
         "Images": {},
         "XML": {}
@@ -70,11 +71,15 @@ export class convertor {
         this.builder()
 
         this.setResultXML()
+
         return this.result
     }
 
     builder() {
         for (let code of this.stringCodes) {
+            if (!this.documentContents.find(element => element.infoCode === code)) { continue }
+            if (!this.documentContents.find(element => element.infoCode === code).startId) { continue }
+            if (!this.documentContents.find(element => element.infoCode === code).stopId) { continue }
             if (code === '018')
                 this.build_018()
 
@@ -102,7 +107,9 @@ export class convertor {
     setResultXML() {
         for (let code of this.stringCodes) {
             let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
-            //this.result.XML[key] = this.files[code].stringify()
+
+            this.result.XML[key] = this.files[code]
+
         }
     }
 
@@ -114,15 +121,16 @@ export class convertor {
         // let element = this.docxParser.getPara()
         while (!this.docxParser.isEnter()) {
             let paragrafText = this.docxParser.getPara().trim()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId())
-            // if (paragrafText.trim() != "") {
-            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            // }
+            let imagesIds = this.docxParser.getImageRId()
+            let bookmarks = this.docxParser.getBookmarkId()
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, bookmarks)
+
             this.docxParser.nextParagraf()
         }
 
+        let moduleReferences = creator.refsDict
         this.files['018'] = creator.getDocument()
-        // console.log(this.file_018.stringify())
+        // console.log(this.file_018)
     }
 
     build_410() {
@@ -142,16 +150,23 @@ export class convertor {
         while (!this.docxParser.hasBookmarkId(id)) {
             let paragrafText = this.docxParser.getPara().trim()
             let imagesIds = this.docxParser.getImageRId()
+
+            let bookmarks = this.docxParser.getBookmarkId()
+
+
             let tableInfo = this.docxParser.getTable()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo)
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo, bookmarks)
             // if (paragrafText.trim() != "") {
             //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
             // }
+
             this.docxParser.nextParagraf()
         }
+        // console.log(creator.refsDict)
         this.docxParser.prevSibling()
+        let moduleReferences = creator.refsDict
         this.files['410'] = creator.getDocument()
-        console.log(this.files['410'].stringify())
+
     }
 
     build(code) {
@@ -167,28 +182,17 @@ export class convertor {
         while (!this.docxParser.hasBookmarkId(id)) {
             let paragrafText = this.docxParser.getPara().trim()
             let imagesIds = this.docxParser.getImageRId()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds)
-            if (paragrafText) {
-            } else if (imagesIds) {
-                // this.docxParser.nextParagraf()
-                // this.docxParser.nextParagraf()
-                // creator.addFigure(imagesIds, this.docxParser.getPara().trim())
-                // if (this.docxParser.hasBookmarkId(id)) { break }
-            }
 
-            // if (paragrafText.trim() != "") {
-            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            // // if (code === "030") { console.log(paragrafText) }
-            // }
+            let tableInfo = this.docxParser.getTable()
+            let bookmarks = this.docxParser.getBookmarkId()
+            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo, bookmarks)
+
+           
             this.docxParser.nextParagraf()
         }
         this.docxParser.prevSibling()
 
+        let moduleReferences = creator.refsDict
         this.files[code] = creator.getDocument()
     }
 }
-
-// let a = new convertor(document, documentRels)
-// // a.startPrototype()
-// a.start()
-// // console.log(a.start())

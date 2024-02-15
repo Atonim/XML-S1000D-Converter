@@ -7,7 +7,9 @@ export class xmlCreator {
     levelStack = []
     isCurrentElementInSeq = true
     seqVariants = ["sequentialList", "randomList"]
-    // inserted = false
+    refsDict = {}
+    mediaList = []
+    // lastInsertedTag = null
 
     constructor(infoCode, techName, imagesList) {
         this.currentElement = new tags.dmodule(infoCode, techName)
@@ -19,14 +21,54 @@ export class xmlCreator {
         // this.currentElement = newElement
     }
 
-    goUp() {
+
+    preproccessing (xmlCode) {
+        let start = xmlCode.indexOf("//**")
+        let stop  = xmlCode.indexOf("**//")
+        while (start !== -1 && stop !== -1) {
+            let ref = xmlCode.substring(start + 4, stop)
+            let fullRef = xmlCode.substring(start, stop + 4)
+
+            let pasteElement = ""
+            if (ref.startsWith("Type") && this.refsDict[ref.replace("Type", "")]) {
+                ref = ref.replace("Type", "")
+                pasteElement = this.refsDict[ref].type
+                xmlCode = xmlCode.replace(fullRef, pasteElement)
+            } else if (this.refsDict[ref]) {
+                pasteElement = this.refsDict[ref].id
+                xmlCode = xmlCode.replace(fullRef, pasteElement)
+            } else {
+                xmlCode = xmlCode.replace(fullRef, pasteElement)
+            }
+
+            start = xmlCode.indexOf("//**")
+            stop  = xmlCode.indexOf("**//")
+
+        }
+        return xmlCode
+    }
+
+    getDocument () {
+        while (this.currentElement.parent) {
+            this.currentElement = this.currentElement.parent
+        }
+        this.currentElement.media = this.mediaList
+        let proccessedDoc = this.currentElement.stringify()
+        proccessedDoc = this.preproccessing(proccessedDoc)
+        return proccessedDoc
+    }
+
+    goUp () {
+
         if (this.currentElement && this.currentElement.parent) {
             this.currentElement = this.currentElement.parent
         }
     }
 
-    goDown() {
-        if (this.currentElement && this.currentElement.content.lenght) {
+
+    goDown () {
+        if (this.currentElement && this.currentElement.content.lengh) {
+
             this.currentElement = this.currentElement.content.at(-1)
         }
     }
@@ -49,14 +91,9 @@ export class xmlCreator {
         }
     }
 
-    getDocument() {
-        while (this.currentElement.parent) {
-            this.currentElement = this.currentElement.parent
-        }
-        return this.currentElement
-    }
 
-    addPara(paragraf) {
+    addPara (paragraf) {
+
         if (this.currentElement) {
             let newP = new tags.para()
             let newT = new tags.text(paragraf)
@@ -68,17 +105,21 @@ export class xmlCreator {
         }
     }
 
-    addListItem(paragraf) {
+
+    addListItem (paragraf = "") {
+
         if (this.currentElement) {
             let newI = new tags.listItem()
-            let newP = new tags.para()
-            let newT = new tags.text(paragraf)
+            // let newP = new tags.para()
+            // let newT = new tags.text(paragraf)
             newI.setParent(this.currentElement)
-            newP.setParent(newI)
-            newT.setParent(newP)
 
-            newP.addContent(newT)
-            newI.addContent(newP)
+            // newP.setParent(newI)
+            // newT.setParent(newP)
+            
+            // newP.addContent(newT)
+            // newI.addContent(newP)
+
             this.currentElement.addContent(newI)
         }
     }
@@ -161,7 +202,14 @@ export class xmlCreator {
         }
     }
 
-    checkNote(paragraf) {
+
+    addId (node, id) {
+        node.id = id
+        node.addAttribute(` id="${id}"`)
+    }
+
+    checkNote (paragraf) {
+
         if (paragraf.startsWith("Примечание – ")) {
             // this.chooseTextParagraf(paragraf.replace("Примечание – ", ''), seqId)
             this.addNote(paragraf.replace("Примечание – ", ''))
@@ -181,13 +229,16 @@ export class xmlCreator {
         }
     }
 
-    addFigure(rIds, paragraf) {
+
+    addFigure (rIds) {
+
         rIds.forEach(element => {
             let newF = new tags.figure()
-            // let newT = new tags.title(paragraf)
+            let id = `fig-${element.replace('rId', '')}`
             let newG = new tags.graphic()
             newG.addAttribute(` infoEntityIdent="${this.imagesList[element]}"`)
-            newF.addAttribute(` id="fig-${element.replace('rId', '')}"`)
+            this.mediaList.push(this.imagesList[element])
+            this.addId(newF, id)
 
             newF.parent = this.currentElement
             newG.parent = newF
@@ -199,14 +250,51 @@ export class xmlCreator {
         })
     }
 
-    addFigureTitle(paragraf) {
-        for (let tag of this.currentElement.content) {
+    addFigureTitle (paragraf, bookmarkIds) {
+        let tag = null
+        let lastImg = null
+        for (tag of this.currentElement.content) {
+
             if (tag.name === "figure" && tag.content[0] && tag.content[0].name === "graphic") {
 
                 let newT = new tags.title(paragraf)
                 newT.setParent(tag)
                 tag.content.unshift(newT)
+                lastImg = tag
             }
+        }
+
+        if (lastImg && bookmarkIds) {
+            let id = lastImg.id
+
+            bookmarkIds.forEach(element => {
+                this.refsDict[element] = {"id": id, "type": "irtt01"}
+            })
+        }
+    }
+
+    setBookmark (bookmarkIds) {
+        if (bookmarkIds === null) { return }
+
+        let node = this.currentElement
+        if (node.name === "leveledPara") {
+            this.addId(node, bookmarkIds[0])
+        } else {
+            // this.goToLastInsertedPara()
+            // node = node.content.at(-1).content.at(-1)
+            this.addId(node, bookmarkIds[0])
+        }
+        // console.log(this.currentElement.name)
+        // while (node.name !== "dmodule" && node.id === null) {
+        //     node = node.parent
+        // }
+
+        if (node.id && bookmarkIds) {
+            let id = node.id
+
+            bookmarkIds.forEach(element => {
+                this.refsDict[element] = {"id": id, "type": "irtt07"}
+            })
         }
     }
 
@@ -348,7 +436,9 @@ export class xmlCreator {
         return true
     }
 
-    chooseTextParagraf(paragraf, seqId = null) {
+
+    chooseTextParagraf (paragraf, seqId = null, bookmarkIds = null) {
+
         // console.log(seqId)
         // if (paragraf.startsWith('Примечание – ')) {console.log(paragraf, paragraf.startsWith('Примечание - '))}
 
@@ -356,10 +446,11 @@ export class xmlCreator {
         if (this.seqVariants.indexOf(this.currentElement.name) !== -1) {
             // console.log()
             // this.addListItem(paragraf + " [" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
-            this.addListItem(paragraf)
+            this.addListItem()
             // this.goDown()
-            // this.chooseTextParagraf(paragraf, seqId)
-            // this.goUp()
+            this.currentElement = this.currentElement.content.at(-1)
+            this.chooseTextParagraf(paragraf, seqId)
+            this.goUp()
 
             // } else if (!this.isCurrentElementInSeq) {
             //     // this.goToLastParent()
@@ -378,7 +469,7 @@ export class xmlCreator {
             // console.log(this.currentElement.content.at(-1).name)
             // console.log(this.currentElement.name)
             // if (this.currentElement.name !== "figure") { this.goDown() }
-            this.addFigureTitle(paragraf)
+            this.addFigureTitle(paragraf, bookmarkIds)
             // this.goUp()
             // this.goUp()
 
@@ -399,18 +490,22 @@ export class xmlCreator {
             this.addPara(paragraf)
         }
 
-        this.chooseListVariant(paragraf)
+        // this.chooseListVariant(paragraf)
 
+        this.setBookmark(bookmarkIds)
     }
 
-    chooseTag(paragraf, seqId, imageIds, table) {
+
+    chooseTag(paragraf, seqId, imageIds, table, bookmarkIds) {
         if (table) {
             this.addTable(table)
         }
         else if (paragraf) {
+
             this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
             // console.log(paragraf)
-            this.chooseTextParagraf(paragraf, seqId)
+            this.chooseTextParagraf(paragraf, seqId, bookmarkIds)
+                this.chooseListVariant(paragraf)
         } else if (imageIds) {
             // console.log(imageIds)
             this.addFigure(imageIds)
