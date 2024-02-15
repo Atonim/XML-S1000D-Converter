@@ -11,32 +11,32 @@
 //  :setParent (element)            -> set link on parent tag *element*
 
 class Tag {
-    name        = ""
-    openTag     = ""
-    closeTag    = ""
-    attribute   = ""
-    content     = []
-    parent      = null
-    tags        = 2
+    name = ""
+    openTag = ""
+    closeTag = ""
+    attribute = ""
+    content = []
+    parent = null
+    tags = 2
 
-    addContent (newElement) {
+    addContent(newElement) {
         this.content.push(newElement)
     }
 
-    addAttribute (attributeString) {
+    addAttribute(attributeString) {
         this.attribute += ` ${attributeString}`
     }
 
-    stringify (level = 3) {
+    stringify(level = 3) {
         let contentInside = ""
         for (let element of this.content) {
             contentInside += String(element.stringify(level + 1))
         }
         // console.log("stringify: ", this.name, this.content.length, contentInside)
 
-        if (this.tags === 2){
-    return (
-`
+        if (this.tags === 2) {
+            return (
+                `
 ${paddng(level)}<${this.openTag} ${this.attribute}>
 ${contentInside}
 ${paddng(level)}<${this.closeTag}>`)
@@ -45,23 +45,23 @@ ${paddng(level)}<${this.closeTag}>`)
         }
     }
 
-    setParent (element) {
+    setParent(element) {
         this.parent = element
     }
 }
 
 export class dmodule extends Tag {
-    constructor (infoCode = "018", techName = "default name") {
+    constructor(infoCode = "018", techName = "default name") {
         super()
-        let currentTime     = new Date()
-        let creationDay     = currentTime.getDate()
-        let creationMonth   = currentTime.getMonth() + 1
-        let creationYear    = currentTime.getFullYear()
-        let infoName        = infoTable.find(element => element.infoCode === infoCode).infoName
-        this.media      = []
-        this.name       = "dmodule"
-        this.openTag    = 
-`!--Arbortext, Inc., 1988-2017, v.4002-->
+        let currentTime = new Date()
+        let creationDay = currentTime.getDate()
+        let creationMonth = currentTime.getMonth() + 1
+        let creationYear = currentTime.getFullYear()
+        let infoName = infoTable.find(element => element.infoCode === infoCode).infoName
+        this.media = []
+        this.name = "dmodule"
+        this.openTag =
+            `!--Arbortext, Inc., 1988-2017, v.4002-->
 <?Pub Inc?>
 <dmodule xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:ns2="http://www.purl.org/dc/elements/1.1/"
@@ -95,17 +95,17 @@ export class dmodule extends Tag {
     </identAndStatusSection>
     <content>
         <description`
-        this.closeTag   = 
-`/description>
+        this.closeTag =
+            `/description>
     </content>
 </dmodule`
     }
 
-    addMedia (fileName) {
+    addMedia(fileName) {
         this.media.push(fileName)
     }
 
-    stringify () {
+    stringify() {
         let contentInside = ""
         for (let i = 0; i < this.content.length; i++) {
             contentInside += String(this.content[i].stringify())
@@ -132,210 +132,219 @@ ${mediaInside}
 }
 
 export class para extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "para"
-        this.openTag    = `para`
-        this.closeTag   = `/para`
+        this.name = "para"
+        this.openTag = `para`
+        this.closeTag = `/para`
     }
 }
 
 export class text extends Tag {
-    constructor (someText) {
+    constructor(someText) {
         super()
-        this.name       = "text"
-        this.openTag    = someText
-        this.closeTag   = ""
+        this.name = "text"
+        this.openTag = someText
+        this.closeTag = ""
     }
 
-    stringify (level) {
+    stringify(level) {
         return `${paddng(level)}${this.openTag}`
     }
 }
 
 export class caution extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "caution"
-        this.openTag    = `caution`
-        this.closeTag   = `/caution`
+        this.name = "caution"
+        this.openTag = `caution`
+        this.closeTag = `/caution`
     }
 }
 
 export class warningAndCautionPara extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "warningAndCautionPara"
-        this.openTag    = `warningAndCautionPara`
-        this.closeTag   = `/warningAndCautionPara`
+        this.name = "warningAndCautionPara"
+        this.openTag = `warningAndCautionPara`
+        this.closeTag = `/warningAndCautionPara`
     }
 }
 
 export class sequentialList extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "sequentialList"
-        this.openTag    = `sequentialList`
-        this.closeTag   = `/sequentialList`
+        this.name = "sequentialList"
+        this.openTag = `sequentialList`
+        this.closeTag = `/sequentialList`
     }
 }
 
 export class listItem extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "listItem"
-        this.openTag    = `listItem`
-        this.closeTag   = `/listItem`
+        this.name = "listItem"
+        this.openTag = `listItem`
+        this.closeTag = `/listItem`
     }
 }
 
 export class randomList extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "randomList"
-        this.openTag    = `randomList`
-        this.closeTag   = `/randomList`
+        this.name = "randomList"
+        this.openTag = `randomList`
+        this.closeTag = `/randomList`
     }
 }
 
 export class levelledPara extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "levelledPara"
-        this.openTag    = `levelledPara`
-        this.closeTag   = `/levelledPara`
+        this.name = "levelledPara"
+        this.openTag = `levelledPara`
+        this.closeTag = `/levelledPara`
     }
 }
 
 export class title extends Tag {
-    constructor (title) {
+    constructor(title) {
         super()
-        this.name       = "title"
-        this.openTag    = `title`
-        this.closeTag   = `/title`
+        this.name = "title"
+        this.openTag = `title`
+        this.closeTag = `/title`
         let newT = new text(title)
         newT.parent = this
         this.content.push(newT)
     }
 
-    stringify (level) {
+    stringify(level) {
         return `\n${paddng(level)}<${this.openTag}${this.attribute}>${this.content[0].stringify(0)}<${this.closeTag}>`
     }
 }
 
 export class internalRef extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "internalRef"
-        this.openTag    = `internalRef`
-        this.tags       = 1
+        this.name = "internalRef"
+        this.openTag = `internalRef`
+        this.tags = 1
     }
 }
 
 export class figure extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "figure"
-        this.openTag    = `figure`
-        this.closeTag   = `/figure`
+        this.name = "figure"
+        this.openTag = `figure`
+        this.closeTag = `/figure`
     }
 }
 
 export class graphic extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "graphic"
-        this.openTag    = `graphic`
-        this.closeTag   = ``
+        this.name = "graphic"
+        this.openTag = `graphic`
+        this.closeTag = ``
     }
 
-    stringify (level) {
+    stringify(level) {
         return `\n${paddng(level)}<${this.openTag}${this.attribute}>`
     }
 }
 
 export class table extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "table"
-        this.openTag    = `table`
-        this.closeTag   = `/table`
+        this.name = "table"
+        this.openTag = `table`
+        this.closeTag = `/table`
     }
 }
 
 export class tgroup extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "tgroup"
-        this.openTag    = `tgroup`
-        this.closeTag   = `/tgroup`
+        this.name = "tgroup"
+        this.openTag = `tgroup`
+        this.closeTag = `/tgroup`
     }
 }
 
 export class colspec extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "colspec"
-        this.openTag    = `colspec`
-        this.closeTag   = `/colspec`
+        this.name = "colspec"
+        this.openTag = `colspec`
+        this.closeTag = `/colspec`
     }
 }
 
 export class thead extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "thead"
-        this.openTag    = `thead`
-        this.closeTag   = `/thead`
+        this.name = "thead"
+        this.openTag = `thead`
+        this.closeTag = `/thead`
+    }
+}
+
+export class tbody extends Tag {
+    constructor() {
+        super()
+        this.name = "tbody"
+        this.openTag = `tbody`
+        this.closeTag = `/tbody`
     }
 }
 
 export class entry extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "entry"
-        this.openTag    = `entry`
-        this.closeTag   = `/entry`
+        this.name = "entry"
+        this.openTag = `entry`
+        this.closeTag = `/entry`
     }
 }
 
 export class row extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "row"
-        this.openTag    = `row`
-        this.closeTag   = `/row`
+        this.name = "row"
+        this.openTag = `row`
+        this.closeTag = `/row`
     }
 }
 
 export class note extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "note"
-        this.openTag    = `note`
-        this.closeTag   = `/note`
+        this.name = "note"
+        this.openTag = `note`
+        this.closeTag = `/note`
     }
 }
 
 export class notePara extends Tag {
-    constructor () {
+    constructor() {
         super()
-        this.name       = "notePara"
-        this.openTag    = `notePara`
-        this.closeTag   = `/notePara`
+        this.name = "notePara"
+        this.openTag = `notePara`
+        this.closeTag = `/notePara`
     }
 }
 
 const infoTable = [
-    {"infoCode": "018", "infoName": "Введение"},
-    {"infoCode": "020", "infoName": "Назначение"},
-    {"infoCode": "030", "infoName": "Технические характеристики"},
-    {"infoCode": "034", "infoName": "Состав изделия"},
-    {"infoCode": "041", "infoName": "Устройство и работа"},
-    {"infoCode": "044", "infoName": "Описание и работа составных частей изделия"},
-    {"infoCode": "122", "infoName": "Указания по включению и опробованию работы изделия"},
-    {"infoCode": "123", "infoName": "Установка и настройка программного обеспечения"},
-    {"infoCode": "410", "infoName": "Перечень возможных неисправностей в процессе использования изделия и рекомендации по действиям при их возникновении"},
+    { "infoCode": "018", "infoName": "Введение" },
+    { "infoCode": "020", "infoName": "Назначение" },
+    { "infoCode": "030", "infoName": "Технические характеристики" },
+    { "infoCode": "034", "infoName": "Состав изделия" },
+    { "infoCode": "041", "infoName": "Устройство и работа" },
+    { "infoCode": "044", "infoName": "Описание и работа составных частей изделия" },
+    { "infoCode": "122", "infoName": "Указания по включению и опробованию работы изделия" },
+    { "infoCode": "123", "infoName": "Установка и настройка программного обеспечения" },
+    { "infoCode": "410", "infoName": "Перечень возможных неисправностей в процессе использования изделия и рекомендации по действиям при их возникновении" },
 ]
 
 function paddng(level = 0) {
