@@ -22,9 +22,9 @@ export class xmlCreator {
     }
 
 
-    preproccessing (xmlCode) {
+    preproccessing(xmlCode) {
         let start = xmlCode.indexOf("//**")
-        let stop  = xmlCode.indexOf("**//")
+        let stop = xmlCode.indexOf("**//")
         while (start !== -1 && stop !== -1) {
             let ref = xmlCode.substring(start + 4, stop)
             let fullRef = xmlCode.substring(start, stop + 4)
@@ -42,13 +42,13 @@ export class xmlCreator {
             }
 
             start = xmlCode.indexOf("//**")
-            stop  = xmlCode.indexOf("**//")
+            stop = xmlCode.indexOf("**//")
 
         }
         return xmlCode
     }
 
-    getDocument () {
+    getDocument() {
         while (this.currentElement.parent) {
             this.currentElement = this.currentElement.parent
         }
@@ -58,7 +58,7 @@ export class xmlCreator {
         return proccessedDoc
     }
 
-    goUp () {
+    goUp() {
 
         if (this.currentElement && this.currentElement.parent) {
             this.currentElement = this.currentElement.parent
@@ -66,7 +66,7 @@ export class xmlCreator {
     }
 
 
-    goDown () {
+    goDown() {
         if (this.currentElement && this.currentElement.content.lengh) {
 
             this.currentElement = this.currentElement.content.at(-1)
@@ -92,7 +92,7 @@ export class xmlCreator {
     }
 
 
-    addPara (paragraf) {
+    addPara(paragraf) {
 
         if (this.currentElement) {
             let newP = new tags.para()
@@ -106,7 +106,7 @@ export class xmlCreator {
     }
 
 
-    addListItem (paragraf = "") {
+    addListItem(paragraf = "") {
 
         if (this.currentElement) {
             let newI = new tags.listItem()
@@ -116,7 +116,7 @@ export class xmlCreator {
 
             // newP.setParent(newI)
             // newT.setParent(newP)
-            
+
             // newP.addContent(newT)
             // newI.addContent(newP)
 
@@ -207,7 +207,7 @@ export class xmlCreator {
         node.addAttribute(` id="${id}"`)
     }
 
-    checkNote (paragraf) {
+    checkNote(paragraf) {
 
         if (paragraf.startsWith("Примечание – ")) {
             // this.chooseTextParagraf(paragraf.replace("Примечание – ", ''), seqId)
@@ -229,7 +229,7 @@ export class xmlCreator {
     }
 
 
-    addFigure (rIds) {
+    addFigure(rIds) {
 
         rIds.forEach(element => {
             let newF = new tags.figure()
@@ -249,7 +249,7 @@ export class xmlCreator {
         })
     }
 
-    addFigureTitle (paragraf, bookmarkIds) {
+    addFigureTitle(paragraf, bookmarkIds) {
         let tag = null
         let lastImg = null
         for (tag of this.currentElement.content) {
@@ -267,12 +267,12 @@ export class xmlCreator {
             let id = lastImg.id
 
             bookmarkIds.forEach(element => {
-                this.refsDict[element] = {"id": id, "type": "irtt01"}
+                this.refsDict[element] = { "id": id, "type": "irtt01" }
             })
         }
     }
 
-    setBookmark (bookmarkIds) {
+    setBookmark(bookmarkIds) {
         if (bookmarkIds === null) { return }
 
         let node = this.currentElement
@@ -292,7 +292,7 @@ export class xmlCreator {
             let id = node.id
 
             bookmarkIds.forEach(element => {
-                this.refsDict[element] = {"id": id, "type": "irtt07"}
+                this.refsDict[element] = { "id": id, "type": "irtt07" }
             })
         }
     }
@@ -305,25 +305,82 @@ export class xmlCreator {
         return null
     }
 
+    setTable(element = this.currentElement) {
+        let id = 0
+        let titleText = ''
+        if (element.content.at(-1).name === 'para') {
+            let paraString = element.content.at(-1).content[0].openTag
+            paraString = paraString.replaceAll('\u00A0', '')
+            if (paraString.startsWith('Таблица')) {
+                const titleArr = paraString.split(' ')
+                console.log(titleArr)
+
+                let idInString = titleArr[0].slice(7)
+                console.log(idInString)
+                if (idInString.length && !isNaN(idInString.trim())) {
+                    id = idInString
+                }
+
+
+                for (let i = 1; i < titleArr.length; i++) {
+                    if (id) {
+                        if (titleArr[i] === '–' || titleArr[i] === '-')
+                            continue
+                        titleText.length ? titleText = titleText + ' ' + titleArr[i] : titleText = titleText + titleArr[i]
+                    }
+                    else if (!isNaN(titleArr[i]) && titleArr[i].length) {
+                        id = titleArr[i]
+                    }
+                    else {
+                        console.log('Не найден номер таблицы')
+                    }
+                }
+                if (!titleText.length) console.log('Не найдено название таблицы', id)
+            }
+            element.content.pop()
+        }
+        console.log(id, titleText)
+        return { id, titleText }
+    }
+
     addTable(tableInfo) {
         let newTbody = this.isTableNew()
-
+        let newThead = null
+        let needHead = false
         if (!newTbody) {
+            needHead = true
+        }
+        if (!newTbody) {
+            const { id, titleText } = this.setTable()
             let newT = new tags.table()
-            newT.addAttribute(`id="tab-${tableInfo.id}"`)
+            newT.addAttribute(`id="tab-${id}"`)
             newT.parent = this.currentElement
 
+            let newTtitle = new tags.title(titleText)
+            newTtitle.parent = newT
+
             let newTgroup = new tags.tgroup()
-            newTgroup.addAttribute(`col="${tableInfo.columns}"`)
+            newTgroup.addAttribute(`cols="${tableInfo.columns}"`)
             newTgroup.parent = newT
 
-            let newThead = new tags.thead()
+            for (let i = 1; i < tableInfo.columns + 1; i++) {
+                let newTcolspec = new tags.colspec()
+                newTcolspec.addAttribute(`colname="${i}"`) //иногда пишут col<i>
+                newTcolspec.addAttribute(`colwidth=""`) //как формируется ширина?
+                newTcolspec.parent = newTgroup
+                newTgroup.addContent(newTcolspec)
+            }
+
+
+
+            newThead = new tags.thead()
             newTbody = new tags.tbody()
             newThead.parent = newTgroup
             newTbody.parent = newTgroup
 
             newTgroup.addContent(newThead)
             newTgroup.addContent(newTbody)
+            newT.addContent(newTtitle)
             newT.addContent(newTgroup)
             this.currentElement.addContent(newT)
         }
@@ -338,7 +395,8 @@ export class xmlCreator {
         for (let i = 0; i < tableInfo.globalrows.length; i++) {
 
             let newRow = new tags.row()
-            if (i == 0 && !newTbody) {
+            if (i === 0 && needHead) {
+                console.log('head')
                 newRow.parent = newThead
                 newThead.addContent(newRow)
 
@@ -351,6 +409,10 @@ export class xmlCreator {
             for (let j = 0; j < tableInfo.globalrows[i].columns.length; j++) {
                 let newEntry = new tags.entry()
                 newEntry.parent = newRow
+
+                if (newRow.parent.name === 'thead') {
+                    newEntry.addAttribute(`valign="top"`)
+                }
                 newRow.addContent(newEntry)
 
                 for (let k = 0; k < tableInfo.globalrows[i].columns[j].paragraphs.length; k++) {
@@ -436,7 +498,7 @@ export class xmlCreator {
     }
 
 
-    chooseTextParagraf (paragraf, seqId = null, bookmarkIds = null) {
+    chooseTextParagraf(paragraf, seqId = null, bookmarkIds = null) {
 
         // console.log(seqId)
         // if (paragraf.startsWith('Примечание – ')) {console.log(paragraf, paragraf.startsWith('Примечание - '))}
@@ -504,7 +566,7 @@ export class xmlCreator {
             this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
             // console.log(paragraf)
             this.chooseTextParagraf(paragraf, seqId, bookmarkIds)
-                this.chooseListVariant(paragraf)
+            this.chooseListVariant(paragraf)
         } else if (imageIds) {
             // console.log(imageIds)
             this.addFigure(imageIds)
