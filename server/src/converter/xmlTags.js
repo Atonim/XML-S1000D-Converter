@@ -12,16 +12,16 @@
 
 class Tag {
 
-    name        = ""
-    openTag     = ""
-    closeTag    = ""
-    attribute   = ""
-    content     = []
-    parent      = null
-    tags        = 2
-    id          = null
+    name = ""
+    openTag = ""
+    closeTag = ""
+    attribute = ""
+    content = []
+    parent = null
+    tags = 2
+    id = null
 
-    addContent (newElement) {
+    addContent(newElement) {
 
         this.content.push(newElement)
     }
@@ -118,12 +118,12 @@ export class dmodule extends Tag {
         if (this.media.length) {
             let mediaInside = ""
             for (let mediaEl of this.media) {
-                mediaInside += 
-                `\n<!ENTITY ${mediaEl} SYSTEM "../Images/${mediaEl}.jpg" NDATA jpg>`
+                mediaInside +=
+                    `\n<!ENTITY ${mediaEl} SYSTEM "../Images/${mediaEl}.jpg" NDATA jpg>`
             }
-    //         this.media.forEach(element => mediaInside + `
-    // <!ENTITY ${element.filename} SYSTEM "../Images/${element.filename}.${element.fileformat}" NDATA ${element.fileformat}>`
-    //         )
+            //         this.media.forEach(element => mediaInside + `
+            // <!ENTITY ${element.filename} SYSTEM "../Images/${element.filename}.${element.fileformat}" NDATA ${element.fileformat}>`
+            //         )
             stringifiedMedia = `
 <!DOCTYPE dmodule [
 <!NOTATION jpg PUBLIC "jpg" "jpg">${mediaInside}
@@ -284,6 +284,7 @@ export class colspec extends Tag {
         this.name = "colspec"
         this.openTag = `colspec`
         this.closeTag = `/colspec`
+        this.tags = 1
     }
 }
 

@@ -1,4 +1,4 @@
-
+import fs from 'fs'
 import * as tegs from "./xmlTags.js"
 //import { document } from "./temp.js"
 //import { documentRels } from "./temp2.js"
@@ -166,6 +166,7 @@ export class convertor {
         this.docxParser.prevSibling()
         let moduleReferences = creator.refsDict
         this.files['410'] = creator.getDocument()
+        fs.writeFile('src/converter/test.xml', this.files['410'], (err) => { if (err) return console.log(err); console.log('saved') })
 
     }
 
@@ -187,7 +188,7 @@ export class convertor {
             let bookmarks = this.docxParser.getBookmarkId()
             creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo, bookmarks)
 
-           
+
             this.docxParser.nextParagraf()
         }
         this.docxParser.prevSibling()

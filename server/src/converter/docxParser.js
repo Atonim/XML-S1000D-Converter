@@ -55,7 +55,7 @@ export class docxParser {
             }
         } else if (node.tagName === "w:instrText") {
             let stratIndex = node.firstChild.data.indexOf("_Ref")
-            if (stratIndex !== -1){
+            if (stratIndex !== -1) {
                 let address = node.firstChild.data.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
@@ -231,7 +231,6 @@ export class docxParser {
         if (this.currentNode.tagName != 'w:tbl')
             return null
 
-        result.id = 2
         let currentTableNode = this.currentNode.firstChild
 
         while (currentTableNode.tagName !== 'w:tblGrid') {
@@ -345,7 +344,7 @@ export class docxParser {
         return id
     }
 
-    getBookmarkId (node = this.currentNode.firstChild, id = null) {
+    getBookmarkId(node = this.currentNode.firstChild, id = null) {
         // Method run tree recursively, while searching every w:bookmarkStart tag 
         //  - It returns xor null if no bookmarks found, xor array of bookmarks names
         if (node) {
