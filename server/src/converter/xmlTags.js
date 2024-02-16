@@ -252,11 +252,11 @@ export class graphic extends Tag {
         super()
         this.name = "graphic"
         this.openTag = `graphic`
-        this.closeTag = ``
+        this.closeTag = `/graphic`
     }
 
     stringify(level) {
-        return `\n${paddng(level)}<${this.openTag}${this.attribute}>`
+        return `\n${paddng(level)}<${this.openTag}${this.attribute}><${this.closeTag}>`
     }
 }
 

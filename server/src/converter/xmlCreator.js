@@ -202,7 +202,6 @@ export class xmlCreator {
         }
     }
 
-
     addId (node, id) {
         node.id = id
         node.addAttribute(` id="${id}"`)
@@ -220,12 +219,12 @@ export class xmlCreator {
     }
 
     chooseListVariant(paragraf) {
-        if (paragraf.endsWith(':') && this.currentElement.name === "sequentialList" && this.currentElement.content[0]) {
+        if (paragraf.endsWith(':') && this.currentElement.name === "randomList" && this.currentElement.content[0]) {
             // console.log("randomList detected", )
-            this.addRandomList()
+            this.addSequentialList()
         } else if (paragraf.endsWith(':') && this.currentElement.content[0]) {
             // console.log("sequentialList detected", paragraf)
-            this.addSequentialList()
+            this.addRandomList()
         }
     }
 
