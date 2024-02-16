@@ -77,13 +77,14 @@ export class convertor {
 
     builder() {
         for (let code of this.stringCodes) {
+            if (code === '018')
+                this.build_018()
             if (!this.documentContents.find(element => element.infoCode === code)) { continue }
             if (!this.documentContents.find(element => element.infoCode === code).startId) { continue }
             if (!this.documentContents.find(element => element.infoCode === code).stopId) { continue }
-            if (code === '018')
-                this.build_018()
-
-            else if (code === '410') {
+            if (code === '018') {
+                
+            } else if (code === '410') {
                 this.build_410()
             }
             else {
@@ -106,6 +107,7 @@ export class convertor {
 
     setResultXML() {
         for (let code of this.stringCodes) {
+            if (code !== "018" && this.files[code] === null) { continue }
             let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
 
             this.result.XML[key] = this.files[code]

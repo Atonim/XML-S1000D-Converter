@@ -66,7 +66,11 @@ export class docxParser {
             }
         }
         if (node.tagName === "w:t") {
-            buffer += node.firstChild
+            let fragment = node.firstChild.data
+            if (node.parentNode.firstChild.tagName === "w:rPr")
+                if (node.parentNode.firstChild.firstChild.tagName === "w:caps")
+                    fragment = fragment.toUpperCase()
+            buffer += fragment
         }
         if (node.nextSibling !== null) {
             node = node.nextSibling
