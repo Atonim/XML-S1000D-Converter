@@ -301,7 +301,8 @@ export class xmlCreator {
     isTableNew(element = this.currentElement) {
         if (element.content.at(-1).name === 'para' && element.content.at(-1).content[0].openTag.startsWith('Продолжение таблицы')) {
             element.content.pop()
-            return element.content.at(-1).content[0].content[1]
+            console.log(element.content.at(-1).content[1].content.find(el => el.name === 'tbody'))
+            return element.content.at(-1).content[1].content.find(el => el.name === 'tbody')
         }
         return null
     }
@@ -310,14 +311,15 @@ export class xmlCreator {
         let id = 0
         let titleText = ''
         if (element.content.at(-1).name === 'para') {
+
             let paraString = element.content.at(-1).content[0].openTag
             paraString = paraString.replaceAll('\u00A0', '')
             if (paraString.startsWith('Таблица')) {
                 const titleArr = paraString.split(' ')
-                console.log(titleArr)
+                //console.log(titleArr)
 
                 let idInString = titleArr[0].slice(7)
-                console.log(idInString)
+                //console.log(idInString)
                 if (idInString.length && !isNaN(idInString.trim())) {
                     id = idInString
                 }
@@ -340,12 +342,12 @@ export class xmlCreator {
             }
             element.content.pop()
         }
-        console.log(id, titleText)
         return { id, titleText }
     }
 
     addTable(tableInfo) {
         let newTbody = this.isTableNew()
+        console.log(newTbody)
         let newThead = null
         let needHead = false
         if (!newTbody) {
@@ -397,7 +399,7 @@ export class xmlCreator {
 
             let newRow = new tags.row()
             if (i === 0 && needHead) {
-                console.log('head')
+                //console.log('head')
                 newRow.parent = newThead
                 newThead.addContent(newRow)
 
@@ -414,6 +416,19 @@ export class xmlCreator {
                 if (newRow.parent.name === 'thead') {
                     newEntry.addAttribute(`valign="top"`)
                 }
+
+                for (let key of Object.keys(tableInfo.globalrows[i].columns[j].attributes)) {
+                    if (key === 'colSpannig') {
+                        const cellId = j + 1;
+                        const cellEndId = tableInfo.globalrows[i].columns[j].attributes[key]
+                        newEntry.addAttribute(`namest="${cellId}"`)
+                        newEntry.addAttribute(`nameend="${cellEndId}"`)
+                    }
+                    if (key === 'colMerging') {
+
+                    }
+                }
+
                 newRow.addContent(newEntry)
 
                 for (let k = 0; k < tableInfo.globalrows[i].columns[j].paragraphs.length; k++) {
