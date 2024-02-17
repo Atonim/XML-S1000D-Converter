@@ -76,19 +76,19 @@
 
                         <row >
 
-                            <entry  valign="top">
+                            <entry  valign="top" morerows="0">
 
                                 <para >
                                     Характер неисправности
                                 </para>
                             </entry>
-                            <entry  valign="top">
+                            <entry  valign="top" morerows="0">
 
                                 <para >
                                     Возможная причина появления неисправности
                                 </para>
                             </entry>
-                            <entry  valign="top">
+                            <entry  valign="top" morerows="0">
 
                                 <para >
                                     Метод устранения
@@ -100,7 +100,7 @@
 
                         <row >
 
-                            <entry  namest="1" nameend="3">
+                            <entry  namest="1" nameend="3" morerows="0">
 
                                 <para >
                                     Системный блок
@@ -109,19 +109,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="2">
 
                                 <para >
                                     При включении не работает вентилятор внутри корпуса, не светятся индикаторы, нет звукового сигнала об окончании начального теста и на экране монитора ничего не отображается
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Напряжение в сети электропитания отсутствует или не соответствует норме
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Выключить системный блок. Выключить монитор. Выключить и повторно включить ИБП. Повторно включить монитор и системный блок. Если системный блок и монитор не включились, то проверить исправность ИБП
@@ -130,19 +130,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильное подключение кабеля электропитания системного блока или монитора к ИБП
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повторно подключить кабели электропитания системного блока и монитора к ИБП
@@ -151,19 +145,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность блока питания внутри системного блока
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отключить системный блок от сети электропитания. Через время не менее 30 с повторно включить системный блок.
@@ -175,19 +163,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="1">
 
                                 <para >
                                     При включении вентилятор внутри корпуса работает, индикаторы светятся, но не звучит характерный сигнал «гудок» окончания начального теста, запускаемого из BIOS, на экране монитора ничего не отображается
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Сбой запуска материнской платы при включении
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Перезагрузить системный блок, для чего нажать на кнопку RESET на передней панели системного блока.
@@ -199,19 +187,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильное соединение кабеля с разъёмами DVI-D с системным блоком или монитором
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повторно подключить кабель с разъёмами DVI-D. Убедиться, что винты крепления разъёмов DVI-D кабеля завёрнуты до упора и не перекосились. 
@@ -223,7 +205,7 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     При включении на экране монитора отображается сообщение об ошибке, и загрузка ОС не выполняется
@@ -232,13 +214,13 @@
                                     
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильное подключение периферийных устройств 
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Подключить периферийные устройства правильно. Проверить исправность периферийных устройств. Повторно включить системный блок
@@ -247,19 +229,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     При включении на экране монитора проходит начальный тест, но загрузка дальше не идёт
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повреждение ОС или НЖМД
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Включить системный блок повторно. 
@@ -271,19 +253,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="2">
 
                                 <para >
                                     Появление сообщенияна экране монитора об отказе пользователю в доступе
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Пароль введён неправильно
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Ввести пароль правильно
@@ -292,19 +274,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Предъявлен АНП, не соответствующий введённому паролю
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить АНП на соответствующий вводимому паролю
@@ -313,19 +289,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     АНП не опознан ПАК 
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Нажать любую клавишу и после появления на экране запроса предъявить АНП и пароль ещё раз. Подряд можно сделать не более установленного администратором средств защиты информации количества попыток входа. После всех разрешенных попыток ПЭВМ будет принудительно перезапущена, и ПАК стартует повторно.
@@ -340,19 +310,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Изделие включено, но при работе не выполняется чтение НЗ устройством для чтения/записи компакт-дисков, DVD выполняется чтение НЗ устройством для чтения/записи компакт-дисков, DVD
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильная установка НЗ
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повторно установить НЗ
@@ -361,19 +331,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="1">
 
                                 <para >
                                     
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильная настройка устройства для чтения/записи компакт-дисков, DVD
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Перезапустить ОС и войти в BIOS. Убедиться в том, что устройство для чтения/записи компакт-дисков, DVD настроено правильно, если нет – откорректировать настройки в BIOS и сохранить изменения.
@@ -385,19 +355,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность устройства для чтения/записи компакт-дисков, DVD
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить системный блок с неисправным устройством для чтения/записи компакт-дисков, DVD на системный блок из состава ЗИП* (см. 4.2<internalRef internalRefId="" internalRefTargetType=""/>
@@ -406,19 +370,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="1">
 
                                 <para >
                                     Изделие включено, но при работе с НЖМД (чтение или запись) появляются ошибки
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Наличие вирусов
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Обратиться к пользователю с правами администратора средств защиты информации
@@ -427,19 +391,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность НЖМД
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Скопировать всю нужную информацию с НЖМД на другой НЗ и переустановить ОС с полным удалением ранее созданных разделов. Перезапустить ПЭВМ.
@@ -457,7 +415,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="3">
+                            <entry  namest="1" nameend="3" morerows="0">
 
                                 <para >
                                     Клавиатура
@@ -466,19 +424,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="1">
 
                                 <para >
                                     Отсутствует реакция ПЭВМ на нажатие клавиш
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильное подключение интерфейсного кабеля к разъёму системного блока 
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повторно подключить интерфейсный кабель
@@ -487,19 +445,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность клавиатуры
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить неисправную клавиатуру на клавиатуру из состава ЗИП* (см. 4.3<internalRef internalRefId="" internalRefTargetType=""/>
@@ -508,19 +460,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность разъёма на системном блоке
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить системный блок с неисправным разъёмом на системный блок из состава ЗИП* (см. 4.2<internalRef internalRefId="" internalRefTargetType=""/>
@@ -529,7 +481,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="3">
+                            <entry  namest="1" nameend="3" morerows="0">
 
                                 <para >
                                     Манипулятор «мышь»
@@ -538,19 +490,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="1">
 
                                 <para >
                                     Отсутствует свечение лазерной подсветки красного цвета на нижней поверхности
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильное подключение интерфейсного кабеля к разъёму системного блока
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повторно подключить интерфейсный кабель
@@ -559,19 +511,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность манипулятора «мышь»
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить неисправный манипулятор «мышь» на манипулятор «мышь» из состава ЗИП* (см. <internalRef internalRefId="" internalRefTargetType=""/>4.4) и обратиться на предприятие-изготовитель
@@ -580,19 +526,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность разъёма на системном блоке
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить системный блок с неисправным разъёмом на системный блок из состава ЗИП* (см. <internalRef internalRefId="" internalRefTargetType=""/>4.2) и обратиться на предприятие-изготовитель
@@ -601,19 +547,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отсутствует курсор на экране монитора
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильное подключение интерфейсного кабеля к разъёму системного блока
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повторно подключить интерфейсный кабель
@@ -622,19 +568,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Ухудшение качества перемещения курсорапо экрану монитора
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Загрязнение линзы манипулятора «мышь» 
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отключить манипулятор «мышь» и снять видимые загрязнения влажной салфеткой для пластиковых поверхностей. Повторно подключить интерфейсный кабель
@@ -643,7 +589,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="3">
+                            <entry  namest="1" nameend="3" morerows="0">
 
                                 <para >
                                     Монитор
@@ -652,19 +598,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="2">
 
                                 <para >
                                     Отсутствует свечение индикатора включенияи монитор не включается
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильное подключение кабеля с разъёмом DVI-D к разъёмам системного блока или монитора
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Повторно подключить кабельDVI-D – DVI-D. Убедиться, что винты крепления кабеля с разъёмом DVI-D завёрнуты до упора и не перекосились
@@ -673,19 +619,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность монитора
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить неисправный монитор на монитор из состава ЗИП* (см. 4.5<internalRef internalRefId="" internalRefTargetType=""/>
@@ -694,19 +634,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправность разъёма на системном блоке
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить неисправный системный блок на системный блок из состава ЗИП* (см. 4.2<internalRef internalRefId="" internalRefTargetType=""/>
@@ -718,19 +652,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Пониженная яркость изображения, пониженная контрастность изображения, изображение на экране сдвинуто по горизонтали (вертикали), изображение на экране сжато по горизонтали (вертикали))
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неправильные настройки монитора
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отрегулировать качество изображения соответствующей кнопкой управления
@@ -739,7 +673,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="3">
+                            <entry  namest="1" nameend="3" morerows="0">
 
                                 <para >
                                     Источник бесперебойного питания
@@ -748,19 +682,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     ИБП не включается
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     ИБП не подключён к сети электропитания
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Проверить надёжность подключения ИБП к розетке сети электропитания. Повторно подключить кабель электропитания ИБП
@@ -772,19 +706,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="1">
 
                                 <para >
                                     
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Сработал автоматический выключатель
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отключить подключенные устройства от ИБП. Включить автоматический выключатель. Заново подключить по отдельности каждое из ранее отключенных устройств. Если автоматический выключатель снова сработал, неисправным является подключаемое устройство
@@ -796,19 +730,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Аккумуляторная батарея не подключена
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Подключите батарею, используя разъём подключения аккумуляторной батареи ИБП
@@ -817,7 +745,7 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="1">
 
                                 <para >
                                     ИБП работает в режиме питания от аккумуляторной батареи, хотя подключен к сети электропитания (индикатор питания светится зелёным светом, звучит звуковой сигнал в виде четырёх звуковых сигналов каждые 30 с. При подаче звуковых сигналов индикатор питания не светится)
@@ -844,13 +772,13 @@
                                     
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Кабель электропитания ИБП ненадёжно подключен к розетке сети электропитания
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Проверить надёжность подключения ИБП к розетке сети электропитания.
@@ -862,19 +790,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отсутствует подача напряжения от сети электропитания, напряжение подаётся от аккумуляторной батареи
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Завершить работу ПЭВМ и выключить её и ИБП. Дождаться возобновления подачи напряжения в сеть электропитания
@@ -883,19 +805,19 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="1">
 
                                 <para >
                                     ИБП не обеспечивает ожидаемое время работы от резервного источника (индикатор питания мигает зелёным светом, звучит звуковой сигнал)
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Батарея ИБП разрядилась из-за длительной работы при отсутствии подачи напряжения в сети электропитания (частые звуковые сигналы каждые 0,5 с)
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Завершить работу ПЭВМ и выключить ИБП.
@@ -907,19 +829,13 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Истёк срок службы аккумуляторной батареи (постоянный тональный сигнал)
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Завершить работу ПЭВМ и выключить ИБП. Обратиться на предприятие-изготовитель
@@ -928,19 +844,19 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="0">
 
                                 <para >
                                     Отсутствие электропитания на подключенных к ИБП устройствах (индикатор питания не светится, звучит короткий звуковой сигнал каждые 4 с)
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     ИБП израсходовал заряд, имевшийся в аккумуляторной батарее, и при этом отсутствует подача напряжения в сети электропитания 
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Завершить работу ПЭВМ и выключить ИБП.
@@ -952,7 +868,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="4">
+                            <entry  namest="1" nameend="4" morerows="0">
 
                                 <para >
                                     Модем
@@ -961,19 +877,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="3">
 
                                 <para >
                                     Модем не включается
                                 </para>
                             </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="2" nameend="3" morerows="0">
 
                                 <para >
                                     Не присоединен PoEинжектор
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Проверьте присоединение PoEинжектора
@@ -982,19 +898,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="0">
 
                                 <para >
                                     Не присоединен внешний блок питания
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Проверьте присоединение внешнего блока питания
@@ -1003,19 +913,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="0">
 
                                 <para >
                                     Отсутствует напряжение в сети 220 В 50 Гц
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Проверьте наличие напряжения в сети 220 В 50 Гц
@@ -1024,19 +928,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="0">
 
                                 <para >
                                     Модем вышел из строя
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить модем на модем из состава ЗИП* (см. 4.2<internalRef internalRefId="" internalRefTargetType=""/>
@@ -1048,7 +946,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="4">
+                            <entry  namest="1" nameend="4" morerows="0">
 
                                 <para >
                                     Программно-аппаратный комплекс VipNet Coordinator HW50
@@ -1057,19 +955,19 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="4">
 
                                 <para >
                                     ПАК VipNet Coordinator HW50 не включается
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Не присоединен кабель электропитания
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Проверьте присоединение кабеля электропитания
@@ -1078,19 +976,13 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Неисправный кабель электропитания
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Замените кабель электропитания
@@ -1099,19 +991,13 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отсутствует напряже-ние в сети 220 В 50 Гц
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Проверьте наличие напряжения в сети 220 В 50 Гц
@@ -1120,19 +1006,13 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Вышел из строя блок питания
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Заменить ПАК VipNet Coordinator HW50 на ПАК VipNet Coordinator HW50 из состава ЗИП* и повторить включение
@@ -1141,19 +1021,13 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="2">
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     ПАК VipNet Coordinator HW50 вышел из строя
                                 </para>
                             </entry>
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Необходимо обратиться на предприятие-изготовитель
@@ -1162,7 +1036,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="5">
+                            <entry  namest="1" nameend="5" morerows="0">
 
                                 <para >
                                     Внешний блок питания
@@ -1171,19 +1045,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отсутствует питание
                                 </para>
                             </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="2" nameend="3" morerows="0">
 
                                 <para >
                                     Внешний блок питания вышел из строя
                                 </para>
                             </entry>
-                            <entry  namest="3" nameend="2">
+                            <entry  namest="4" nameend="5" morerows="0">
 
                                 <para >
                                     Заменить внешний блок питания на внешний блок питания из состава ЗИП* и повторить 2.2.3
@@ -1192,7 +1066,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="5">
+                            <entry  namest="1" nameend="5" morerows="0">
 
                                 <para >
                                     Патч-корд
@@ -1201,19 +1075,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="2">
 
                                 <para >
                                     Отсутствует подключение к ЛВС
                                 </para>
                             </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="2" nameend="3" morerows="0">
 
                                 <para >
                                     Неправильное подклю-чение к разъёмам 
                                 </para>
                             </entry>
-                            <entry  namest="3" nameend="2">
+                            <entry  namest="4" nameend="5" morerows="0">
 
                                 <para >
                                     Повторно подключить патч-корд
@@ -1222,19 +1096,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="0">
 
                                 <para >
                                     Неисправность разъёмов патч-корда
                                 </para>
                             </entry>
-                            <entry  namest="3" nameend="2">
+                            <entry  namest="3" nameend="4" morerows="0">
 
                                 <para >
                                     Заменить неисправный патч-корд на патч-корд из состава ЗИП* и обратиться на предприятие-изготовитель 
@@ -1243,19 +1111,13 @@
                         </row>
                         <row >
 
-                            <entry >
-
-                                <para >
-                                    
-                                </para>
-                            </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="1" nameend="2" morerows="0">
 
                                 <para >
                                     Неисправность разъёма на ПАК VipNet Coordinator HW50
                                 </para>
                             </entry>
-                            <entry  namest="3" nameend="2">
+                            <entry  namest="3" nameend="4" morerows="0">
 
                                 <para >
                                     Заменить ПАК VipNet Coordinator HW50 с неисправным разъёмом на ПАК VipNet Coordinator HW50 из состава ЗИП* (см. <internalRef internalRefId="" internalRefTargetType=""/>4.2) и обратиться на предприятие-изготовитель
@@ -1264,7 +1126,7 @@
                         </row>
                         <row >
 
-                            <entry  namest="1" nameend="5">
+                            <entry  namest="1" nameend="5" morerows="0">
 
                                 <para >
                                     PoE-инжектор
@@ -1273,19 +1135,19 @@
                         </row>
                         <row >
 
-                            <entry >
+                            <entry  morerows="0">
 
                                 <para >
                                     Отсутствует питание
                                 </para>
                             </entry>
-                            <entry  namest="2" nameend="2">
+                            <entry  namest="2" nameend="3">
 
                                 <para >
                                     PoE-инжектор питания вышел из строя
                                 </para>
                             </entry>
-                            <entry  namest="3" nameend="2">
+                            <entry  namest="4" nameend="5">
 
                                 <para >
                                     Заменить PoE-инжектор на PoEинжектор из состава ЗИП* и повторить включение

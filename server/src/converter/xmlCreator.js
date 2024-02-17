@@ -9,6 +9,7 @@ export class xmlCreator {
     seqVariants = ["sequentialList", "randomList"]
     refsDict = {}
     mediaList = []
+    tableMergeState = []
     // lastInsertedTag = null
 
     constructor(infoCode, techName, imagesList) {
@@ -299,9 +300,11 @@ export class xmlCreator {
     }
 
     isTableNew(element = this.currentElement) {
+
         if (element.content.at(-1).name === 'para' && element.content.at(-1).content[0].openTag.startsWith('Продолжение таблицы')) {
             element.content.pop()
-            console.log(element.content.at(-1).content[1].content.find(el => el.name === 'tbody'))
+            console.log('new')
+            //console.log(element.content.at(-1).content[1].content.find(el => el.name === 'tbody'))
             return element.content.at(-1).content[1].content.find(el => el.name === 'tbody')
         }
         return null
@@ -347,13 +350,21 @@ export class xmlCreator {
 
     addTable(tableInfo) {
         let newTbody = this.isTableNew()
-        console.log(newTbody)
+        //console.log(newTbody)
         let newThead = null
         let needHead = false
         if (!newTbody) {
             needHead = true
         }
         if (!newTbody) {
+
+            for (let i = 0; i < tableInfo.columns; i++) {
+                this.tableMergeState.push({
+                    entryNode: null,
+                    cellsMerged: null
+                })
+            }
+
             const { id, titleText } = this.setTable()
             let newT = new tags.table()
             newT.addAttribute(`id="tab-${id}"`)
@@ -391,10 +402,9 @@ export class xmlCreator {
             tableInfo.globalrows.shift()
         }
 
+        //console.log(tableInfo.columns)
 
-
-
-        //console.log(tableInfo.globalrows)
+        console.log(this.tableMergeState)
         for (let i = 0; i < tableInfo.globalrows.length; i++) {
 
             let newRow = new tags.row()
@@ -409,6 +419,11 @@ export class xmlCreator {
             }
 
 
+            let cellStId = 0
+            let cellEndId = 0
+            let cellNewEndId = 0;
+
+
             for (let j = 0; j < tableInfo.globalrows[i].columns.length; j++) {
                 let newEntry = new tags.entry()
                 newEntry.parent = newRow
@@ -417,19 +432,51 @@ export class xmlCreator {
                     newEntry.addAttribute(`valign="top"`)
                 }
 
-                for (let key of Object.keys(tableInfo.globalrows[i].columns[j].attributes)) {
+                const attributesKeys = Object.keys(tableInfo.globalrows[i].columns[j].attributes);
+
+
+                let isMerged = false
+
+                for (let key of attributesKeys) {
                     if (key === 'colSpannig') {
-                        const cellId = j + 1;
-                        const cellEndId = tableInfo.globalrows[i].columns[j].attributes[key]
-                        newEntry.addAttribute(`namest="${cellId}"`)
-                        newEntry.addAttribute(`nameend="${cellEndId}"`)
+                        cellStId = cellEndId + 1;
+                        cellNewEndId = cellEndId + Number(tableInfo.globalrows[i].columns[j].attributes[key])
+                        newEntry.addAttribute(`namest="${cellStId}"`)
+                        newEntry.addAttribute(`nameend="${cellNewEndId}"`)
+
                     }
                     if (key === 'colMerging') {
+                        const mergeType = tableInfo.globalrows[i].columns[j].attributes[key]
+                        if (mergeType === 'restart') {
+                            console.log(i, j)
+                            console.log(tableInfo.globalrows[i].columns[j])
 
+                        } else if (mergeType === 'continue') {
+                            console.log(tableInfo.globalrows[i].columns[j])
+
+                            isMerged = true
+                        }
                     }
                 }
 
-                newRow.addContent(newEntry)
+
+
+                if (isMerged) {
+                    this.tableMergeState[j].cellsMerged++
+                    console.log('merged', this.tableMergeState[j].cellsMerged)
+                    continue
+                }
+                else {
+                    if (this.tableMergeState[j].entryNode) {
+                        console.log('merged', this.tableMergeState[j].cellsMerged)
+                        this.tableMergeState[j].entryNode.addAttribute(`morerows="${this.tableMergeState[j].cellsMerged}"`)
+                    }
+                    //console.log(this.tableMergeState)
+                    this.tableMergeState[j].entryNode = newEntry
+                    this.tableMergeState[j].cellsMerged = 0
+                    newRow.addContent(newEntry)
+                }
+
 
                 for (let k = 0; k < tableInfo.globalrows[i].columns[j].paragraphs.length; k++) {
                     let newPara = new tags.para()
@@ -440,6 +487,8 @@ export class xmlCreator {
                     newText.setParent(newPara)
                     newPara.addContent(newText)
                 }
+
+                cellEndId === cellNewEndId ? cellEndId++ : cellEndId = cellNewEndId
             }
         }
     }

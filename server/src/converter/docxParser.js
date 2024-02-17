@@ -285,7 +285,7 @@ export class docxParser {
                                             }
                                         }
                                         else {
-                                            currentColumn.attributes.colMerging = null
+                                            currentColumn.attributes.colMerging = 'continue'
                                         }
                                         //console.log(propertyNode.attributes[0].value)
 
