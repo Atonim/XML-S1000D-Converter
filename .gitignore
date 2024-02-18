@@ -24,5 +24,6 @@ pnpm-debug.log*
 node_modules
 files
 server/src/converter/temp.js
-server/src/converter/temp2.js
-server/src/dev.js
+server/src/converter/temp2.*
+server/src/dev.*
+server/src/converter/temp/*

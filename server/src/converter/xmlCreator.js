@@ -10,44 +10,38 @@ export class xmlCreator {
     refsDict = {}
     mediaList = []
     tableMergeState = []
-    // lastInsertedTag = null
 
     constructor(infoCode, techName, imagesList) {
         this.currentElement = new tags.dmodule(infoCode, techName)
         this.imagesList = imagesList
-        // console.log(imagesList)
-        // let newElement = new tags.caution()
-        // newElement.parent = this.currentElement
-        // this.currentElement.addContent(newElement)
-        // this.currentElement = newElement
     }
 
 
-    preproccessing(xmlCode) {
-        let start = xmlCode.indexOf("//**")
-        let stop = xmlCode.indexOf("**//")
-        while (start !== -1 && stop !== -1) {
-            let ref = xmlCode.substring(start + 4, stop)
-            let fullRef = xmlCode.substring(start, stop + 4)
+    // preproccessing(xmlCode) {
+    //     let start = xmlCode.indexOf("//**")
+    //     let stop = xmlCode.indexOf("**//")
+    //     while (start !== -1 && stop !== -1) {
+    //         let ref = xmlCode.substring(start + 4, stop)
+    //         let fullRef = xmlCode.substring(start, stop + 4)
 
-            let pasteElement = ""
-            if (ref.startsWith("Type") && this.refsDict[ref.replace("Type", "")]) {
-                ref = ref.replace("Type", "")
-                pasteElement = this.refsDict[ref].type
-                xmlCode = xmlCode.replace(fullRef, pasteElement)
-            } else if (this.refsDict[ref]) {
-                pasteElement = this.refsDict[ref].id
-                xmlCode = xmlCode.replace(fullRef, pasteElement)
-            } else {
-                xmlCode = xmlCode.replace(fullRef, pasteElement)
-            }
+    //         let pasteElement = ""
+    //         if (ref.startsWith("Type") && this.refsDict[ref.replace("Type", "")]) {
+    //             ref = ref.replace("Type", "")
+    //             pasteElement = this.refsDict[ref].type
+    //             xmlCode = xmlCode.replace(fullRef, pasteElement)
+    //         } else if (this.refsDict[ref]) {
+    //             pasteElement = this.refsDict[ref].id
+    //             xmlCode = xmlCode.replace(fullRef, pasteElement)
+    //         } else {
+    //             xmlCode = xmlCode.replace(fullRef, pasteElement)
+    //         }
 
-            start = xmlCode.indexOf("//**")
-            stop = xmlCode.indexOf("**//")
+    //         start = xmlCode.indexOf("//**")
+    //         stop = xmlCode.indexOf("**//")
 
-        }
-        return xmlCode
-    }
+    //     }
+    //     return xmlCode
+    // }
 
     getDocument() {
         while (this.currentElement.parent) {
@@ -55,7 +49,7 @@ export class xmlCreator {
         }
         this.currentElement.media = this.mediaList
         let proccessedDoc = this.currentElement.stringify()
-        proccessedDoc = this.preproccessing(proccessedDoc)
+        // proccessedDoc = this.preproccessing(proccessedDoc)
         return proccessedDoc
     }
 
@@ -66,7 +60,6 @@ export class xmlCreator {
         }
     }
 
-
     goDown() {
         if (this.currentElement && this.currentElement.content.lengh) {
 
@@ -75,13 +68,11 @@ export class xmlCreator {
     }
 
     goToLastInsertedPara() {
-        // console.log(this.currentElement.name)
         if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).name !== "listItem") {
             this.currentElement = this.currentElement.content.at(-1)
         } else if (this.currentElement.content.at(-1) && this.currentElement.content.at(-1).content.at(-1)) {
             this.currentElement = this.currentElement.content.at(-1).content.at(-1)
         }
-        // console.log(this.currentElement.name)
     }
 
     goToLastParent() {
@@ -91,7 +82,6 @@ export class xmlCreator {
             this.currentElement = this.currentElement.parent
         }
     }
-
 
     addPara(paragraf) {
 
@@ -105,7 +95,6 @@ export class xmlCreator {
             this.currentElement.addContent(newP)
         }
     }
-
 
     addListItem(paragraf = "") {
 
@@ -221,10 +210,8 @@ export class xmlCreator {
 
     chooseListVariant(paragraf) {
         if (paragraf.endsWith(':') && this.currentElement.name === "randomList" && this.currentElement.content[0]) {
-            // console.log("randomList detected", )
             this.addSequentialList()
         } else if (paragraf.endsWith(':') && this.currentElement.content[0]) {
-            // console.log("sequentialList detected", paragraf)
             this.addRandomList()
         }
     }
@@ -272,17 +259,21 @@ export class xmlCreator {
             }
         }
 
+        console.log(lastImg === null,bookmarkIds)
         if (lastImg && bookmarkIds) {
             let id = lastImg.id
 
             bookmarkIds.forEach(element => {
                 this.refsDict[element] = { "id": id, "type": "irtt01" }
+                // console.log(this.refsDict[element])
             })
         }
     }
 
-    setBookmark(bookmarkIds) {
+    setParaBookmark(bookmarkIds) {
         if (bookmarkIds === null) { return }
+        for (let mark of bookmarkIds)
+            if (this.refsDict.hasOwnProperty(mark)) { return }
 
         let node = this.currentElement
         if (node.name === "leveledPara") {
@@ -306,11 +297,16 @@ export class xmlCreator {
         }
     }
 
+    setTableBookmark (bookmarkId, tableId) {
+        if (bookmarkId && tableId) {
+            this.refsDict[bookmarkId] = { "id": `tab-${tableId}`, "type": "irtt02" }
+        }
+    }
+
     isTableNew(element = this.currentElement) {
 
         if (element.content.at(-1).name === 'para' && element.content.at(-1).content[0].openTag.startsWith('Продолжение таблицы')) {
             element.content.pop()
-            console.log('new')
             //console.log(element.content.at(-1).content[1].content.find(el => el.name === 'tbody'))
             return element.content.at(-1).content[1].content.find(el => el.name === 'tbody')
         }
@@ -334,17 +330,14 @@ export class xmlCreator {
                     id = idInString
                 }
 
-
                 for (let i = 1; i < titleArr.length; i++) {
                     if (id) {
                         if (titleArr[i] === '–' || titleArr[i] === '-')
                             continue
                         titleText.length ? titleText = titleText + ' ' + titleArr[i] : titleText = titleText + titleArr[i]
-                    }
-                    else if (!isNaN(titleArr[i]) && titleArr[i].length) {
+                    } else if (!isNaN(titleArr[i]) && titleArr[i].length) {
                         id = titleArr[i]
-                    }
-                    else {
+                    } else {
                         console.log('Не найден номер таблицы')
                     }
                 }
@@ -352,6 +345,7 @@ export class xmlCreator {
             }
             element.content.pop()
         }
+        this.setTableBookmark(element.id, id)
         return { id, titleText }
     }
 
@@ -374,7 +368,8 @@ export class xmlCreator {
 
             const { id, titleText } = this.setTable()
             let newT = new tags.table()
-            newT.addAttribute(`id="tab-${id}"`)
+            // newT.addAttribute(`id="tab-${id}"`)
+            this.addId(newT, `tab-${id}`)
             newT.parent = this.currentElement
 
             let newTtitle = new tags.title(titleText)
@@ -391,8 +386,6 @@ export class xmlCreator {
                 newTcolspec.parent = newTgroup
                 newTgroup.addContent(newTcolspec)
             }
-
-
 
             newThead = new tags.thead()
             newTbody = new tags.tbody()
@@ -411,7 +404,7 @@ export class xmlCreator {
 
         //console.log(tableInfo.columns)
 
-        console.log(this.tableMergeState)
+        // console.log(this.tableMergeState)
         for (let i = 0; i < tableInfo.globalrows.length; i++) {
 
             let newRow = new tags.row()
@@ -455,27 +448,25 @@ export class xmlCreator {
                     if (key === 'colMerging') {
                         const mergeType = tableInfo.globalrows[i].columns[j].attributes[key]
                         if (mergeType === 'restart') {
-                            console.log(i, j)
-                            console.log(tableInfo.globalrows[i].columns[j])
+                            // console.log(i, j)
+                            // console.log(tableInfo.globalrows[i].columns[j])
 
                         } else if (mergeType === 'continue') {
-                            console.log(tableInfo.globalrows[i].columns[j])
+                            // console.log(tableInfo.globalrows[i].columns[j])
 
                             isMerged = true
                         }
                     }
                 }
 
-
-
                 if (isMerged) {
                     this.tableMergeState[j].cellsMerged++
-                    console.log('merged', this.tableMergeState[j].cellsMerged)
+                    // console.log('merged', this.tableMergeState[j].cellsMerged)
                     continue
                 }
                 else {
                     if (this.tableMergeState[j].entryNode) {
-                        console.log('merged', this.tableMergeState[j].cellsMerged)
+                        // console.log('merged', this.tableMergeState[j].cellsMerged)
                         this.tableMergeState[j].entryNode.addAttribute(`morerows="${this.tableMergeState[j].cellsMerged}"`)
                     }
                     //console.log(this.tableMergeState)
@@ -621,30 +612,26 @@ export class xmlCreator {
             // console.log("ВНИМАНИЕ", paragraf)
             this.addCaution()
             this.chooseTextParagraf(paragraf.replace("ВНИМАНИЕ: ", ''), seqId)
-        }
-        else if (paragraf.startsWith("Примечание – ")) {
+        } else if (paragraf.startsWith("Примечание – ")) {
             // this.chooseTextParagraf(paragraf.replace("Примечание – ", ''), seqId)
             this.addNote(paragraf.replace("Примечание – ", ''))
         } else if (paragraf.startsWith("Примечание - ")) {
             // this.chooseTextParagraf(paragraf.replace("Примечание - ", ''), seqId)
             this.addNote(paragraf.replace("Примечание - ", ''))
-        }
-        else {
+        } else {
             // this.addPara(paragraf + " [" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
             this.addPara(paragraf)
         }
 
-        // this.chooseListVariant(paragraf)
-
-        this.setBookmark(bookmarkIds)
+        if (paragraf.replaceAll('\u00A0', '').startsWith('Таблица') || paragraf.startsWith('Рисунок')) { return }
+        this.setParaBookmark(bookmarkIds)
     }
 
 
     chooseTag(paragraf, seqId, imageIds, table, bookmarkIds) {
         if (table) {
             this.addTable(table)
-        }
-        else if (paragraf) {
+        } else if (paragraf) {
             this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
 
             // console.log(paragraf)

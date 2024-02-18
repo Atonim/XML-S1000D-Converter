@@ -1,18 +1,13 @@
 import fs from 'fs'
-import * as tegs from "./xmlTags.js"
-//import { document } from "./temp.js"
-//import { documentRels } from "./temp2.js"
 import { docxParser } from "./docxParser.js"
 import { xmlCreator } from "./xmlCreator.js"
 import { codes } from "./codes.js"
 
 export class convertor {
 
-    //document = document
     stringCodes = []
     files = {}
     docxParser = null
-    // xmlCreator = null
     documentContents = null
     techName = "default name"
     imageIdObject = null
@@ -24,7 +19,6 @@ export class convertor {
     }
 
     constructor(document, documentRels) {
-        //this.media = media
         this.documentRels = documentRels
         this.document = document
         this.docxParser = new docxParser(this.document, this.documentRels)
@@ -54,7 +48,6 @@ export class convertor {
         return index
     }
 
-
     start() {
         return this.startLogic()
     }
@@ -67,11 +60,10 @@ export class convertor {
 
         this.documentContents = this.docxParser.getContents()
 
-
         this.builder()
+        console.log(this.documentReferences)
 
         this.setResultXML()
-        console.log(this.files["030"])
 
         return this.result
     }
@@ -86,7 +78,7 @@ export class convertor {
             if (code === '018') {
                 
             } else if (code === '410') {
-                // this.build_410()
+                this.build_410()
             }
             else {
                 this.build(code)
@@ -111,8 +103,8 @@ export class convertor {
             if (code !== "018" && this.files[code] === null) { continue }
             let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
 
-            this.result.XML[key] = this.files[code]
-
+            this.result.XML[key] = this.preproccessing(this.files[code])
+            fs.writeFile(`src/converter/temp/${key}`, this.result.XML[key], (err) => {  })
         }
     }
 
@@ -132,6 +124,7 @@ export class convertor {
         }
 
         let moduleReferences = creator.refsDict
+        this.extendDocReferences(moduleReferences)
         this.files['018'] = creator.getDocument()
         // console.log(this.file_018)
     }
@@ -161,8 +154,9 @@ export class convertor {
         // console.log(creator.refsDict)
         this.docxParser.prevSibling()
         let moduleReferences = creator.refsDict
+        this.extendDocReferences(moduleReferences)
         this.files['410'] = creator.getDocument()
-        fs.writeFile('src/converter/test.xml', this.files['410'], (err) => { if (err) return console.log(err); console.log('saved') })
+        // fs.writeFile('src/converter/test.xml', this.files['410'], (err) => { if (err) return console.log(err); console.log('saved') })
 
     }
 
@@ -191,6 +185,41 @@ export class convertor {
         this.docxParser.prevSibling()
 
         let moduleReferences = creator.refsDict
+        this.extendDocReferences(moduleReferences)
         this.files[code] = creator.getDocument()
+    }
+
+    preproccessing(xmlCode) {
+        let start = xmlCode.indexOf("//**")
+        let stop = xmlCode.indexOf("**//")
+        while (start !== -1 && stop !== -1) {
+            let ref = xmlCode.substring(start + 4, stop)
+            let fullRef = xmlCode.substring(start, stop + 4)
+
+            let pasteElement = ""
+            if (ref.startsWith("Type") && this.documentReferences[ref.replace("Type", "")]) {
+                ref = ref.replace("Type", "")
+                pasteElement = this.documentReferences[ref].type
+                xmlCode = xmlCode.replace(fullRef, pasteElement)
+            } else if (this.documentReferences[ref]) {
+                pasteElement = this.documentReferences[ref].id
+                xmlCode = xmlCode.replace(fullRef, pasteElement)
+            } else {
+                xmlCode = xmlCode.replace(fullRef, pasteElement)
+            }
+
+            start = xmlCode.indexOf("//**")
+            stop = xmlCode.indexOf("**//")
+
+        }
+        return xmlCode
+    }
+
+    extendDocReferences (references) {
+        for (let ref in references) {
+            // let repeatedReference = references.find(element => )
+            if (this.documentReferences.hasOwnProperty(ref)) { continue }
+            this.documentReferences[ref] = references[ref]
+        }
     }
 }
