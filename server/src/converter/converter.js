@@ -71,6 +71,7 @@ export class convertor {
         this.builder()
 
         this.setResultXML()
+        console.log(this.files["030"])
 
         return this.result
     }
@@ -85,7 +86,7 @@ export class convertor {
             if (code === '018') {
                 
             } else if (code === '410') {
-                this.build_410()
+                // this.build_410()
             }
             else {
                 this.build(code)
@@ -140,27 +141,20 @@ export class convertor {
         let creator = new xmlCreator("410", this.techName)
 
         let id = this.documentContents.find(element => element.infoCode === "410").startId
-        let element = this.docxParser.nextParagraf()
-        // console.log(id)
+        this.docxParser.nextParagraf()
         while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
+            this.docxParser.nextParagraf()
         }
-        // console.log(id)
 
+        this.docxParser.nextParagraf()
         id = this.documentContents.find(element => element.infoCode === "410").stopId
-        // this.docxParser.getStyleId()
         while (!this.docxParser.hasBookmarkId(id)) {
             let paragrafText = this.docxParser.getPara().trim()
             let imagesIds = this.docxParser.getImageRId()
 
             let bookmarks = this.docxParser.getBookmarkId()
-
-
             let tableInfo = this.docxParser.getTable()
             creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo, bookmarks)
-            // if (paragrafText.trim() != "") {
-            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            // }
 
             this.docxParser.nextParagraf()
         }
@@ -175,21 +169,22 @@ export class convertor {
         let creator = new xmlCreator(code, this.techName, this.idImage_S1000D_Object)
 
         let id = this.documentContents.find(element => element.infoCode === code).startId
-        let element = this.docxParser.nextParagraf()
+        this.docxParser.nextParagraf()
         while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
+            this.docxParser.nextParagraf()
         }
 
+        this.docxParser.nextParagraf()
         id = this.documentContents.find(element => element.infoCode === code).stopId
         while (!this.docxParser.hasBookmarkId(id)) {
             let paragrafText = this.docxParser.getPara().trim()
+            // if (code === "122") { console.log(paragrafText) }
             let imagesIds = this.docxParser.getImageRId()
 
             let tableInfo = this.docxParser.getTable()
             let bookmarks = this.docxParser.getBookmarkId()
             creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo, bookmarks)
 
-           
             this.docxParser.nextParagraf()
         }
         this.docxParser.prevSibling()

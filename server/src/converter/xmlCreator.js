@@ -230,7 +230,12 @@ export class xmlCreator {
 
 
     addFigure (rIds) {
-
+        if (this.currentElement.name === "dmodule") {
+            this.addLeveledPara()
+        } else if (this.seqVariants.indexOf(this.currentElement.name) !== -1) {
+            this.addListItem()
+            this.currentElement = this.currentElement.content.at(-1)
+        }
         rIds.forEach(element => {
             let newF = new tags.figure()
             let id = `fig-${element.replace('rId', '')}`
@@ -247,6 +252,9 @@ export class xmlCreator {
             newF.addContent(newG)
             this.currentElement.addContent(newF)
         })
+        if (this.seqVariants.indexOf(this.currentElement.parent.name) !== -1) {
+            this.currentElement = this.currentElement.content.at(-1)
+        }
     }
 
     addFigureTitle (paragraf, bookmarkIds) {
@@ -377,20 +385,23 @@ export class xmlCreator {
         if (seqId === null) {
             return true
         }
+        // if (this.currentElement.name === "dmodule") {
+        //     this.addLeveledPara()
+        // }
 
         if (this.levelStack.length === 0) {
-            if (seqId === "3e") {
+            // if (seqId === this.levelStack[0]) {
                 this.addLeveledPara()
-            }
+            // }
             this.levelStack.push(seqId)
             return true
         }
 
         if (seqId === this.levelStack.at(-1)) {
-            if (seqId === "3e") {
-                this.goUp()
-                this.addLeveledPara()
-            }
+            // if (seqId === this.levelStack[0]) {
+            //     this.goUp()
+            //     this.addLeveledPara()
+            // }
             return true
         }
 
@@ -398,10 +409,13 @@ export class xmlCreator {
             while (this.levelStack.at(-1) !== seqId) {
                 if (this.levelStack.at(-1) === null) {
                 } else if (this.levelStack.at(-2) === "a1") {
+                // } else if (this.levelStack.at(-1) === "-1") {
                 } else if (this.levelStack.at(-2) === "4a") {
                     this.goUp()
                 } else if (this.levelStack.at(-1) === "4a") {
-                } else if (this.levelStack.at(-2) === "affffa") {
+                } else if (this.levelStack.at(-1) === "affffa") {
+                    this.goUp()
+                    this.goUp()
                 } else if (this.levelStack.at(-1) === "preserve" && this.currentElement.name === "listItem") {
                 } else if (this.levelStack.at(-2) === "preserve") {
                 } else {
@@ -411,7 +425,7 @@ export class xmlCreator {
                 }
                 this.levelStack.pop()
             }
-            if (seqId === "3e") {
+            if (this.currentElement.name === "dmodule") {
                 this.addLeveledPara()
             }
 
@@ -423,8 +437,9 @@ export class xmlCreator {
                 this.goDown()
                 this.goUp()
                 this.goUp()
-            } else if (seqId === "3e" && this.currentElement.name === "dmodule") {
-                this.addLeveledPara()
+            // } else if (seqId === "3e" && this.currentElement.name === "dmodule") {
+            // } else if (this.currentElement.name === "dmodule") {
+            //     this.addLeveledPara()
             } else {
                 this.goDown()
                 this.goDown()
@@ -438,6 +453,10 @@ export class xmlCreator {
 
     chooseTextParagraf (paragraf, seqId = null, bookmarkIds = null) {
 
+        if (this.currentElement.name === "levelledPara" && this.currentElement.content.length === 1) {
+            this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraf))
+            // console.log(this.currentElement.content[0])
+        }
         // console.log(seqId)
         // if (paragraf.startsWith('Примечание – ')) {console.log(paragraf, paragraf.startsWith('Примечание - '))}
 
@@ -500,15 +519,51 @@ export class xmlCreator {
             this.addTable(table)
         }
         else if (paragraf) {
-
             this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
+
             // console.log(paragraf)
             this.chooseTextParagraf(paragraf, seqId, bookmarkIds)
-                this.chooseListVariant(paragraf)
+            this.chooseListVariant(paragraf)
         } else if (imageIds) {
             // console.log(imageIds)
             this.addFigure(imageIds)
         }
+    }
+
+    getParaTitle (paragraph) {
+        // console.log(paragraph)
+        if (paragraph.indexOf(" предназначен") !== -1) { 
+            paragraph = paragraph.substring(0, paragraph.indexOf(" предназначен")) 
+        }
+        // if (paragraph.indexOf(')') > paragraph.indexOf('(') && paragraph.indexOf('(')) {
+        //     paragraph = paragraph.substring(paragraph.indexOf('(') + 1, paragraph.indexOf(')'))
+        // }
+        // if (paragraph.indexOf(']') > paragraph.indexOf('[') && paragraph.indexOf('[')) {
+        //     paragraph = paragraph.substring(paragraph.indexOf('[') + 1, paragraph.indexOf(']'))
+        // }
+        // if (paragraph.indexOf('}') > paragraph.indexOf('{') && paragraph.indexOf('{')) {
+        //     paragraph = paragraph.substring(paragraph.indexOf('{') + 1, paragraph.indexOf('}'))
+        // }
+
+        let point = paragraph.indexOf('.')
+        let coma = paragraph.indexOf(',')
+        let exclamationMark = paragraph.indexOf('!')
+        let questionMark = paragraph.indexOf('?')
+        let colon = paragraph.indexOf(':')
+        let semicolon = paragraph.indexOf(';')
+        let dash = paragraph.indexOf(' -')
+        if (point !== -1) { paragraph = paragraph.substring(0, point) }
+        if (coma !== -1) { paragraph = paragraph.substring(0, coma) }
+        if (exclamationMark !== -1) { paragraph = paragraph.substring(0, exclamationMark) }
+        if (questionMark !== -1) { paragraph = paragraph.substring(0, questionMark) }
+        if (colon !== -1) { paragraph = paragraph.substring(0, colon) }
+        if (semicolon !== -1) { paragraph = paragraph.substring(0, semicolon) }
+        if (dash !== -1) { paragraph = paragraph.substring(0, dash) }
+
+        if (paragraph.indexOf('<') !== -1) 
+            paragraph = paragraph.substring(0, paragraph.indexOf('<'))
+        // console.log(paragraph)
+        return paragraph
     }
 
 }

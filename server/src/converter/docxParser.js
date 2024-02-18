@@ -51,7 +51,7 @@ export class docxParser {
                 // console.log("REF:========:", node.attributes[0].value, "}"+address)
 
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
-                return buffer
+                // return buffer
             }
         } else if (node.tagName === "w:instrText") {
             let stratIndex = node.firstChild.data.indexOf("_Ref")
@@ -62,7 +62,7 @@ export class docxParser {
                 // console.log("REF:========:", node.attributes[0].value, "}"+address)
 
                 buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
-                return buffer
+                // return buffer
             }
         }
         if (node.tagName === "w:t") {
@@ -108,16 +108,14 @@ export class docxParser {
         while (buffer.toLowerCase() !== "содержание" && this.currentNode.nextSibling) {
             this.currentNode = this.currentNode.nextSibling
             buffer = this.getPara()
-            // console.log(buffer)
         }
 
         let previousNode = this.currentNode
         let contents = []
         while (!this.isEnter()) {
             this.currentNode = this.currentNode.nextSibling
-            buffer = this.getPara().toLowerCase()
-            // console.log(this.getPara())
 
+            buffer = this.getPara().toLowerCase()
             if (buffer.indexOf("назначение") !== -1) {
                 contents.push({ "infoCode": "020", "startId": this.getLinkId(this.currentNode.firstChild) })
             } else if (buffer.indexOf("технические характеристики") !== -1) {
@@ -183,23 +181,6 @@ export class docxParser {
                 contents.find(element => element.infoCode === "000").stopId = this.getLinkId(this.currentNode.firstChild)
             }
 
-            // if (buffer.indexOf("1.1.2 ") !== -1) {
-            //     contents.find(element => element.infoCode === "020").stopId = this.getLinkId(previousNode.firstChild)
-            // } else if (buffer.indexOf("1.1.3 ") !== -1) {
-            //     contents.find(element => element.infoCode === "030").stopId = this.getLinkId(previousNode.firstChild)
-            // } else if (buffer.indexOf("1.1.4 ") !== -1) {
-            //     contents.find(element => element.infoCode === "034").stopId = this.getLinkId(previousNode.firstChild)
-            // } else if (buffer.indexOf("1.1.5 ") !== -1) {
-            //     contents.find(element => element.infoCode === "041").stopId = this.getLinkId(previousNode.firstChild)
-            // } else if (buffer.indexOf("2 ") !== -1) {
-            //     contents.find(element => element.infoCode === "044").stopId = this.getLinkId(previousNode.firstChild)
-            // } else if (buffer.indexOf("2.2.4 ") !== -1) {
-            //     contents.find(element => element.infoCode === "122").stopId = this.getLinkId(previousNode.firstChild)
-            // } else if (buffer.indexOf("2.3 ") !== -1) {
-            //     contents.find(element => element.infoCode === "123").stopId = this.getLinkId(previousNode.firstChild)
-            // } else if (buffer.indexOf("2.3.4 ") !== -1) {
-            //     contents.find(element => element.infoCode === "410").stopId = this.getLinkId(previousNode.firstChild)
-            // }
             previousNode = this.currentNode
         }
 
