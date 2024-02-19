@@ -1,201 +1,241 @@
 import fs from 'fs'
-import * as tegs from "./xmlTags.js"
+import * as tegs from './xmlTags.js'
 //import { document } from "./temp.js"
 //import { documentRels } from "./temp2.js"
-import { docxParser } from "./docxParser.js"
-import { xmlCreator } from "./xmlCreator.js"
-import { codes } from "./codes.js"
+import { docxParser } from './docxParser.js'
+import { xmlCreator } from './xmlCreator.js'
+import { codes } from './codes.js'
 
 export class convertor {
+	//document = document
+	stringCodes = []
+	files = {}
+	docxParser = null
+	// xmlCreator = null
+	documentContents = null
+	techName = 'default name'
+	imageIdObject = null
+	idImage_S1000D_Object = {}
+	documentReferences = {}
+	result = {
+		Images: {},
+		XML: {},
+	}
 
-    //document = document
-    stringCodes = []
-    files = {}
-    docxParser = null
-    // xmlCreator = null
-    documentContents = null
-    techName = "default name"
-    imageIdObject = null
-    idImage_S1000D_Object = {}
-    documentReferences = {}
-    result = {
-        "Images": {},
-        "XML": {}
-    }
+	constructor(document, documentRels) {
+		//this.media = media
+		this.documentRels = documentRels
+		this.document = document
+		this.docxParser = new docxParser(this.document, this.documentRels)
+		this.codesToString()
 
-    constructor(document, documentRels) {
-        //this.media = media
-        this.documentRels = documentRels
-        this.document = document
-        this.docxParser = new docxParser(this.document, this.documentRels)
-        this.codesToString()
+		for (const code of this.stringCodes) {
+			this.files[code] = null
+		}
+	}
 
-        for (const code of this.stringCodes) {
-            this.files[code] = null
-        }
-    }
+	codesToString() {
+		const lastCodeLength = codes[codes.length - 1].toString().length
+		for (let code of codes) {
+			code = code.toString()
+			while (code.length !== lastCodeLength) {
+				code = 0 + code
+			}
+			this.stringCodes.push(code)
+		}
+	}
+	indexToString(index) {
+		const maxIndexLength = 5
+		index = index.toString()
+		while (index.length !== maxIndexLength) {
+			index = 0 + index
+		}
+		return index
+	}
 
-    codesToString() {
-        const lastCodeLength = codes[codes.length - 1].toString().length
-        for (let code of codes) {
-            code = code.toString()
-            while (code.length !== lastCodeLength) {
-                code = 0 + code
-            }
-            this.stringCodes.push(code)
-        }
-    }
-    indexToString(index) {
-        const maxIndexLength = 5
-        index = index.toString()
-        while (index.length !== maxIndexLength) {
-            index = 0 + index
-        }
-        return index
-    }
+	start() {
+		return this.startLogic()
+	}
 
+	startLogic() {
+		this.techName = this.docxParser.getTechName()
+		this.imageIdObject = this.docxParser.getRelsContents()
 
-    start() {
-        return this.startLogic()
-    }
+		this.setMediaObjects()
 
-    startLogic() {
-        this.techName = this.docxParser.getTechName()
-        this.imageIdObject = this.docxParser.getRelsContents()
+		this.documentContents = this.docxParser.getContents()
 
-        this.setMediaObjects()
+		this.builder()
 
-        this.documentContents = this.docxParser.getContents()
+		this.setResultXML()
 
+		return this.result
+	}
 
-        this.builder()
+	builder() {
+		for (let code of this.stringCodes) {
+			if (code === '018') this.build_018()
+			if (!this.documentContents.find(element => element.infoCode === code)) {
+				continue
+			}
+			if (
+				!this.documentContents.find(element => element.infoCode === code)
+					.startId
+			) {
+				continue
+			}
+			if (
+				!this.documentContents.find(element => element.infoCode === code).stopId
+			) {
+				continue
+			}
+			if (code === '018') {
+			} else if (code === '410') {
+				this.build_410()
+			} else {
+				this.build(code)
+			}
+		}
+	}
+	setMediaObjects() {
+		let imagesNames = Object.keys(this.imageIdObject)
 
-        this.setResultXML()
+		for (let name of imagesNames) {
+			let stringIndex = this.indexToString(name.split('.')[0].slice(5))
+			let extension = name.split('.').pop()
+			if (extension !== 'emf') { // temp! png, svg, tiff, ... -> jpeg
+				extension = 'jpeg'
+			}
+			let convertedName =
+				'ICN-VBMA-A-462001-A-00000-' + stringIndex + '-A-001-1.' + extension
 
-        return this.result
-    }
+			this.result.Images[name] = convertedName
+			this.idImage_S1000D_Object[this.imageIdObject[name]] = convertedName
+		}
+	}
 
-    builder() {
-        for (let code of this.stringCodes) {
-            if (code === '018')
-                this.build_018()
-            if (!this.documentContents.find(element => element.infoCode === code)) { continue }
-            if (!this.documentContents.find(element => element.infoCode === code).startId) { continue }
-            if (!this.documentContents.find(element => element.infoCode === code).stopId) { continue }
-            if (code === '018') {
-                
-            } else if (code === '410') {
-                this.build_410()
-            }
-            else {
-                this.build(code)
-            }
+	setResultXML() {
+		for (let code of this.stringCodes) {
+			if (code !== '018' && this.files[code] === null) {
+				continue
+			}
+			let key = 'DMC-VBMA-A-46-20-01-00A-' + code + 'A-A_000_01_ru_RU.xml'
 
-        }
+			this.result.XML[key] = this.files[code]
+			if (code === '122') {
+				// console.log(this.files['122'])
+				// console.log(this.result.XML[key])
+			}
+		}
+	}
 
-    }
-    setMediaObjects() {
-        let imagesNames = Object.keys(this.imageIdObject)
+	build_018() {
+		let creator = new xmlCreator('018', this.techName)
 
-        for (let name of imagesNames) {
-            let stringIndex = this.indexToString(name.split('.')[0].slice(5))
-            let convertedName = "ICN-VBMA-A-462001-A-00000-" + stringIndex + "-A-001-1.jpg"
-            this.result.Images[name] = convertedName
-            this.idImage_S1000D_Object[this.imageIdObject[name]] = convertedName
-        }
-    }
+		// let element = this.docxParser.getNextParagraf()
+		this.docxParser.nextParagraf()
+		// let element = this.docxParser.getPara()
+		while (!this.docxParser.isEnter()) {
+			let paragrafText = this.docxParser.getPara().trim()
+			let imagesIds = this.docxParser.getImageRId()
+			let bookmarks = this.docxParser.getBookmarkId()
+			creator.chooseTag(
+				paragrafText.trim(),
+				this.docxParser.getStyleId(),
+				imagesIds,
+				bookmarks
+			)
 
-    setResultXML() {
-        for (let code of this.stringCodes) {
-            if (code !== "018" && this.files[code] === null) { continue }
-            let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
+			this.docxParser.nextParagraf()
+		}
 
-            this.result.XML[key] = this.files[code]
+		let moduleReferences = creator.refsDict
+		this.files['018'] = creator.getDocument()
+		// console.log(this.file_018)
+	}
 
-        }
-    }
+	build_410() {
+		let creator = new xmlCreator('410', this.techName)
 
-    build_018() {
-        let creator = new xmlCreator("018", this.techName)
+		let id = this.documentContents.find(
+			element => element.infoCode === '410'
+		).startId
+		let element = this.docxParser.nextParagraf()
+		// console.log(id)
+		while (!this.docxParser.hasBookmarkId(id)) {
+			element = this.docxParser.nextParagraf()
+		}
+		// console.log(id)
 
-        // let element = this.docxParser.getNextParagraf()
-        this.docxParser.nextParagraf()
-        // let element = this.docxParser.getPara()
-        while (!this.docxParser.isEnter()) {
-            let paragrafText = this.docxParser.getPara().trim()
-            let imagesIds = this.docxParser.getImageRId()
-            let bookmarks = this.docxParser.getBookmarkId()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, bookmarks)
+		id = this.documentContents.find(
+			element => element.infoCode === '410'
+		).stopId
+		// this.docxParser.getStyleId()
+		while (!this.docxParser.hasBookmarkId(id)) {
+			let paragrafText = this.docxParser.getPara().trim()
+			let imagesIds = this.docxParser.getImageRId()
 
-            this.docxParser.nextParagraf()
-        }
+			let bookmarks = this.docxParser.getBookmarkId()
 
-        let moduleReferences = creator.refsDict
-        this.files['018'] = creator.getDocument()
-        // console.log(this.file_018)
-    }
+			let tableInfo = this.docxParser.getTable()
+			creator.chooseTag(
+				paragrafText.trim(),
+				this.docxParser.getStyleId(),
+				imagesIds,
+				tableInfo,
+				bookmarks
+			)
+			// if (paragrafText.trim() != "") {
+			//     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
+			// }
 
-    build_410() {
+			this.docxParser.nextParagraf()
+		}
+		// console.log(creator.refsDict)
+		this.docxParser.prevSibling()
+		let moduleReferences = creator.refsDict
+		this.files['410'] = creator.getDocument()
+		fs.writeFile('src/converter/test.xml', this.files['410'], err => {
+			if (err) return console.log(err)
+			console.log('saved')
+		})
+	}
 
-        let creator = new xmlCreator("410", this.techName)
+	build(code) {
+		let creator = new xmlCreator(
+			code,
+			this.techName,
+			this.idImage_S1000D_Object
+		)
 
-        let id = this.documentContents.find(element => element.infoCode === "410").startId
-        let element = this.docxParser.nextParagraf()
-        // console.log(id)
-        while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
-        }
-        // console.log(id)
+		let id = this.documentContents.find(
+			element => element.infoCode === code
+		).startId
+		let element = this.docxParser.nextParagraf()
+		while (!this.docxParser.hasBookmarkId(id)) {
+			element = this.docxParser.nextParagraf()
+		}
 
-        id = this.documentContents.find(element => element.infoCode === "410").stopId
-        // this.docxParser.getStyleId()
-        while (!this.docxParser.hasBookmarkId(id)) {
-            let paragrafText = this.docxParser.getPara().trim()
-            let imagesIds = this.docxParser.getImageRId()
+		id = this.documentContents.find(element => element.infoCode === code).stopId
+		while (!this.docxParser.hasBookmarkId(id)) {
+			let paragrafText = this.docxParser.getPara().trim()
+			let imagesIds = this.docxParser.getImageRId()
 
-            let bookmarks = this.docxParser.getBookmarkId()
+			let tableInfo = this.docxParser.getTable()
+			let bookmarks = this.docxParser.getBookmarkId()
+			creator.chooseTag(
+				paragrafText.trim(),
+				this.docxParser.getStyleId(),
+				imagesIds,
+				tableInfo,
+				bookmarks
+			)
 
+			this.docxParser.nextParagraf()
+		}
+		this.docxParser.prevSibling()
 
-            let tableInfo = this.docxParser.getTable()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo, bookmarks)
-            // if (paragrafText.trim() != "") {
-            //     creator.chooseTextParagraf(paragrafText.trim(), this.docxParser.getStyleId())
-            // }
-
-            this.docxParser.nextParagraf()
-        }
-        // console.log(creator.refsDict)
-        this.docxParser.prevSibling()
-        let moduleReferences = creator.refsDict
-        this.files['410'] = creator.getDocument()
-        fs.writeFile('src/converter/test.xml', this.files['410'], (err) => { if (err) return console.log(err); console.log('saved') })
-
-    }
-
-    build(code) {
-        let creator = new xmlCreator(code, this.techName, this.idImage_S1000D_Object)
-
-        let id = this.documentContents.find(element => element.infoCode === code).startId
-        let element = this.docxParser.nextParagraf()
-        while (!this.docxParser.hasBookmarkId(id)) {
-            element = this.docxParser.nextParagraf()
-        }
-
-        id = this.documentContents.find(element => element.infoCode === code).stopId
-        while (!this.docxParser.hasBookmarkId(id)) {
-            let paragrafText = this.docxParser.getPara().trim()
-            let imagesIds = this.docxParser.getImageRId()
-
-            let tableInfo = this.docxParser.getTable()
-            let bookmarks = this.docxParser.getBookmarkId()
-            creator.chooseTag(paragrafText.trim(), this.docxParser.getStyleId(), imagesIds, tableInfo, bookmarks)
-
-
-            this.docxParser.nextParagraf()
-        }
-        this.docxParser.prevSibling()
-
-        let moduleReferences = creator.refsDict
-        this.files[code] = creator.getDocument()
-    }
+		let moduleReferences = creator.refsDict
+		this.files[code] = creator.getDocument()
+	}
 }
