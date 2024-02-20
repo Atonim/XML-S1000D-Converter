@@ -60,7 +60,7 @@ export class xmlCreater {
         }
     }
 
-    actualizeSeqStack(paragraf, seqId) {
+    actualizeSeqStack(paragraph, seqId) {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
@@ -82,7 +82,7 @@ export class xmlCreater {
         // }
 
         if (seqId === this.levelStack.at(-1)) {
-            if (this.currentElement.name === "levelledPara") {
+            if (this.currentElement.name === "levelledPara" && this.levelStack.length === 1) {
                 this.goUp()
                 this.addLeveledPara()
             }
@@ -99,10 +99,14 @@ export class xmlCreater {
                     this.goUp()
                     this.goUp()
                 } else if (this.levelStack.at(-1) === "4a") {
+                } else if (this.levelStack.at(-2) === "affffa") {
+                } else if (this.levelStack.at(-1) === "affffa" && this.currentElement.name === "levelledPara") {
                 } else if (this.levelStack.at(-1) === "affffa") {
                     this.goUp()
                     this.goUp()
+                    this.goUp()
                 } else if (this.levelStack.at(-1) === "preserve" && this.currentElement.name === "listItem") {
+                // } else if (this.levelStack.at(-1) === "preserve") {
                 } else if (this.levelStack.at(-2) === "preserve") {
                 } else {
                     this.goUp()
@@ -128,56 +132,57 @@ export class xmlCreater {
         return true
     }
 
-    chooseTextParagraf(paragraf, seqId = null, bookmarkIds = null) {
-
+    chooseTextParagraph(paragraph, seqId = null, bookmarkIds = null) {
+        if (paragraph.startsWith("Рисунок 17 ")) console.log(paragraph)
         if (this.currentElement.name === "levelledPara" && this.currentElement.content.length === 1) {
-            this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraf + " | " + String(seqId)))
+            this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraph + " | | " + String(seqId)))
         }
 
         if (this.seqVariants.indexOf(this.currentElement.name) !== -1) {
             this.addListItem()
             this.currentElement = this.currentElement.content.at(-1)
-            this.chooseTextParagraf(paragraf, seqId)
+            this.chooseTextParagraph(paragraph, seqId)
             this.goUp()
         } 
-        else if (this.currentElement.name === "caution" && paragraf === paragraf.toUpperCase()) {
-            this.addCautionPara(paragraf)
+        else if (this.currentElement.name === "caution" && paragraph === paragraph.toUpperCase()) {
+            this.addCautionPara(paragraph)
         } 
-        else if (this.currentElement.name === "caution" && paragraf !== paragraf.toUpperCase()) {
+        else if (this.currentElement.name === "caution" && paragraph !== paragraph.toUpperCase()) {
             this.goUp()
-            this.chooseTextParagraf(paragraf, seqId)
+            this.chooseTextParagraph(paragraph, seqId)
         } 
-        else if (paragraf.startsWith("Рисунок")) {
-            this.addFigureTitle(paragraf + " | " + String(seqId), bookmarkIds)
+        else if (paragraph.startsWith("Рисунок")) {
+            this.addFigureTitle(paragraph + " | " + String(seqId), bookmarkIds)
+            if (paragraph.startsWith("Рисунок 17 ")) console.log(paragraph)
         } 
-        else if (paragraf.startsWith("ВНИМАНИЕ: ")) {
+        else if (paragraph.startsWith("ВНИМАНИЕ: ")) {
             this.addCaution()
-            this.chooseTextParagraf(paragraf.replace("ВНИМАНИЕ: ", ''), seqId)
+            this.chooseTextParagraph(paragraph.replace("ВНИМАНИЕ: ", ''), seqId)
         } 
-        else if (paragraf.startsWith("Примечание – ")) {
-            this.addNote(paragraf.replace("Примечание – ", ''))
+        else if (paragraph.startsWith("Примечание – ")) {
+            this.addNote(paragraph.replace("Примечание – ", ''))
         } 
-        else if (paragraf.startsWith("Примечание - ")) {
-            this.addNote(paragraf.replace("Примечание - ", ''))
+        else if (paragraph.startsWith("Примечание - ")) {
+            this.addNote(paragraph.replace("Примечание - ", ''))
         } 
         else {
-            // this.addPara(paragraf)
-            this.addPara(paragraf + " | " + String(seqId))
+            // this.addPara(paragraph)
+            this.addPara(paragraph + " | " + String(seqId))
         }
 
-        if (paragraf.replaceAll('\u00A0', '').startsWith('Таблица') || paragraf.startsWith('Рисунок')) { return }
+        if (paragraph.replaceAll('\u00A0', '').startsWith('Таблица') || paragraph.startsWith('Рисунок')) { return }
         this.setParaBookmark(bookmarkIds)
     }
 
-    chooseTag(paragraf, seqId, imageIds, table, bookmarkIds) {
+    chooseTag(paragraph, seqId, imageIds, table, bookmarkIds) {
         
         if (table) {
             this.addTable(table)
-        } else if (paragraf) {
-            this.isCurrentElementInSeq = this.actualizeSeqStack(paragraf, seqId)
+        } else if (paragraph) {
+            this.isCurrentElementInSeq = this.actualizeSeqStack(paragraph, seqId)
 
-            this.chooseTextParagraf(paragraf, seqId, bookmarkIds)
-            this.chooseListVariant(paragraf)
+            this.chooseTextParagraph(paragraph, seqId, bookmarkIds)
+            this.chooseListVariant(paragraph)
         } else if (imageIds) {
             this.addFigure(imageIds)
         }

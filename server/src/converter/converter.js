@@ -71,7 +71,9 @@ export class converter {
             if (code === '018') {
             } 
             else if (code === '410') {}
-            else {
+            else 
+            // if (code === '044')
+            {
                 this.build(code)
             }
         }

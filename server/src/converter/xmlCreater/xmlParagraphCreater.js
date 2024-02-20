@@ -197,7 +197,7 @@ export const xmlParagraphCreater = {
 
         if (paragraph.indexOf('<') !== -1) 
             paragraph = paragraph.substring(0, paragraph.indexOf('<'))
-        
+        // if (paragraph.startsWith("Рисунок 1")) console.log(paragraph)
         return paragraph
     }
 
