@@ -23,7 +23,7 @@ pnpm-debug.log*
 *.sw?
 node_modules
 files
+server/src/dev.js
 server/src/converter/temp.js
 server/src/converter/temp2.*
-server/src/dev.js
 server/src/converter/temp/*

@@ -70,7 +70,7 @@ export class converter {
             if (!this.documentContents.find(element => element.infoCode === code).stopId) { continue }
             if (code === '018') {
             } 
-            else if (code === '410') {}
+            // else if (code === '410') {}
             else 
             // if (code === '044')
             {

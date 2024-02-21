@@ -64,9 +64,9 @@ export class xmlCreater {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
         //  и, следовательно, переход к следующему
-        let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
-        this.currentElement.addContent(newT)
-        newT.setParent(this.currentElement)
+        // let newT = new tags.text("\n[" + String(this.levelStack) + " | " + String(this.currentElement.name) + "]")
+        // this.currentElement.addContent(newT)
+        // newT.setParent(this.currentElement)
 
         if (seqId === null) {
             return true
@@ -77,9 +77,6 @@ export class xmlCreater {
             this.levelStack.push(seqId)
             return true
         }
-        // if (this.levelStack.length === 1 && this.currentElement.name === "dmodule") {
-        //     this.addLeveledPara()
-        // }
 
         if (seqId === this.levelStack.at(-1)) {
             if (this.currentElement.name === "levelledPara" && this.levelStack.length === 1) {
@@ -115,7 +112,11 @@ export class xmlCreater {
                 }
                 this.levelStack.pop()
             }
+
             if (this.currentElement.name === "dmodule") {
+                this.addLeveledPara()
+            } else if (this.currentElement.name === "levelledPara" && this.levelStack.length === 1) {
+                this.goUp()
                 this.addLeveledPara()
             }
 
@@ -133,9 +134,9 @@ export class xmlCreater {
     }
 
     chooseTextParagraph(paragraph, seqId = null, bookmarkIds = null) {
-        if (paragraph.startsWith("Рисунок 17 ")) console.log(paragraph)
         if (this.currentElement.name === "levelledPara" && this.currentElement.content.length === 1) {
-            this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraph + " | | " + String(seqId)))
+            // this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraph + " | | " + String(seqId)))
+            this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraph))
         }
 
         if (this.seqVariants.indexOf(this.currentElement.name) !== -1) {
@@ -152,8 +153,7 @@ export class xmlCreater {
             this.chooseTextParagraph(paragraph, seqId)
         } 
         else if (paragraph.startsWith("Рисунок")) {
-            this.addFigureTitle(paragraph + " | " + String(seqId), bookmarkIds)
-            if (paragraph.startsWith("Рисунок 17 ")) console.log(paragraph)
+            this.addFigureTitle(paragraph)
         } 
         else if (paragraph.startsWith("ВНИМАНИЕ: ")) {
             this.addCaution()
@@ -166,8 +166,8 @@ export class xmlCreater {
             this.addNote(paragraph.replace("Примечание - ", ''))
         } 
         else {
-            // this.addPara(paragraph)
-            this.addPara(paragraph + " | " + String(seqId))
+            this.addPara(paragraph)
+            // this.addPara(paragraph + " | " + String(seqId))
         }
 
         if (paragraph.replaceAll('\u00A0', '').startsWith('Таблица') || paragraph.startsWith('Рисунок')) { return }
