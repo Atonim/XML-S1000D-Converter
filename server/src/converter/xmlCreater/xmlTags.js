@@ -40,11 +40,10 @@ class Tag {
         if (this.tags === 2) {
             return (
                 `
-${paddng(level)}<${this.openTag} ${this.attribute}>
-${contentInside}
+${paddng(level)}<${this.openTag} ${this.attribute}>${contentInside}
 ${paddng(level)}<${this.closeTag}>`)
         } else {
-            return `<${this.openTag}${this.attribute} />\n`
+            return `\n${paddng(level)}<${this.openTag}${this.attribute} />`
         }
     }
 
@@ -111,7 +110,8 @@ export class dmodule extends Tag {
     stringify() {
         let contentInside = ""
         for (let i = 0; i < this.content.length; i++) {
-            contentInside += String(this.content[i].stringify())
+            let level = 3
+            contentInside += String(this.content[i].stringify(level))
         }
 
         let stringifiedMedia = ""
@@ -131,8 +131,7 @@ export class dmodule extends Tag {
         }
 
         return `<?xml version="1.0" encoding="UTF-8"?>${stringifiedMedia}
-<${this.openTag}>
-    ${contentInside}
+<${this.openTag}>${contentInside}
         <${this.closeTag}>`
     }
 }
@@ -143,6 +142,15 @@ export class para extends Tag {
         this.name = "para"
         this.openTag = `para`
         this.closeTag = `/para`
+    }
+
+    stringify(level) {
+        let contentInside = ""
+        for (let i = 0; i < this.content.length; i++) {
+            contentInside += String(this.content[i].stringify(level + 1))
+        }
+
+        return `\n${paddng(level)}<${this.openTag}${this.attribute}>${contentInside}<${this.closeTag}>`
     }
 }
 
@@ -155,7 +163,7 @@ export class text extends Tag {
     }
 
     stringify(level) {
-        return `${paddng(level)}${this.openTag}`
+        return `${this.openTag}`
     }
 }
 
@@ -312,6 +320,16 @@ export class entry extends Tag {
         this.name = "entry"
         this.openTag = `entry`
         this.closeTag = `/entry`
+    }
+
+    stringify(level) {
+        let contentInside = ""
+        for (let i = 0; i < this.content.length; i++) {
+            contentInside += String(this.content[i].stringify(level + 1))
+        }
+
+        return `\n${paddng(level)}<${this.openTag}${this.attribute}>${contentInside}
+${paddng(level)}<${this.closeTag}>`
     }
 }
 

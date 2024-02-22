@@ -1,7 +1,7 @@
 import fs from 'fs'
 import JSZip from 'jszip'
 import { linker } from './linker/index.js'
-import { convertor } from './converter/converter.js'
+import { converter } from './converter/converter.js'
 import { fileSelector } from './linker/fileSelector.js'
 
 export async function startUnzip(file) {
@@ -12,7 +12,7 @@ export async function startUnzip(file) {
 				jszip.loadAsync(data).then(unzipped => {
 					fileSelector(unzipped).then(filesToConvert => {
 						//const rels = relsAnalyzer(filesToConvert.documentRels)
-						let a = new convertor(
+						let a = new converter(
 							filesToConvert.document,
 							filesToConvert.documentRels
 						)
