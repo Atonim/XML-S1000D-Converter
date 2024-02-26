@@ -18,28 +18,33 @@ export async function linker(result, media) {
 		let name = fileName(fullName)
 		let extension = name.split('.').pop()
 		let fileData = await media[fullName].async('arraybuffer')
-		//console.log(name)
+
 		if (extension !== 'jpeg' && extension !== 'jpg') {
 			if (extension === 'emf') {
 				if (result.Images[name] !== undefined) {
-          imgFolder.file(result.Images[name], fileData);
-        }
-			} else {
-				// png
-        await sharp(fileData)
-					.flatten( {background: {r: 255, g: 255, b: 255}})
+					imgFolder.file(result.Images[name], fileData);
+				}
+			} /*else if () { // other types extension?
+			}*/
+			else { // png, webP, gif, svg, tiff, raw --> jpeg
+				console.log(name)
+				await sharp(fileData)
+					.flatten({ background: { r: 255, g: 255, b: 255 } })
 					.toFormat('jpeg') //	.jpeg({quality: 100})
 					.toBuffer()
 					.then(jpegData => {
-            if (result.Images[name] !== undefined) {
-              imgFolder.file(result.Images[name], jpegData)
-            }
-          })
-          .catch( err => {
-            console.error( err )
-          })
+						if (result.Images[name] !== undefined) {
+							imgFolder.file(result.Images[name], jpegData)
+						}
+					})
+					.catch(err => {
+						console.error(err)
+					})
+				if (result.Images[name] !== undefined) { // temp
+					imgFolder.file(result.Images[name], fileData)
+				}
 			}
-		} else {
+		} else { // jpeg
 			if (result.Images[name] !== undefined) {
 				imgFolder.file(result.Images[name], fileData)
 			}

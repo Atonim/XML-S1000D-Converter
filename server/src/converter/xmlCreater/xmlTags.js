@@ -108,30 +108,45 @@ export class dmodule extends Tag {
     }
 
     stringify() {
-        let contentInside = ""
+        let contentInside = ''
         for (let i = 0; i < this.content.length; i++) {
-            let level = 3
-            contentInside += String(this.content[i].stringify(level))
+            contentInside += String(this.content[i].stringify())
         }
 
-        let stringifiedMedia = ""
+        let stringifiedMedia = ''
+        let dictMediaInside = new Map()
+
         if (this.media.length) {
-            let mediaInside = ""
+            //console.log(`this.media.length ${this.media.length}`)
+            let extension = ''
+            let data = ''
+
             for (let mediaEl of this.media) {
-                mediaInside +=
-                    `\n<!ENTITY ${mediaEl} SYSTEM "../Images/${mediaEl}.jpg" NDATA jpg>`
+                extension = mediaEl.split('.').pop()
+                //console.log(extension)
+                data = `\n<!ENTITY ${mediaEl} SYSTEM "../Images/${mediaEl}" NDATA ${extension}>`
+
+                if (dictMediaInside.has(extension)) {
+                    dictMediaInside.set(extension, dictMediaInside.get(extension) + data)
+                } else {
+                    dictMediaInside.set(extension, data)
+                }
             }
-            //         this.media.forEach(element => mediaInside + `
-            // <!ENTITY ${element.filename} SYSTEM "../Images/${element.filename}.${element.fileformat}" NDATA ${element.fileformat}>`
-            //         )
-            stringifiedMedia = `
-<!DOCTYPE dmodule [
-<!NOTATION jpg PUBLIC "jpg" "jpg">${mediaInside}
-]>`
+            //console.log(`Количество ключей в объекте Map: ${dictMediaInside.size}`)
+
+            //stringifiedMedia = `<!DOCTYPE dmodule [ <!NOTATION jpg PUBLIC "jpg" "jpg">${mediaInside}]>`
+            let strAllMedia = ''
+            dictMediaInside.forEach((value, extension) => {
+                //console.log(`Ключ: ${extension}, Значение: ${value}`)
+                strAllMedia += `\n<!NOTATION ${extension} PUBLIC "${extension}" "${extension}">${value}`
+            })
+
+            stringifiedMedia = ` <!DOCTYPE dmodule [${strAllMedia}]>`
         }
 
         return `<?xml version="1.0" encoding="UTF-8"?>${stringifiedMedia}
-<${this.openTag}>${contentInside}
+<${this.openTag}>
+    ${contentInside}
         <${this.closeTag}>`
     }
 }
@@ -357,6 +372,428 @@ export class notePara extends Tag {
         this.name = "notePara"
         this.openTag = `notePara`
         this.closeTag = `/notePara`
+    }
+}
+
+
+//scorm
+
+export class scormContentPackage extends Tag {
+    constructor() {
+        super()
+        this.name = "scormContentPackage"
+        this.openTag = `
+        <scormContentPackage 
+            xmlns:lom="http://ltsc.ieee.org/xsd/LOM" 
+            xmlns:ns3="http://ltsc.ieee.org/xsd/LOM/extend" 
+            xmlns:ns1="http://ltsc.ieee.org/xsd/LOM/unique" 
+            xmlns:ns2="http://ltsc.ieee.org/xsd/LOM/vocab" 
+            xmlns:dc="http://www.purl.org/dc/elements/1.1/" 
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+            xmlns:xlink="http://www.w3.org/1999/xlink" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+            xsi:noNamespaceSchemaLocation="../../../xml_schema_flat/scormcontentpackage.xsd">
+            <script/>
+                <identAndStatusSection>
+                    ...
+                </identAndStatusSection>
+                <content>
+        `
+        this.closeTag = `</content>
+        </scormContentPackage>`
+
+    }
+}
+
+export class scoEntry extends Tag {
+    constructor() {
+        super()
+        this.name = "scoEntry"
+        this.openTag = `scoEntry`
+        this.closeTag = `/scoEntry`
+    }
+}
+
+export class scoEntryAdress extends Tag {
+    constructor() {
+        super()
+        this.name = "scoEntryAdress"
+        this.openTag = `scoEntryAdress`
+        this.closeTag = `/scoEntryAdress`
+    }
+}
+
+export class scoEntryCode extends Tag {
+    constructor() {
+        super()
+        this.name = "scoEntryCode"
+        this.openTag = `scoEntryCode`
+        this.closeTag = `/scoEntryCode`
+        this.tags = 1
+    }
+}
+
+export class scoEntryContent extends Tag {
+    constructor() {
+        super()
+        this.name = "scoEntryContent"
+        this.openTag = `scoEntryContent`
+        this.closeTag = `/scoEntryContent`
+    }
+}
+
+export class scoEntryTitle extends Tag {
+    constructor() {
+        super()
+        this.name = "scoEntryTitle"
+        this.openTag = `scoEntryTitle`
+        this.closeTag = `/scoEntryTitle`
+    }
+}
+
+export class security extends Tag {
+    constructor() {
+        super()
+        this.name = "security"
+        this.openTag = `security`
+        this.closeTag = `/security`
+        this.tags = 1
+    }
+}
+
+export class qualityAssurance extends Tag {
+    constructor() {
+        super()
+        this.name = "qualityAssurance"
+        this.openTag = `qualityAssurance`
+        this.closeTag = `/qualityAssurance`
+    }
+}
+
+export class unverified extends Tag {
+    constructor() {
+        super()
+        this.name = "unverified"
+        this.openTag = `unverified`
+        this.closeTag = `/unverified`
+        this.tags = 1
+    }
+}
+
+export class dmRef extends Tag {
+    constructor() {
+        super()
+        this.name = "dmRef"
+        this.openTag = `dmRef`
+        this.closeTag = `/dmRef`
+    }
+}
+
+export class dmRefIdent extends Tag {
+    constructor() {
+        super()
+        this.name = "dmRefIdent"
+        this.openTag = `dmRefIdent`
+        this.closeTag = `/dmRefIdent`
+    }
+}
+
+export class dmRefAddressItems extends Tag {
+    constructor() {
+        super()
+        this.name = "dmRefAddressItems"
+        this.openTag = `dmRefAddressItems`
+        this.closeTag = `/dmRefAddressItems`
+    }
+}
+
+export class dmCode extends Tag {
+    constructor() {
+        super()
+        this.name = "dmCode"
+        this.openTag = `dmCode`
+        this.closeTag = `/dmCode`
+        this.tags = 1
+    }
+}
+
+export class language extends Tag {
+    constructor() {
+        super()
+        this.name = "language"
+        this.openTag = `language`
+        this.closeTag = `/language`
+        this.tags = 1
+    }
+}
+
+export class issueDate extends Tag {
+    constructor() {
+        super()
+        this.name = "issueDate"
+        this.openTag = `issueDate`
+        this.closeTag = `/issueDate`
+        this.tags = 1
+    }
+}
+
+export class lomLom extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:lom"
+        this.openTag = `lom:lom`
+        this.closeTag = `/lom:lom`
+
+    }
+}
+
+export class lomGeneral extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:general"
+        this.openTag = `lom:general`
+        this.closeTag = `/lom:general`
+
+    }
+}
+
+export class lomLifeCycle extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:lifeCycle"
+        this.openTag = `lom:lifeCycle`
+        this.closeTag = `/lom:lifeCycle`
+
+    }
+}
+
+export class lomMetaMetadata extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:metaMetadata"
+        this.openTag = `lom:metaMetadata`
+        this.closeTag = `/lom:metaMetadata`
+
+    }
+}
+
+export class lomTechnical extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:technical"
+        this.openTag = `lom:technical`
+        this.closeTag = `/lom:technical`
+
+    }
+}
+
+export class lomRights extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:rights"
+        this.openTag = `lom:rights`
+        this.closeTag = `/lom:rights`
+
+    }
+}
+
+export class lomTitle extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:title"
+        this.openTag = `lom:title`
+        this.closeTag = `/lom:title`
+
+    }
+}
+
+export class lomString extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:string"
+        this.openTag = `lom:string`
+        this.closeTag = `/lom:string`
+
+    }
+}
+
+export class lomIdentifier extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:identifier"
+        this.openTag = `lom:identifier`
+        this.closeTag = `/lom:identifier`
+
+    }
+}
+
+export class lomCatalog extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:catalog"
+        this.openTag = `lom:catalog`
+        this.closeTag = `/lom:catalog`
+
+    }
+}
+
+export class lomEntry extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:entry"
+        this.openTag = `lom:entry`
+        this.closeTag = `/lom:entry`
+
+    }
+}
+
+export class lomDescription extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:description"
+        this.openTag = `lom:description`
+        this.closeTag = `/lom:description`
+
+    }
+}
+
+export class lomKeyword extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:keyword"
+        this.openTag = `lom:keyword`
+        this.closeTag = `/lom:keyword`
+
+    }
+}
+
+export class lomVersion extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:version"
+        this.openTag = `lom:version`
+        this.closeTag = `/lom:version`
+
+    }
+}
+
+export class lomStatus extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:status"
+        this.openTag = `lom:status`
+        this.closeTag = `/lom:status`
+
+    }
+}
+
+export class lomSource extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:source"
+        this.openTag = `lom:source`
+        this.closeTag = `/lom:source`
+
+    }
+}
+
+export class lomContribute extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:contribute"
+        this.openTag = `lom:contribute`
+        this.closeTag = `/lom:contribute`
+
+    }
+}
+
+export class lomValue extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:value"
+        this.openTag = `lom:value`
+        this.closeTag = `/lom:value`
+
+    }
+}
+
+export class lomRole extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:role"
+        this.openTag = `lom:role`
+        this.closeTag = `/lom:role`
+
+    }
+}
+
+export class lomEntity extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:entity"
+        this.openTag = `lom:entity`
+        this.closeTag = `/lom:entity`
+
+    }
+}
+
+export class lomDate extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:date"
+        this.openTag = `lom:date`
+        this.closeTag = `/lom:date`
+
+    }
+}
+
+export class lomMetadataSchema extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:metadataSchema"
+        this.openTag = `lom:metadataSchema`
+        this.closeTag = `/lom:metadataSchema`
+
+    }
+}
+
+export class lomDateTime extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:dateTime"
+        this.openTag = `lom:dateTime`
+        this.closeTag = `/lom:dateTime`
+
+    }
+}
+
+export class lomFormat extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:format"
+        this.openTag = `lom:format`
+        this.closeTag = `/lom:format`
+
+    }
+}
+
+export class lomCost extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:cost"
+        this.openTag = `lom:cost`
+        this.closeTag = `/lom:cost`
+
+    }
+}
+
+export class lomCopyrightAndOtherRestrictions extends Tag {
+    constructor() {
+        super()
+        this.name = "lom:copyrightAndOtherRestrictions"
+        this.openTag = `lom:copyrightAndOtherRestrictions`
+        this.closeTag = `/lom:copyrightAndOtherRestrictions`
+
     }
 }
 

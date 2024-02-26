@@ -69,9 +69,9 @@ export class converter {
             if (!this.documentContents.find(element => element.infoCode === code).startId) { continue }
             if (!this.documentContents.find(element => element.infoCode === code).stopId) { continue }
             if (code === '018') {
-            } 
+            }
             // else if (code === '410') {}
-            else 
+            else
             // if (code === '044')
             {
                 this.build(code)
@@ -84,7 +84,13 @@ export class converter {
 
         for (let name of imagesNames) {
             let stringIndex = this.indexToString(name.split('.')[0].slice(5))
-            let convertedName = "ICN-VBMA-A-462001-A-00000-" + stringIndex + "-A-001-1.jpg"
+            let extension = name.split('.').pop()
+            if (extension !== 'emf') { // temp! png, svg, tiff, ... -> jpeg
+                extension = 'jpeg'
+            }
+            let convertedName =
+                'ICN-VBMA-A-462001-A-00000-' + stringIndex + '-A-001-1.' + extension
+
             this.result.Images[name] = convertedName
             this.idImage_S1000D_Object[this.imageIdObject[name]] = convertedName
         }
@@ -95,7 +101,7 @@ export class converter {
             let key = "DMC-VBMA-A-46-20-01-00A-" + code + "A-A_000_01_ru_RU.xml"
 
             this.result.XML[key] = this.preprocessing(this.files[code])
-            fs.writeFile(`src/converter/temp/${key}`, this.result.XML[key], (err) => {  })
+            fs.writeFile(`src/converter/temp/${key}`, this.result.XML[key], (err) => { })
         }
     }
 
@@ -125,7 +131,7 @@ export class converter {
         this.files[code] = creator.getDocument()
     }
 
-    getModuleContent (code, creator) {
+    getModuleContent(code, creator) {
         this.docxParser.nextParagraf()
         let id = null
         if (code === "018") {
