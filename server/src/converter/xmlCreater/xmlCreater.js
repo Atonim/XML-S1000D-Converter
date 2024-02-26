@@ -2,6 +2,7 @@ import * as tags from "./xmlTags.js"
 import { xmlTableCreater } from "./xmlTableCreater.js"
 import { xmlParagraphCreater } from "./xmlParagraphCreater.js"
 import { xmlMoverCreater } from "./xmlMoverCreater.js"
+import CyrillicToTranslit from 'cyrillic-to-translit-js'
 
 export class xmlCreater {
     currentElement = null
@@ -13,6 +14,7 @@ export class xmlCreater {
     refsDict = {}
     mediaList = []
     tableMergeState = []
+    cyrillicToTranslit = new CyrillicToTranslit();
 
     constructor(infoCode, techName, imagesList) {
         this.currentElement = new tags.dmodule(infoCode, techName)
@@ -136,7 +138,8 @@ export class xmlCreater {
     chooseTextParagraph(paragraph, seqId = null, bookmarkIds = null) {
         if (this.currentElement.name === "levelledPara" && this.currentElement.content.length === 1) {
             // this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraph + " | | " + String(seqId)))
-            this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraph))
+            this.currentElement.content[0] = new tags.title(this.getParaTitle(this.cyrillicToTranslit.transform(paragraph)))
+            // this.currentElement.content[0] = new tags.title(this.getParaTitle(paragraph))
         }
 
         if (this.seqVariants.indexOf(this.currentElement.name) !== -1) {
@@ -146,14 +149,16 @@ export class xmlCreater {
             this.goUp()
         } 
         else if (this.currentElement.name === "caution" && paragraph === paragraph.toUpperCase()) {
-            this.addCautionPara(paragraph)
+            // this.addCautionPara(paragraph)
+            this.addCautionPara(this.cyrillicToTranslit.transform(paragraph))
         } 
         else if (this.currentElement.name === "caution" && paragraph !== paragraph.toUpperCase()) {
             this.goUp()
             this.chooseTextParagraph(paragraph, seqId)
         } 
         else if (paragraph.startsWith("Рисунок")) {
-            this.addFigureTitle(paragraph)
+            this.addFigureTitle(this.cyrillicToTranslit.transform(paragraph))
+            // this.addFigureTitle(paragraph)
         } 
         else if (paragraph.startsWith("ВНИМАНИЕ: ")) {
             this.addCaution()
@@ -166,7 +171,8 @@ export class xmlCreater {
             this.addNote(paragraph.replace("Примечание - ", ''))
         } 
         else {
-            this.addPara(paragraph)
+            // this.addPara(paragraph)
+            this.addPara(this.cyrillicToTranslit.transform(paragraph))
             // this.addPara(paragraph + " | " + String(seqId))
         }
 

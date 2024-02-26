@@ -186,7 +186,8 @@ export const xmlTableCreater = {
                     newPara.parent = newEntry
                     newEntry.addContent(newPara)
 
-                    let newText = new tags.text(tableInfo.globalrows[i].columns[j].paragraphs[k].text)
+                    let newText = new tags.text(this.cyrillicToTranslit.transform(tableInfo.globalrows[i].columns[j].paragraphs[k].text))
+                    // let newText = new tags.text(tableInfo.globalrows[i].columns[j].paragraphs[k].text)
                     newText.setParent(newPara)
                     newPara.addContent(newText)
                 }
