@@ -119,7 +119,7 @@ export class dmodule extends Tag {
             let mediaInside = ""
             for (let mediaEl of this.media) {
                 mediaInside +=
-                    `\n<!ENTITY ${mediaEl} SYSTEM "../Images/${mediaEl}.jpg" NDATA jpg>`
+                    `\n<!ENTITY ${mediaEl} SYSTEM "../Images/${mediaEl}" NDATA jpg>`
             }
             //         this.media.forEach(element => mediaInside + `
             // <!ENTITY ${element.filename} SYSTEM "../Images/${element.filename}.${element.fileformat}" NDATA ${element.fileformat}>`
