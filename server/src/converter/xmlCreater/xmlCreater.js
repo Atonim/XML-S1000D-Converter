@@ -56,12 +56,6 @@ export class xmlCreater {
         }
     }
 
-    setTableBookmark (bookmarkId, tableId) {
-        if (bookmarkId && tableId) {
-            this.refsDict[bookmarkId] = { "id": `tab-${tableId}`, "type": "irtt02" }
-        }
-    }
-
     actualizeSeqStack(paragraph, seqId) {
         // Будем считать, что мы не поднимаемся в иерархии выше первого уровня 
         //  в стеке, а если поднимимся, то это будет уже конец модуля данных 
@@ -158,7 +152,7 @@ export class xmlCreater {
         } 
         else if (paragraph.startsWith("Рисунок")) {
             // this.addFigureTitle(this.cyrillicToTranslit.transform(paragraph))
-            this.addFigureTitle(paragraph)
+            this.addFigureTitle(paragraph, bookmarkIds)
         } 
         else if (paragraph.startsWith("ВНИМАНИЕ: ")) {
             this.addCaution()
