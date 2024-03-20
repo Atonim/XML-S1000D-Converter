@@ -51,8 +51,14 @@ export class docxParser {
                 let address = node.attributes[0].value.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
+                let refText = this.getFullParagraf(node.firstChild)
+                if (!refText) { 
+                    refText = buffer
+                    buffer = ""
+                }
 
-                buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
+                buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//">${refText}</internalRef>`
+                return buffer
             }
         } else if (node.tagName === "w:instrText") {
             let stratIndex = node.firstChild.data.indexOf("_Ref")
@@ -60,8 +66,14 @@ export class docxParser {
                 let address = node.firstChild.data.substring(stratIndex)
                 let finishIndex = address.indexOf(" ")
                 address = address.substring(0, finishIndex)
+                let refText = this.getFullParagraf(node.firstChild)
+                if (!refText) { 
+                    refText = buffer
+                    buffer = ""
+                }
 
-                buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//"/>`
+                buffer += `<internalRef internalRefId="//**${address}**//" internalRefTargetType="//**Type${address}**//">${refText}</internalRef>`
+                return buffer
             }
         }
         if (node.tagName === "w:t") {

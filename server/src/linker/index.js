@@ -22,16 +22,10 @@ export async function linker(result, media) {
 		if (extension !== 'jpeg' && extension !== 'jpg') {
 			if (extension === 'emf') {
 				if (result.Images[name] !== undefined) {
-<<<<<<< HEAD
-					imgFolder.file(result.Images[name], fileData);
-				}
-			} /*else if () { // other types extension?
-=======
           imgFolder.file(result.Images[name], fileData);
         }
 			} /*else if () { // other types extension?
 
->>>>>>> 6c9e04d4e56db039289455dabdcc7b58b915822e
 			}*/
 			else { // png, webP, gif, svg, tiff, raw --> jpeg
 				console.log(name)
@@ -47,15 +41,9 @@ export async function linker(result, media) {
 					.catch(err => {
 						console.error(err)
 					})
-<<<<<<< HEAD
-				if (result.Images[name] !== undefined) { // temp
-					imgFolder.file(result.Images[name], fileData)
-				}
-=======
 					if (result.Images[name] !== undefined) { // temp
 						imgFolder.file(result.Images[name], fileData)
 					}
->>>>>>> 6c9e04d4e56db039289455dabdcc7b58b915822e
 			}
 		} else { // jpeg
 			if (result.Images[name] !== undefined) {

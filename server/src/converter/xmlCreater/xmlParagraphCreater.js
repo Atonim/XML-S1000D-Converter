@@ -91,6 +91,7 @@ export const xmlParagraphCreater = {
     },
 
     addNote(paragraf) {
+        // paragraf = this.cyrillicToTranslit.transform(paragraf)
         if (this.currentElement) {
             let newN = new tags.note()
             let newNP = new tags.notePara()
